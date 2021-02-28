@@ -16,38 +16,63 @@ const assert = require('assert');
 const { password } = require('./password.js')
 const url = password;
 
-
 const initializePassport = require('./passport-config')
+
+
+var emailExist = false;
+var idExist = false;
+
 initializePassport(
+    // passport,
+    // email => users.find(user => user.email === email),
+    // id => users.find(user => user.id === id)
+
     passport,
-    email => users.find(user => user.email === email),
-    id => users.find(user => user.id === id)
+    email => MongoClient.connect(url, function (err, client) {
+        assert.equal(null, err);
+
+
+        const db = client.db("login");
+
+        var cursor = db.collection('users').find({ email: email });
+
+        function iterateFunc(doc) {
+            console.log(email)
+            return email;
+        }
+
+        function errorFunc(error) {
+            return false;
+        }
+
+        cursor.forEach(iterateFunc, errorFunc);
+
+        client.close();
+    }),
+    id => MongoClient.connect(url, function (err, client) {
+        console.log(id)
+        assert.equal(null, err);
+
+
+        const db = client.db("login");
+
+        var cursor = db.collection('users').find({ id: id });
+
+        function iterateFunc(doc) {
+            console.log(id)
+            return id;
+        }
+
+        function errorFunc(error) {
+            console.log(id)
+            return false;
+        }
+
+        cursor.forEach(iterateFunc, errorFunc);
+
+        client.close();
+    })
 )
-
-
-// MongoClient.connect(url, function (err, client) {
-//     assert.equal(null, err);
-
-
-//     const db = client.db("login");
-
-//     var cursor = db.collection('users').find({ email: user.email });
-    
-//     function iterateFunc(doc) {
-//         console.log(JSON.stringify(doc, null, 4));
-//     }
-    
-//     function errorFunc(error) {
-//         console.log(error);
-//     }
-    
-//     cursor.forEach(iterateFunc, errorFunc);
-    
-//     client.close();
-// });
-
-
-const users = []
 
 app.set('vie-engine', 'ejs')
 app.use(express.urlencoded({ extended: false }))
@@ -125,6 +150,11 @@ app.post('/register', async (req, res) => {
 //     }
 //     console.log(users)
 // })
+
+app.delete('/logout', (req, res) => {
+    req.logOut()
+    res.redirect('login')
+})
 
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
