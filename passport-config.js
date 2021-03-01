@@ -8,41 +8,63 @@ const assert = require('assert');
 const { password } = require('./password.js')
 const url = password;
 
+var userPassword = null
+var userEmail = null
+
 function initialize(passport, getUserbyEmail, getUserbyId) {
     const authenticateUser = async (email, password, done) => {
 
+        console.log(email)
+        console.log(password)
+        console.log(done)
 
-        function getUserInfo(whatInfo) {
-        MongoClient.connect(url, function (err, client) {
-            assert.equal(null, err);
+        // await MongoClient.connect(url, function (err, client) {
+        //     assert.equal(null, err);
+        
+        //     const db = client.db("login");
+        
+        //     db.collection('users').find({ email: email }).forEach(function (document) {
+        //         userEmail = document.email;
+        //         userPassword = document.password;
+        //     });
+        //     client.close();
+        // })
 
-            const db = client.db("login");
+        // console.log(userPassword)
+        // console.log(userEmail)
 
-            db.collection('users').find({email: email}).forEach(function (document) {
 
-                if (whatInfo === email) {
-                    const x = document.email;
-                    console.log(x)
-                    client.close();
-                    return x;
-                } else {
-                    const x = document.password;
-                    client.close();
-                    console.log(x)
-                    return x;
-                }
-            });
-            client.close();
-            return null;
-        })
-    }
+        // async function getUserInfo(whatInfo) {
+        //     MongoClient.connect(url, function (err, client) {
+        //         assert.equal(null, err);
 
-        if (getUserInfo(email) === null) {
+        //         const db = client.db("login");
+
+        //         db.collection('users').find({ email: email }).forEach(function (document) {
+
+        //             if (whatInfo === email) {
+        //                 const x = document.email;
+        //                 console.log(x)
+        //                 client.close();
+        //                 return x;
+        //             } else {
+        //                 const x = document.password;
+        //                 client.close();
+        //                 console.log(x)
+        //                 return x;
+        //             }
+        //         });
+        //         client.close();
+        //         return null;
+        //     })
+        // }
+
+        if (await getUserInfo(email) === null) {
             return done(null, false, { message: "User doesn't exist" })
         }
 
         try {
-            var x = getUserInfo(password)
+            const x = getUserInfo(password)
             console.log(getUserInfo(password))
             console.log(x)
             if (await bcrypt.compare(password, x)) {
