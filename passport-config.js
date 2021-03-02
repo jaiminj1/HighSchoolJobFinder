@@ -14,9 +14,8 @@ var userEmail = null
 function initialize(passport, getUserbyEmail, getUserbyId) {
     const authenticateUser = async (email, password, done) => {
 
-        console.log(email)
-        console.log(password)
-        console.log(done)
+
+        console.log(getUserbyEmail)
 
         // await MongoClient.connect(url, function (err, client) {
         //     assert.equal(null, err);
@@ -34,32 +33,32 @@ function initialize(passport, getUserbyEmail, getUserbyId) {
         // console.log(userEmail)
 
 
-        // async function getUserInfo(whatInfo) {
-        //     MongoClient.connect(url, function (err, client) {
-        //         assert.equal(null, err);
+        function getUserInfo(whatInfo) {
+            MongoClient.connect(url, function (err, client) {
+                assert.equal(null, err);
 
-        //         const db = client.db("login");
+                const db = client.db("login");
 
-        //         db.collection('users').find({ email: email }).forEach(function (document) {
+                db.collection('users').find({ email: email }).forEach(function (document) {
 
-        //             if (whatInfo === email) {
-        //                 const x = document.email;
-        //                 console.log(x)
-        //                 client.close();
-        //                 return x;
-        //             } else {
-        //                 const x = document.password;
-        //                 client.close();
-        //                 console.log(x)
-        //                 return x;
-        //             }
-        //         });
-        //         client.close();
-        //         return null;
-        //     })
-        // }
+                    if (whatInfo === email) {
+                        const x = document.email;
+                        console.log(x)
+                        client.close();
+                        return x;
+                    } else {
+                        const x = document.password;
+                        client.close();
+                        console.log(x)
+                        return x;
+                    }
+                });
+                client.close();
+                return null;
+            })
+        }
 
-        if (await getUserInfo(email) === null) {
+        if (getUserInfo(email) === null) {
             return done(null, false, { message: "User doesn't exist" })
         }
 

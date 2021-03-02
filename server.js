@@ -37,6 +37,7 @@ initializePassport(
         var cursor = db.collection('users').find({ email: email });
 
         function iterateFunc(doc) {
+            console.log(email)
             return email;
         }
 
