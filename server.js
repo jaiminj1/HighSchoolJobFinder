@@ -2,165 +2,104 @@ if (process.env.NODE_ENV != 'production') {
     require('dotenv').config()
 }
 
-const express = require('express')
-const app = express()
-const bcrypt = require('bcrypt')
-const passport = require('passport')
-const flash = require('express-flash')
-const session = require('express-session')
+var express = require("express"),
+    mongoose = require("mongoose"),
+    passport = require("passport"),
+    bodyParser = require("body-parser"),
+    LocalStrategy = require("passport-local"),
+    passportLocalMongoose =
+        require("passport-local-mongoose"),
+    User = require("./models/user");
 
-const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
+//const bcrypt = require('bcrypt')
+
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useUnifiedTopology', true);
 
 // Connection URL
-const { password } = require('./password.js')
-const url = password;
+mongoose.connect(process.env.MONGO_CONNECT_KEY,);
 
-const initializePassport = require('./passport-config')
+const app = express();
+app.set("view engine", "ejs");
+app.use(bodyParser.urlencoded({ extended: true }));
 
-
-var emailExist = false;
-var idExist = false;
-
-initializePassport(
-    // passport,
-    // email => users.find(user => user.email === email),
-    // id => users.find(user => user.id === id)
-
-    passport,
-    email => MongoClient.connect(url, function (err, client) {
-        assert.equal(null, err);
-
-
-        const db = client.db("login");
-
-        var cursor = db.collection('users').find({ email: email });
-
-        function iterateFunc(doc) {
-            console.log(email)
-            return email;
-        }
-
-        function errorFunc(error) {
-            return false;
-        }
-
-        cursor.forEach(iterateFunc, errorFunc);
-
-        client.close();
-    }),
-    id => MongoClient.connect(url, function (err, client) {
-        console.log(id)
-        assert.equal(null, err);
-
-
-        const db = client.db("login");
-
-        var cursor = db.collection('users').find({ id: id });
-
-        function iterateFunc(doc) {
-            console.log(id)
-            return id;
-        }
-
-        function errorFunc(error) {
-            console.log(id)
-            return false;
-        }
-
-        cursor.forEach(iterateFunc, errorFunc);
-
-        client.close();
-    })
-)
-
-app.set('vie-engine', 'ejs')
-app.use(express.urlencoded({ extended: false }))
-app.use(flash())
-app.use(session({
+app.use(require("express-session")({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false
-}))
-app.use(passport.initialize())
-app.use(passport.session())
+}));
 
-app.get('/', checkAuthenticated, (req, res) => {
-    res.render('index.ejs', { name: req.user.name })
-})
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.get('/login', (req, res) => {
-    res.render('login.ejs')
-})
+passport.use(new LocalStrategy({
+    usernameField: 'email'
+}, User.authenticate()));
 
-app.post('/login', passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/login',
-    failureFlash: true
-}))
-
-app.get('/register', (req, res) => {
-    res.render('register.ejs')
-})
-
-app.post('/register', async (req, res) => {
-
-    try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10)
-
-        MongoClient.connect(url, function (err, client) {
-            assert.equal(null, err);
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 
-            const db = client.db("login");
+//home page 
+app.get("/", function (req, res) {
+    res.render("index");
+});
 
-            db.collection('users').insertOne({
-                id: Date.now().toString(),
-                name: req.body.name,
-                email: req.body.email,
-                password: hashedPassword
-            })
-                .then(function (result) {
-                    // process result
-                })
+//portal when logged in 
+app.get("/portal", isLoggedIn, function (req, res) {
+    res.render("portal");
+    //res.render("portal", req.body.email);
+});
 
-            client.close();
+//signup page
+app.get("/register", function (req, res) {
+    res.render("register");
+});
+
+//signup function
+app.post("/register", function (req, res) {
+    var email = req.body.email
+    var password = req.body.password
+    User.register(new User({ email: email }),
+        password, function (err, user) {
+            if (err) {
+                console.log(err);
+                return res.render("register");
+            }
+
+            passport.authenticate("local")(
+                req, res, function () {
+                    res.render("portal");
+                });
         });
+});
 
-        res.redirect('/login')
-    } catch (error) {
-        res.redirect('/register')
-    }
-})
+//login page
+app.get("/login", function (req, res) {
+    res.render("login");
+});
 
+//login function
+app.post("/login", passport.authenticate("local", {
+    successRedirect: "/portal",
+    failureRedirect: "/login"
+}), function (req, res) {
+});
 
-// app.post('/register', async (req, res) => {
+//logout function 
+app.get("/logout", function (req, res) {
+    req.logout();
+    res.redirect("/");
+});
 
-//     try {
-//         const hashedPassword = await bcrypt.hash(req.body.password, 10)
-//         users.push({
-//             id: Date.now().toString(),
-//             name: req.body.name,
-//             email: req.body.email,
-//             password: hashedPassword
-//         })
-//         res.redirect('/login')
-//     } catch (error) {
-//         res.redirect('/register')
-//     }
-//     console.log(users)
-// })
-
-app.delete('/logout', (req, res) => {
-    req.logOut()
-    res.redirect('login')
-})
-
-function checkAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next()
-    }
-    res.redirect('/login')
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated()) return next();
+    res.redirect("/login");
 }
 
-app.listen(3000)
+var port = process.env.PORT || 3000;
+app.listen(port, function () {
+    console.log("Server Running");
+}); 

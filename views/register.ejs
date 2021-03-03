@@ -1,23 +1,19 @@
-<h1>Register</h1>
+<h1> Sign up </h1>
 
 <form action="/register" method="POST">
-    <div>
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" required>
-    </div>
+    <input type="text" name="fullName" placeholder="fullName">
 
-    <div>
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required>
-    </div>
+    <input type="text" name="email" placeholder="email">
 
-    <div>
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required>
-    </div>
+    <select name="School" id="School">
+        <option value="Earl of March Secondary School">Earl of March Secondary School</option>
+    </select>
 
-    <button type="submit">Register</button>
+    <input type="password" name="password" placeholder="password">
 
+    <input type="password" name="confirmpassword" placeholder="confirm password">
+
+    <button>Submit</button>
 </form>
 
-<a href="/login">Login</a>
+<li><a href="/login">Login</a></li>
