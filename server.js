@@ -62,7 +62,7 @@ app.get("/register", function (req, res) {
 app.post("/register", function (req, res) {
     var email = req.body.email
     var password = req.body.password
-    User.register(new User({ email: email }),
+    User.register(new User({ email: email , firstname: req.body.firstname, lastname: req.body.lastname, school: req.body.School}),
         password, function (err, user) {
             if (err) {
                 console.log(err);
