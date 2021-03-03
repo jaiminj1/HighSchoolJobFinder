@@ -3,6 +3,7 @@ if (process.env.NODE_ENV != 'production') {
 }
 
 var express = require("express"),
+    flash = require('express-flash'),
     mongoose = require("mongoose"),
     passport = require("passport"),
     bodyParser = require("body-parser"),
@@ -31,6 +32,8 @@ app.use(require("express-session")({
     saveUninitialized: false
 }));
 
+app.use(flash());
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -49,20 +52,25 @@ app.get("/", function (req, res) {
 
 //portal when logged in 
 app.get("/portal", isLoggedIn, function (req, res) {
-    res.render("portal");
-    //res.render("portal", req.body.email);
+    res.render("portal", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, school: req.user.School });
 });
 
 //signup page
 app.get("/register", function (req, res) {
-    res.render("register");
+    res.render("register", { error: false });
 });
 
 //signup function
 app.post("/register", function (req, res) {
     var email = req.body.email
     var password = req.body.password
-    User.register(new User({ email: email , firstname: req.body.firstname, lastname: req.body.lastname, school: req.body.School}),
+    var confirmPassword = req.body.confirmPassword
+
+    if (password != confirmPassword) {
+        return res.render("register", { error: "passwords don't match" });
+    }
+
+    User.register(new User({ email: email, firstname: req.body.firstname, lastname: req.body.lastname, school: req.body.School }),
         password, function (err, user) {
             if (err) {
                 console.log(err);
@@ -71,20 +79,26 @@ app.post("/register", function (req, res) {
 
             passport.authenticate("local")(
                 req, res, function () {
-                    res.render("portal");
+                    res.render("portal", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, school: req.user.School });
                 });
         });
 });
 
 //login page
 app.get("/login", function (req, res) {
-    res.render("login");
+
+    if (req.isAuthenticated()) {
+        res.render("portal", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, school: req.user.School });
+    } else {
+        res.render("login", { error: req.flash('error') });
+    }
 });
 
 //login function
 app.post("/login", passport.authenticate("local", {
     successRedirect: "/portal",
-    failureRedirect: "/login"
+    failureRedirect: "/login",
+    failureFlash: { type: 'error', message: 'Invalid username or password.' }
 }), function (req, res) {
 });
 
@@ -98,6 +112,45 @@ function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) return next();
     res.redirect("/login");
 }
+
+app.get("/changepassword", isLoggedIn, function (req, res) {
+    res.render("changepassword", { message: false });
+});
+
+app.post('/changepassword',
+    // {
+    //     successRedirect: "/portal",
+    //     failureRedirect: "/login",
+    //     failureFlash: { type: 'notFound', message: 'User not found. Please sign out and try again' },
+    //     failureFlash: { type: 'error', message: 'Something went wrong.' },
+    //     failureFlash: { type: 'incorrect', message: 'Incorrect password' },
+    //     successFlash: { type: 'success', message: 'Your password has been changed successfully' },
+    // },
+    function (req, res) {
+        User.findOne({ _id: req.user._id }, (err, user) => {
+            // Check if error connecting
+            if (err) {
+                res.json({ success: false, message: err }); // Return error
+            } else {
+                // Check if user was found in database
+                if (!user) {
+                    res.render("changepassword", { message: 'User not found' });
+                } else {
+                    user.changePassword(req.body.currentpassword, req.body.newpassword, function (err) {
+                        if (err) {
+                            if (err.name === 'IncorrectPasswordError') {
+                                res.render("changepassword", { message: 'Password incorrect' });
+                            } else {
+                                res.render("changepassword", { message: 'Unknown error occurred' });
+                            }
+                        } else {
+                            res.render("changepassword", { message: 'Your password has been changed' });
+                        }
+                    })
+                }
+            }
+        });
+    });
 
 var port = process.env.PORT || 3000;
 app.listen(port, function () {

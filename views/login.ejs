@@ -1,5 +1,9 @@
 <h1>High School Job Tracker</h1> 
 <h1>login</h1> 
+
+<% if (error) { %>
+    <%= error %>
+    <% } %>
   
 <form action="/login" method="POST"> 
     <input type="text" name="email"
