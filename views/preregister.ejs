@@ -1,0 +1,19 @@
+<h1> Please choose your account type </h1>
+
+<h2> Your school's administrator will be required to approve your account </h2>
+
+<form action="/preregister" method="POST">
+
+    <input type="radio" id="student" name="accounttype" value="student">
+    <label for="student">Student</label><br>
+
+    <input type="radio" id="employer" name="accounttype" value="employer">
+    <label for="employer">Employer</label><br>
+
+    <input type="radio" id="admin" name="accounttype" value="admin">
+    <label for="admin">Admin</label>
+
+    <button>Submit</button>
+</form>
+
+<li><a href="/login">Login</a></li>

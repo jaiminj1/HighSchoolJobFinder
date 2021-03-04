@@ -55,9 +55,23 @@ app.get("/portal", isLoggedIn, function (req, res) {
     res.render("portal", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, school: req.user.School });
 });
 
+//presignup page
+app.get("/preregister", function (req, res) {
+    res.render("preregister", { error: false });
+});
+
+var accountType;
+
+//presignup function
+app.post("/preregister", function (req, res) {
+    accountType = req.body.accounttype
+    res.render("register", { error: false });
+    //res.render("register", { error: false, accountType: req.body.accounttype});
+});
+
 //signup page
 app.get("/register", function (req, res) {
-    res.render("register", { error: false });
+    res.render("register", {error: false});
 });
 
 //signup function
@@ -67,10 +81,12 @@ app.post("/register", function (req, res) {
     var confirmPassword = req.body.confirmPassword
 
     if (password != confirmPassword) {
+        console.log(password)
+        console.log(confirmPassword)
         return res.render("register", { error: "passwords don't match" });
     }
 
-    User.register(new User({ email: email, firstname: req.body.firstname, lastname: req.body.lastname, school: req.body.School }),
+    User.register(new User({ email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType: accountType, school: req.body.School }),
         password, function (err, user) {
             if (err) {
                 console.log(err);
@@ -79,7 +95,7 @@ app.post("/register", function (req, res) {
 
             passport.authenticate("local")(
                 req, res, function () {
-                    res.render("portal", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, school: req.user.School });
+                    res.render("portal", { email: email, firstname: req.user.firstname, lastname: req.user.lastname, accountType, school: req.user.School });
                 });
         });
 });
