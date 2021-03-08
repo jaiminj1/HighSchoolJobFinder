@@ -52,7 +52,12 @@ app.get("/", function (req, res) {
 
 //portal when logged in 
 app.get("/portal", isLoggedIn, function (req, res) {
-    res.render("portal", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, school: req.user.School });
+
+    if (req.user.isVerified === false) {
+        res.render("emailConfirmation", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, accountType, school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
+    } else {
+        res.render("portal", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, school: req.user.School });
+    }
 });
 
 //presignup page
@@ -71,7 +76,7 @@ app.post("/preregister", function (req, res) {
 
 //signup page
 app.get("/register", function (req, res) {
-    res.render("register", {error: false});
+    res.render("register", { error: false });
 });
 
 //signup function
@@ -79,6 +84,7 @@ app.post("/register", function (req, res) {
     var email = req.body.email
     var password = req.body.password
     var confirmPassword = req.body.confirmPassword
+    var verificationCode = "ABCD"
 
     if (password != confirmPassword) {
         console.log(password)
@@ -86,24 +92,64 @@ app.post("/register", function (req, res) {
         return res.render("register", { error: "passwords don't match" });
     }
 
-    User.register(new User({ email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType: accountType, school: req.body.School }),
+    User.register(new User({ email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType: accountType, school: req.body.School, verificationCode: verificationCode }),
         password, function (err, user) {
             if (err) {
                 console.log(err);
                 return res.render("register");
             }
 
+            //res.render("emailConfirmation", { email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType, school: req.body.School, verificationCode});
             passport.authenticate("local")(
                 req, res, function () {
-                    res.render("portal", { email: email, firstname: req.user.firstname, lastname: req.user.lastname, accountType, school: req.user.School });
+                    res.render("emailConfirmation", { email: email, firstname: req.user.firstname, lastname: req.user.lastname, accountType, school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
                 });
         });
 });
+
+app.get("/emailConfirmation", function (req, res) {
+    res.render("emailConfirmation", { error: false });
+});
+
+app.post("/emailConfirmation", function (req, res) {
+    userCode = req.body.code
+
+    if (userCode != req.user.verificationCode) {
+        console.log(userCode)
+        console.log(req.user.verificationCode)
+        return res.render("emailConfirmation", { error: "codes don't match" });
+    } else {
+        // Verify and save the user
+        User.updateOne({ _id: req.user._id }, { isVerified: true }, function (err, docs) {
+            if (err) {
+                console.log(err)
+            }
+            else {
+                console.log("Updated Docs : ", docs);
+            }
+        });
+
+
+        // req.user.isVerified = true;
+        // User.save(function (err) {
+        //     // if (err) { return res.status(500).send({ msg: err.message }); }
+        //     // res.status(200).send("The account has been verified. Please log in.");
+        // });
+    }
+
+    res.render("portal", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, accountType, school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
+
+    //res.render("register", { error: false, accountType: req.body.accounttype});
+});
+
 
 //login page
 app.get("/login", function (req, res) {
 
     if (req.isAuthenticated()) {
+        if (req.user.isVerified = false) {
+            res.render("emailConfirmation", { email: email, firstname: req.user.firstname, lastname: req.user.lastname, accountType, school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
+        }
         res.render("portal", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, school: req.user.School });
     } else {
         res.render("login", { error: req.flash('error') });
@@ -117,6 +163,9 @@ app.post("/login", passport.authenticate("local", {
     failureFlash: { type: 'error', message: 'Invalid username or password.' }
 }), function (req, res) {
 });
+
+// Make sure the user has been verified
+//if (!user.isVerified) return res.render("login", { error: "passwords don't match" }); 
 
 //logout function 
 app.get("/logout", function (req, res) {
