@@ -13,6 +13,7 @@ var express = require("express"),
     User = require("./models/user");
 
 //const bcrypt = require('bcrypt')
+const nodemailer = require("nodemailer");
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
@@ -84,7 +85,7 @@ app.post("/register", function (req, res) {
     var email = req.body.email
     var password = req.body.password
     var confirmPassword = req.body.confirmPassword
-    var verificationCode = "ABCD"
+    var verificationCode = randomString(4)
 
     if (password != confirmPassword) {
         console.log(password)
@@ -102,10 +103,20 @@ app.post("/register", function (req, res) {
             //res.render("emailConfirmation", { email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType, school: req.body.School, verificationCode});
             passport.authenticate("local")(
                 req, res, function () {
+                    sendEmail(email, verificationCode)
                     res.render("emailConfirmation", { email: email, firstname: req.user.firstname, lastname: req.user.lastname, accountType, school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
                 });
         });
 });
+
+function randomString(length) {
+    var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    var string = '';
+    for ( var i = 0; i < length; i++ ) {
+        string = string + randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+    }
+    return string;
+}
 
 app.get("/emailConfirmation", function (req, res) {
     res.render("emailConfirmation", { error: false });
@@ -149,8 +160,9 @@ app.get("/login", function (req, res) {
     if (req.isAuthenticated()) {
         if (req.user.isVerified = false) {
             res.render("emailConfirmation", { email: email, firstname: req.user.firstname, lastname: req.user.lastname, accountType, school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
+        } else {
+            res.render("portal", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, school: req.user.School });
         }
-        res.render("portal", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, school: req.user.School });
     } else {
         res.render("login", { error: req.flash('error') });
     }
@@ -177,6 +189,42 @@ function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) return next();
     res.redirect("/login");
 }
+
+
+//current example code taken from https://nodemailer.com/about/ 
+async function sendEmail(email, code) {
+    // Generate test SMTP service account from ethereal.email
+    // Only needed if you don't have a real mail account for testing
+    let testAccount = await nodemailer.createTestAccount();
+  
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+      host: "smtp.ethereal.email",
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: testAccount.user, // generated ethereal user
+        pass: testAccount.pass, // generated ethereal password
+      },
+    });
+  
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+      from: '"High School JobFinder" <no-reply@jobfinder.com>', // sender address
+      to: email, // list of receivers
+      subject: "Confirmation Code", // Subject line
+      text: "Your confirmation code is " + code, // plain text body
+      html: "<b>Your confirmation code is </b>" + code, // html body
+    });
+  
+    console.log("Message sent: %s", info.messageId);
+    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+  
+    // Preview only available when sending through an Ethereal account
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+  }
+  //sendEmail().catch(console.error);
 
 app.get("/changepassword", isLoggedIn, function (req, res) {
     res.render("changepassword", { message: false });
