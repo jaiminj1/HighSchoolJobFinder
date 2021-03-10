@@ -71,7 +71,7 @@ var accountType;
 //presignup function
 app.post("/preregister", function (req, res) {
     accountType = req.body.accounttype
-    res.render("register", { error: false });
+    res.redirect("/register");
     //res.render("register", { error: false, accountType: req.body.accounttype});
 });
 
@@ -80,7 +80,6 @@ app.get("/register", function (req, res) {
     res.render("register", { error: false });
 });
 
-//signup function
 app.post("/register", function (req, res) {
     var email = req.body.email
     var password = req.body.password
@@ -97,7 +96,7 @@ app.post("/register", function (req, res) {
         password, function (err, user) {
             if (err) {
                 console.log(err);
-                return res.render("register");
+                return res.render("register", { error: false });
             }
 
             //res.render("emailConfirmation", { email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType, school: req.body.School, verificationCode});
@@ -148,7 +147,7 @@ app.post("/emailConfirmation", function (req, res) {
         // });
     }
 
-    res.render("portal", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, accountType, school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
+    res.redirect("/portal");
 
     //res.render("register", { error: false, accountType: req.body.accounttype});
 });
@@ -161,7 +160,7 @@ app.get("/login", function (req, res) {
         if (req.user.isVerified = false) {
             res.render("emailConfirmation", { email: email, firstname: req.user.firstname, lastname: req.user.lastname, accountType, school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
         } else {
-            res.render("portal", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, school: req.user.School });
+            res.redirect("/portal");
         }
     } else {
         res.render("login", { error: req.flash('error') });
@@ -189,7 +188,6 @@ function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) return next();
     res.redirect("/login");
 }
-
 
 //current example code taken from https://nodemailer.com/about/ 
 async function sendEmail(email, code) {
