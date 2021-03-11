@@ -12,7 +12,7 @@ var express = require("express"),
         require("passport-local-mongoose"),
     User = require("./models/user");
 
-    employerUser = require("./models/user");
+employerUser = require("./models/user");
 
 //const bcrypt = require('bcrypt')
 const nodemailer = require("nodemailer");
@@ -62,7 +62,8 @@ app.get("/", function (req, res) {
 app.get("/portal", isLoggedIn, function (req, res) {
 
     if (req.user.isVerified === false) {
-        res.render("emailConfirmation", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, accountType, school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
+        res.render("emailConfirmation", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, accountType, 
+            school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
     } else {
 
         // accounType = req.user.accountType
@@ -71,10 +72,10 @@ app.get("/portal", isLoggedIn, function (req, res) {
 
         if (req.user.accountType == "student") {
             res.redirect("student-portal/student-findjobs");
-        } 
+        }
         else if (req.user.accountType == "employer") {
             res.redirect("employer-portal/employer-profile");
-        } 
+        }
         else if (req.user.accountType == "admin") {
             res.redirect("admin-portal/admin-userview");
         }
@@ -119,7 +120,7 @@ app.get("/student-portal/student-bookmarks", isLoggedIn, function (req, res) {
 
 //student profile page
 app.get("/student-portal/student-viewprofile", isLoggedIn, function (req, res) {
-    res.render("student-portal/student-viewprofile", { error: false , name: req.user.firstname, schoo: req.user.school});
+    res.render("student-portal/student-viewprofile", { error: false, name: req.user.firstname, school: req.user.school});
 });
 
 
