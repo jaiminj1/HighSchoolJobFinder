@@ -83,17 +83,17 @@ app.get("/portal", isLoggedIn, function (req, res) {
 });
 
 //student find jobs page
-app.get("/student-portal/student-findjobs", function (req, res) {
+app.get("/student-portal/student-findjobs", isLoggedIn, function (req, res) {
     res.render("student-portal/student-findjobs", { error: false });
 });
 
 //employer profile page
-app.get("/employer-portal/employer-profile", function (req, res) {
+app.get("/employer-portal/employer-profile", isLoggedIn, function (req, res) {
     res.render("employer-portal/employer-profile", { error: false });
 });
 
 //admin user view page
-app.get("/admin-portal/admin-userview", function (req, res) {
+app.get("/admin-portal/admin-userview", isLoggedIn, function (req, res) {
     res.render("admin-portal/admin-userview", { error: false });
 });
 
@@ -103,23 +103,23 @@ app.get("/resources", function (req, res) {
 });
 
 //help center page
-app.get("/helpCenter", function (req, res) {
+app.get("/helpCenter", isLoggedIn, function (req, res) {
     res.render("helpCenter", { error: false });
 });
 
 //student myapplications page
-app.get("/student-portal/student-applications", function (req, res) {
+app.get("/student-portal/student-applications", isLoggedIn, function (req, res) {
     res.render("student-portal/student-applications", { error: false });
 });
 
 //student bookmarks page
-app.get("/student-portal/student-bookmarks", function (req, res) {
+app.get("/student-portal/student-bookmarks", isLoggedIn, function (req, res) {
     res.render("student-portal/student-bookmarks", { error: false });
 });
 
 //student profile page
-app.get("/student-portal/student-viewprofile", function (req, res) {
-    res.render("student-portal/student-viewprofile", { error: false });
+app.get("/student-portal/student-viewprofile", isLoggedIn, function (req, res) {
+    res.render("student-portal/student-viewprofile", { error: false , name: req.user.firstname, schoo: req.user.school});
 });
 
 
