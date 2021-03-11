@@ -9,6 +9,7 @@ var UserSchema = mongoose.Schema({
     school: String,
     Password: String,
     verificationCode: String,
+    dateOfBirth: String
 });
 
 UserSchema.plugin(passportlocalmongoose, 

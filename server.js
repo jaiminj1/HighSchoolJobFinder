@@ -71,10 +71,29 @@ var accountType;
 //presignup function
 app.post("/preregister", function (req, res) {
     accountType = req.body.accounttype
-    res.redirect("/register");
+
+    if (accountType == "student") {
+        res.redirect("/registerStudent")
+    } else if (accountType == "employer") {
+        res.redirect("/registerEmployer")
+    } else if (accountType == "admin") {
+        res.redirect("/registerAdmin")
+    }
     //res.render("register", { error: false, accountType: req.body.accounttype});
 });
 
+
+app.get("/registerStudent", function (req, res) {
+    res.render("registerStudent", { error: false });
+});
+
+app.get("/registerEmployer", function (req, res) {
+    res.render("registerEmployer", { error: false });
+});
+
+app.get("/registerAdmin", function (req, res) {
+    res.render("registerAdmin", { error: false });
+});
 //signup page
 app.get("/register", function (req, res) {
     res.render("register", { error: false });
@@ -111,7 +130,7 @@ app.post("/register", function (req, res) {
 function randomString(length) {
     var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     var string = '';
-    for ( var i = 0; i < length; i++ ) {
+    for (var i = 0; i < length; i++) {
         string = string + randomChars.charAt(Math.floor(Math.random() * randomChars.length));
     }
     return string;
@@ -194,35 +213,35 @@ async function sendEmail(email, code) {
     // Generate test SMTP service account from ethereal.email
     // Only needed if you don't have a real mail account for testing
     let testAccount = await nodemailer.createTestAccount();
-  
+
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-      host: "smtp.ethereal.email",
-      port: 587,
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: testAccount.user, // generated ethereal user
-        pass: testAccount.pass, // generated ethereal password
-      },
+        host: "smtp.ethereal.email",
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+            user: testAccount.user, // generated ethereal user
+            pass: testAccount.pass, // generated ethereal password
+        },
     });
-  
+
     // send mail with defined transport object
     let info = await transporter.sendMail({
-      from: '"High School JobFinder" <no-reply@jobfinder.com>', // sender address
-      to: email, // list of receivers
-      subject: "Confirmation Code", // Subject line
-      text: "Your confirmation code is " + code, // plain text body
-      html: "<b>Your confirmation code is </b>" + code, // html body
+        from: '"High School JobFinder" <no-reply@jobfinder.com>', // sender address
+        to: email, // list of receivers
+        subject: "Confirmation Code", // Subject line
+        text: "Your confirmation code is " + code, // plain text body
+        html: "<b>Your confirmation code is </b>" + code, // html body
     });
-  
+
     console.log("Message sent: %s", info.messageId);
     // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-  
+
     // Preview only available when sending through an Ethereal account
     console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
     // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-  }
-  //sendEmail().catch(console.error);
+}
+//sendEmail().catch(console.error);
 
 app.get("/changepassword", isLoggedIn, function (req, res) {
     res.render("changepassword", { message: false });
@@ -266,4 +285,4 @@ app.post('/changepassword',
 var port = process.env.PORT || 3000;
 app.listen(port, function () {
     console.log("Server Running");
-}); 
+});
