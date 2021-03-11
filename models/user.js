@@ -8,11 +8,11 @@ var UserSchema = mongoose.Schema({
     email: String,
     school: String,
     Password: String,
-    verificationCode: String,
-    dateOfBirth: String
+    dateOfBirth: {type: Date, default: Date.now},
+    verificationCode: String
 });
 
 UserSchema.plugin(passportlocalmongoose, 
     {usernameField: 'email'},
-    { selectFields: 'firstname lastname accountType school verificationCode' });
+    { selectFields: 'firstname lastname accountType school verificationCode dateOfBirth' });
 module.exports = mongoose.model("User", UserSchema);

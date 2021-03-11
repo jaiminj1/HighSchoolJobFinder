@@ -17,5 +17,5 @@ var EmployerSchema = mongoose.Schema({
 
 EmployerSchema.plugin(passportlocalmongoose, 
     {usernameField: 'email'},
-    { selectFields: '' });
-module.exports = mongoose.model("null", EmployerSchema);
+    { selectFields: 'companyName accountType email address unit city province Country postalCode verificationCode' });
+module.exports = mongoose.model("employerUser", EmployerSchema);

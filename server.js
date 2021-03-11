@@ -57,9 +57,65 @@ app.get("/portal", isLoggedIn, function (req, res) {
     if (req.user.isVerified === false) {
         res.render("emailConfirmation", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, accountType, school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
     } else {
-        res.render("portal", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, school: req.user.School });
+
+        // accounType = req.user.accountType
+        // console.log(req.user.accountType)
+        // console.log(accountType)
+
+        if (req.user.accountType == "student") {
+            res.redirect("student-portal/student-findjobs");
+        } 
+        else if (req.user.accountType == "employer") {
+            res.redirect("employer-portal/employer-profile");
+        } 
+        else if (req.user.accountType == "admin") {
+            res.redirect("admin-portal/admin-userview");
+        }
+        //res.render("portal", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, school: req.user.School });
     }
 });
+
+//student find jobs page
+app.get("/student-portal/student-findjobs", function (req, res) {
+    res.render("student-portal/student-findjobs", { error: false });
+});
+
+//employer profile page
+app.get("/employer-portal/employer-profile", function (req, res) {
+    res.render("employer-portal/employer-profile", { error: false });
+});
+
+//admin user view page
+app.get("/admin-portal/admin-userview", function (req, res) {
+    res.render("admin-portal/admin-userview", { error: false });
+});
+
+//resources page
+app.get("/resources", function (req, res) {
+    res.render("resources", { error: false });
+});
+
+//help center page
+app.get("/helpCenter", function (req, res) {
+    res.render("helpCenter", { error: false });
+});
+
+//student myapplications page
+app.get("/student-portal/student-applications", function (req, res) {
+    res.render("student-portal/student-applications", { error: false });
+});
+
+//student bookmarks page
+app.get("/student-portal/student-bookmarks", function (req, res) {
+    res.render("student-portal/student-bookmarks", { error: false });
+});
+
+//student profile page
+app.get("/student-portal/student-viewprofile", function (req, res) {
+    res.render("student-portal/student-viewprofile", { error: false });
+});
+
+
 
 //presignup page
 app.get("/preregister", function (req, res) {
@@ -94,10 +150,107 @@ app.get("/registerEmployer", function (req, res) {
 app.get("/registerAdmin", function (req, res) {
     res.render("registerAdmin", { error: false });
 });
+
 //signup page
 app.get("/register", function (req, res) {
     res.render("register", { error: false });
 });
+
+app.post("/registerAdmin", function (req, res) {
+    var email = req.body.email
+    var password = req.body.password
+    var confirmPassword = req.body.confirmPassword
+    var verificationCode = randomString(4)
+
+    if (password != confirmPassword) {
+        console.log(password)
+        console.log(confirmPassword)
+        return res.render("register", { error: "passwords don't match" });
+    }
+
+    User.register(new User({ email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType: accountType, school: req.body.School, verificationCode: verificationCode }),
+        password, function (err, user) {
+            if (err) {
+                console.log(err);
+                return res.render("registerStudent", { error: false });
+            }
+
+            //res.render("emailConfirmation", { email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType, school: req.body.School, verificationCode});
+            passport.authenticate("local")(
+                req, res, function () {
+                    sendEmail(email, verificationCode)
+                    res.render("emailConfirmation", { email: email, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
+                });
+        });
+});
+
+app.post("/registerStudent", function (req, res) {
+    var email = req.body.email
+    var password = req.body.password
+    var confirmPassword = req.body.confirmPassword
+    var monthNumber = parseInt(req.body.month)
+    var dateString = req.body.year + '-' + monthNumber + '-' + req.body.day
+    var dateOfBirth = Date.parse(dateString)
+
+    var verificationCode = randomString(4)
+
+    if (password != confirmPassword) {
+        console.log(password)
+        console.log(confirmPassword)
+        return res.render("register", { error: "passwords don't match" });
+    }
+
+    User.register(new User({ email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType: accountType, school: req.body.School, verificationCode: verificationCode, dateOfBirth: dateOfBirth }),
+        password, function (err, user) {
+            if (err) {
+                console.log(err);
+                return res.render("registerStudent", { error: false });
+            }
+
+            //res.render("emailConfirmation", { email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType, school: req.body.School, verificationCode});
+            passport.authenticate("local")(
+                req, res, function () {
+                    sendEmail(email, verificationCode)
+                    res.render("emailConfirmation", { email: email, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
+                });
+        });
+});
+
+app.post("/registerEmployer", function (req, res) {
+    var email = req.body.email
+    var password = req.body.password
+    var confirmPassword = req.body.confirmPassword
+    var verificationCode = randomString(4)
+
+    var address = req.body.address
+    var unit = req.body.unit
+    var city = req.body.city
+    var province = req.body.province
+    var country = req.body.country
+    var postalCode = req.body.postalCode
+
+    if (password != confirmPassword) {
+        console.log(password)
+        console.log(confirmPassword)
+        return res.render("register", { error: "passwords don't match" });
+    }
+
+    User.register(new User({ email: email, companyName: req.body.companyName, accountType: accountType, school: req.body.School, verificationCode: verificationCode }),
+        password, function (err, user) {
+            if (err) {
+                console.log(err);
+                return res.render("registerStudent", { error: false });
+            }
+
+            //res.render("emailConfirmation", { email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType, school: req.body.School, verificationCode});
+            passport.authenticate("local")(
+                req, res, function () {
+                    sendEmail(email, verificationCode)
+                    res.render("emailConfirmation", { email: email, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
+                });
+        });
+});
+
 
 app.post("/register", function (req, res) {
     var email = req.body.email
@@ -122,6 +275,7 @@ app.post("/register", function (req, res) {
             passport.authenticate("local")(
                 req, res, function () {
                     sendEmail(email, verificationCode)
+                    console.log(req.user.verificationCode)
                     res.render("emailConfirmation", { email: email, firstname: req.user.firstname, lastname: req.user.lastname, accountType, school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
                 });
         });
