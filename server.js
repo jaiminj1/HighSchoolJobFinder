@@ -207,7 +207,7 @@ app.post("/registerStudent", function (req, res) {
         return res.render("register", { error: "passwords don't match" });
     }
 
-    User.register(new User({ email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType: accountType, school: req.body.School, verificationCode: verificationCode, dateOfBirth: dateOfBirth }),
+    User.register(new User({ email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType: accountType, school: req.body.School, grade: req.body.grade, verificationCode: verificationCode, dateOfBirth: dateOfBirth }),
         password, function (err, user) {
             if (err) {
                 console.log(err);
@@ -259,34 +259,34 @@ app.post("/registerEmployer", function (req, res) {
 });
 
 
-app.post("/register", function (req, res) {
-    var email = req.body.email
-    var password = req.body.password
-    var confirmPassword = req.body.confirmPassword
-    var verificationCode = randomString(4)
+// app.post("/register", function (req, res) {
+//     var email = req.body.email
+//     var password = req.body.password
+//     var confirmPassword = req.body.confirmPassword
+//     var verificationCode = randomString(4)
 
-    if (password != confirmPassword) {
-        console.log(password)
-        console.log(confirmPassword)
-        return res.render("register", { error: "passwords don't match" });
-    }
+//     if (password != confirmPassword) {
+//         console.log(password)
+//         console.log(confirmPassword)
+//         return res.render("register", { error: "passwords don't match" });
+//     }
 
-    User.register(new User({ email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType: accountType, school: req.body.School, verificationCode: verificationCode }),
-        password, function (err, user) {
-            if (err) {
-                console.log(err);
-                return res.render("register", { error: false });
-            }
+//     User.register(new User({ email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType: accountType, school: req.body.School, verificationCode: verificationCode }),
+//         password, function (err, user) {
+//             if (err) {
+//                 console.log(err);
+//                 return res.render("register", { error: false });
+//             }
 
-            //res.render("emailConfirmation", { email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType, school: req.body.School, verificationCode});
-            passport.authenticate("local")(
-                req, res, function () {
-                    sendEmail(email, verificationCode)
-                    console.log(req.user.verificationCode)
-                    res.render("emailConfirmation", { email: email, firstname: req.user.firstname, lastname: req.user.lastname, accountType, school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
-                });
-        });
-});
+//             //res.render("emailConfirmation", { email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType, school: req.body.School, verificationCode});
+//             passport.authenticate("local")(
+//                 req, res, function () {
+//                     sendEmail(email, verificationCode)
+//                     console.log(req.user.verificationCode)
+//                     res.render("emailConfirmation", { email: email, firstname: req.user.firstname, lastname: req.user.lastname, accountType, school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
+//                 });
+//         });
+// });
 
 function randomString(length) {
     var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
