@@ -242,7 +242,6 @@ app.post("/registerEmployer", function (req, res) {
         return res.render("register", { error: "passwords don't match" });
     }
 
-    //change user.register to the emplyer name for the schema i think? not too sure
     User.register(new User({ email: email, companyName: req.body.companyName, accountType: accountType, school: req.body.School, verificationCode: verificationCode, address: req.body.address, unit: req.body.unit, city: req.body.city, province: req.body.province, country: req.body.country, postalCode: req.body.postalCode }),
         password, function (err, user) {
             if (err) {
