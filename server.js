@@ -12,6 +12,8 @@ var express = require("express"),
         require("passport-local-mongoose"),
     User = require("./models/user");
 
+    employerUser = require("./models/user");
+
 //const bcrypt = require('bcrypt')
 const nodemailer = require("nodemailer");
 
@@ -41,6 +43,11 @@ app.use(passport.session());
 passport.use(new LocalStrategy({
     usernameField: 'email'
 }, User.authenticate()));
+
+// passport.use('employerLocal', new LocalStrategy({
+//     usernameField: 'email'
+// }, employerUser.authenticate()));
+
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -236,7 +243,7 @@ app.post("/registerEmployer", function (req, res) {
     }
 
     //change user.register to the emplyer name for the schema i think? not too sure
-    User.register(new User({ email: email, companyName: req.body.companyName, accountType: accountType, school: req.body.School, verificationCode: verificationCode }),
+    User.register(new User({ email: email, companyName: req.body.companyName, accountType: accountType, school: req.body.School, verificationCode: verificationCode, address: req.body.address, unit: req.body.unit, city: req.body.city, province: req.body.province, country: req.body.country, postalCode: req.body.postalCode }),
         password, function (err, user) {
             if (err) {
                 console.log(err);
