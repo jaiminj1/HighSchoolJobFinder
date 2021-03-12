@@ -428,20 +428,36 @@ app.post('/changepassword', function (req, res) {
     });
 });
 
-app.get("/employer-portal/employer-jobcreate", isLoggedIn, function (req, res) {
-    res.render("employer-portal/employer-jobcreate");
+app.get("/employer-portal/employer-jobview", isLoggedIn, async function (req, res) {
+
+    jobPost = require("./models/jobpost");
+
+const userPosts = await jobPost.find({ creator: req.user.email })
+res.render('employer-portal/employer-jobview', { currentUser: req.user.email, userPosts });
+
+    // jobPost.find({ creator: req.user.email }, (err, posts) => {
+    //     if (err) {
+    //         console.log(err);
+    //         res.render('employer-portal/employer-profile')
+    //     } else {
+    //         res.render('employer-portal/employer-view', { currentUser: req.user, posts: posts });
+    //     }
+    // });
+
 });
 
 
 app.get("/employer-portal/employer-jobcreate", isLoggedIn, function (req, res) {
-    res.render("employer-portal/employer-jobcreate");
+    res.render('employer-portal/employer-jobcreate');
 });
 
 app.post("/employer-portal/employer-jobcreate", function (req, res) {
     jobPost = require("./models/jobpost");
 
-    jobPost.create({ jobTitle: req.body.jobTitle, discipline: req.body.discipline, type: req.body.type, briefDescription: req.body.briefDescription, description: req.body.description,
-        responsibilities: req.body.responsibilities, skills: req.body.skills}, function (err) {
+    jobPost.create({
+        creator: req.user.email, jobTitle: req.body.jobTitle, discipline: req.body.discipline, type: req.body.type, briefDescription: req.body.briefDescription, description: req.body.description,
+        responsibilities: req.body.responsibilities, skills: req.body.skills
+    }, function (err) {
         if (err) {
             console.log(err);
             res.redirect("/employer-portal/employer-jobcreate");

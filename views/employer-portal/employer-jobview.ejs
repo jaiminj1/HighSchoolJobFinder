@@ -1,0 +1,23 @@
+<html>
+
+<body>
+    Your posts
+
+    <div>
+        <% userPosts.forEach(p=> { %>
+            <div>
+                <div>
+                    <%= p.jobTitle %>
+                </div>
+
+                <div>
+                    <%= p.briefDescription %>
+                </div>
+            </div>
+            <% }) %>
+
+    </div>
+
+</body>
+
+</html>

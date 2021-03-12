@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 
 var jobPostSchema = new mongoose.Schema({
+    creator: String,
     jobTitle: String,
     discipline: [{type: String}],
     type: String,
