@@ -10,4 +10,4 @@ var jobPostSchema = new mongoose.Schema({
     skills: String
 }, { timestamps: true });
 
-mongoose.model('jobPost', jobPostSchema);
+module.exports = mongoose.model('jobPost', jobPostSchema);

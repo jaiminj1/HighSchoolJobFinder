@@ -12,8 +12,6 @@ var express = require("express"),
         require("passport-local-mongoose"),
     User = require("./models/user");
 
-employerUser = require("./models/user");
-
 //const bcrypt = require('bcrypt')
 const nodemailer = require("nodemailer");
 
@@ -62,8 +60,10 @@ app.get("/", function (req, res) {
 app.get("/portal", isLoggedIn, function (req, res) {
 
     if (req.user.isVerified === false) {
-        res.render("emailConfirmation", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, accountType, 
-            school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
+        res.render("emailConfirmation", {
+            email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, accountType,
+            school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified
+        });
     } else {
 
         // accounType = req.user.accountType
@@ -106,6 +106,7 @@ app.get("/resources", function (req, res) {
 //help center page
 app.get("/helpCenter", isLoggedIn, function (req, res) {
     res.render("helpCenter", { error: false });
+    search();
 });
 
 //student myapplications page
@@ -120,7 +121,7 @@ app.get("/student-portal/student-bookmarks", isLoggedIn, function (req, res) {
 
 //student profile page
 app.get("/student-portal/student-viewprofile", isLoggedIn, function (req, res) {
-    res.render("student-portal/student-viewprofile", { error: false, name: req.user.firstname, school: req.user.school});
+    res.render("student-portal/student-viewprofile", { error: false, name: req.user.firstname, school: req.user.school });
 });
 
 
@@ -180,7 +181,7 @@ app.post("/registerAdmin", function (req, res) {
         password, function (err, user) {
             if (err) {
                 console.log(err);
-                return res.render("registerStudent", { error: false });
+                return res.render("registerAdmin", { error: false });
             }
 
             //res.render("emailConfirmation", { email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType, school: req.body.School, verificationCode});
@@ -247,7 +248,7 @@ app.post("/registerEmployer", function (req, res) {
         password, function (err, user) {
             if (err) {
                 console.log(err);
-                return res.render("registerStudent", { error: false });
+                return res.render("registerEmployer", { error: false });
             }
 
             //res.render("emailConfirmation", { email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType, school: req.body.School, verificationCode});
@@ -409,40 +410,95 @@ app.get("/changepassword", isLoggedIn, function (req, res) {
     res.render("changepassword", { message: false });
 });
 
-app.post('/changepassword',
-    // {
-    //     successRedirect: "/portal",
-    //     failureRedirect: "/login",
-    //     failureFlash: { type: 'notFound', message: 'User not found. Please sign out and try again' },
-    //     failureFlash: { type: 'error', message: 'Something went wrong.' },
-    //     failureFlash: { type: 'incorrect', message: 'Incorrect password' },
-    //     successFlash: { type: 'success', message: 'Your password has been changed successfully' },
-    // },
-    function (req, res) {
-        User.findOne({ _id: req.user._id }, (err, user) => {
-            // Check if error connecting
-            if (err) {
-                res.json({ success: false, message: err }); // Return error
+app.post('/changepassword', function (req, res) {
+    User.findOne({ _id: req.user._id }, (err, user) => {
+        // Check if error connecting
+        if (err) {
+            res.json({ success: false, message: err }); // Return error
+        } else {
+            // Check if user was found in database
+            if (!user) {
+                res.render("changepassword", { message: 'User not found' });
             } else {
-                // Check if user was found in database
-                if (!user) {
-                    res.render("changepassword", { message: 'User not found' });
-                } else {
-                    user.changePassword(req.body.currentpassword, req.body.newpassword, function (err) {
-                        if (err) {
-                            if (err.name === 'IncorrectPasswordError') {
-                                res.render("changepassword", { message: 'Password incorrect' });
-                            } else {
-                                res.render("changepassword", { message: 'Unknown error occurred' });
-                            }
+                user.changePassword(req.body.currentpassword, req.body.newpassword, function (err) {
+                    if (err) {
+                        if (err.name === 'IncorrectPasswordError') {
+                            res.render("changepassword", { message: 'Password incorrect' });
                         } else {
-                            res.render("changepassword", { message: 'Your password has been changed' });
+                            res.render("changepassword", { message: 'Unknown error occurred' });
                         }
-                    })
-                }
+                    } else {
+                        res.render("changepassword", { message: 'Your password has been changed' });
+                    }
+                })
             }
-        });
+        }
     });
+});
+
+app.get("/employer-portal/employer-jobcreate", isLoggedIn, function (req, res) {
+    res.render("employer-portal/employer-jobcreate");
+});
+
+
+app.get("/employer-portal/employer-jobcreate", isLoggedIn, function (req, res) {
+    res.render("employer-portal/employer-jobcreate");
+});
+
+app.post("/employer-portal/employer-jobcreate", function (req, res) {
+    jobPost = require("./models/jobpost");
+
+    jobPost.create({ jobTitle: req.body.jobTitle, discipline: req.body.discipline, type: req.body.type, briefDescription: req.body.briefDescription, description: req.body.description,
+        responsibilities: req.body.responsibilities, skills: req.body.skills}, function (err) {
+        if (err) {
+            console.log(err);
+            res.redirect("/employer-portal/employer-jobcreate");
+        } else {
+            res.redirect("/employer-portal/employer-jobview");
+        }
+    });
+
+});
+
+// function getSelectedOptions(sel) {
+//     var opts = [], opt;
+
+//     // loop through options in select list
+//     for (var i = 0, len = sel.options.length; i < len; i++) {
+//         opt = sel.options[i];
+
+//         // check if selected
+//         if (opt.selected) {
+//             // add to array of option elements to return from this function
+//             opts.push(opt);
+//         }
+//     }
+//     // return array containing references to selected option elements
+//     return opts;
+// }
+
+// function search(){
+//     // n = number of items
+//     // var input, n, discipline, type;
+//     var n = req.jobposts.find({});
+//     // discipline = req.jobposts.discipline;
+//     // type = req.jobposts.type;
+// ff
+//     console.log(n);
+
+//         next();
+
+// }
+
+
+
+
+// var n = req.jobposts.find({})
+// console.log(n);
+
+// //res.redirect("/login");
+// return next();
+
 
 var port = process.env.PORT || 3000;
 app.listen(port, function () {
