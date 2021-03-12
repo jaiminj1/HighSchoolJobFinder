@@ -456,6 +456,7 @@ app.post("/employer-portal/employer-jobcreate", function (req, res) {
 
     jobPost.create({
         creator: req.user.email, jobTitle: req.body.jobTitle, discipline: req.body.discipline, type: req.body.type, briefDescription: req.body.briefDescription, description: req.body.description,
+        jobTitle: req.body.jobTitle, discipline: req.body.discipline, type: req.body.type, briefDescription: req.body.briefDescription, description: req.body.description,
         responsibilities: req.body.responsibilities, skills: req.body.skills
     }, function (err) {
         if (err) {
@@ -506,6 +507,16 @@ app.post("/employer-portal/employer-jobcreate", function (req, res) {
 
 // //res.redirect("/login");
 // return next();
+
+function search(){
+    var result = db.collection('jobposts', 'users').find({
+        $or: [{ vehicleDescription: { $regex: search.keyWord, $options: 'i' } },
+        { adDescription: { $regex: search.keyWord, $options: 'i' } }]
+    });
+
+    console.log(result)
+}
+
 
 
 var port = process.env.PORT || 3000;
