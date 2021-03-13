@@ -456,7 +456,6 @@ app.post("/employer-portal/employer-jobcreate", function (req, res) {
 
     jobPost.create({
         creator: req.user.email, jobTitle: req.body.jobTitle, discipline: req.body.discipline, type: req.body.type, briefDescription: req.body.briefDescription, description: req.body.description,
-        jobTitle: req.body.jobTitle, discipline: req.body.discipline, type: req.body.type, briefDescription: req.body.briefDescription, description: req.body.description,
         responsibilities: req.body.responsibilities, skills: req.body.skills
     }, function (err) {
         if (err) {
