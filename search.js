@@ -12,7 +12,20 @@
 
 // module.exports = mongoose.model("Search function", EmployerSchema);
 
-var result = db.collection('jobposts', 'users').find({
-    $or: [{ vehicleDescription: { $regex: search.keyWord, $options: 'i' } },
-    { adDescription: { $regex: search.keyWord, $options: 'i' } }]
+// var result = db.collection('jobposts', 'users').find({
+//     $or: [{ vehicleDescription: { $regex: search.keyWord, $options: 'i' } },
+//     { adDescription: { $regex: search.keyWord, $options: 'i' } }]
+// });
+
+
+var newUser = mongoose.model("jobposts", jobposts);
+const allusers = newUser.find({}, "name age", function(err, docs) {
+if (err) console.log(err);
+console.log(docs);
+});
+
+
+newUser.find({ name: { $regex: "s", $options: "i" } }, function(err, docs) {
+console.log("Partial Search Begins");
+console.log(docs);
 });

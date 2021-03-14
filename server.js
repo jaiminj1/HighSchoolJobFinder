@@ -14,6 +14,7 @@ var express = require("express"),
 
 //const bcrypt = require('bcrypt')
 const nodemailer = require("nodemailer");
+const jobpost = require('./models/jobpost');
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
@@ -83,10 +84,13 @@ app.get("/portal", isLoggedIn, function (req, res) {
     }
 });
 
-//student find jobs page
+//employer find jobs page
 app.get("/student-portal/student-findjobs", isLoggedIn, function (req, res) {
     res.render("student-portal/student-findjobs", { error: false });
 });
+
+
+
 
 //employer profile page
 app.get("/employer-portal/employer-profile", isLoggedIn, function (req, res) {
@@ -349,6 +353,8 @@ app.get("/login", function (req, res) {
     }
 });
 
+
+
 //login function
 app.post("/login", passport.authenticate("local", {
     successRedirect: "/portal",
@@ -508,14 +514,55 @@ app.post("/employer-portal/employer-jobcreate", function (req, res) {
 // //res.redirect("/login");
 // return next();
 
-function search(){
-    var result = db.collection('jobposts', 'users').find({
-        $or: [{ vehicleDescription: { $regex: search.keyWord, $options: 'i' } },
-        { adDescription: { $regex: search.keyWord, $options: 'i' } }]
+// function search(){
+//     var result = db.collection('jobposts', 'users').find({
+//         $or: [{ vehicleDescription: { $regex: search.keyWord, $options: 'i' } },
+//         { adDescription: { $regex: search.keyWord, $options: 'i' } }]
+//     });
+
+//     console.log(result)
+// }
+// jobPost = require("./models/jobpost");
+// var newUser = mongoose.model("jobPost", jobPostSchema);
+// const allusers = newUser.find({}, "type title", function(err, docs) {
+// if (err) console.log(err);
+// console.log(docs);
+// });
+
+
+// newUser.find({ name: { $regex: "s", $options: "i" } }, function(err, docs) {
+// console.log("Partial Search Begins");
+// console.log(docs);
+// });
+
+
+
+//student find jobs page
+app.get("/student-portal/student-findjobs", isLoggedIn, function (req, res) {
+    res.render("student-portal/student-findjobs", { error: false, id: req.user._id, name: req.user.firstname, school: req.user.school });
+});
+
+//student job view function
+app.post("/login", passport.authenticate("local", {
+    successRedirect: "/portal",
+    failureRedirect: "/login",
+    failureFlash: { type: 'error', message: 'Invalid username or password.' }
+}), function (req, res) {
+});
+
+app.get('/jobPost/id/:id', (req, res) => {     
+    jobpost.findById({_id: req.jobpost._id})
+        .then(jobpost => {
+           if(!jobpost) {            
+             res.status(404).send();          
+           }        
+           res.send({jobpost}); 
+        }).catch((e) => {     
+             res.status(400).send(e);  
+        });
+        console.log("Server Running");
     });
 
-    console.log(result)
-}
 
 
 
