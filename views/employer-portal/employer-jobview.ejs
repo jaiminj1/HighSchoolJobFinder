@@ -5,18 +5,44 @@
 
     <div>
         <% userPosts.forEach(p=> { %>
+            <br>
+                <form action="/employer-portal/employer-jobview" method="POST">
+                <input type="hidden" id="postId" name="postId" value="<%= p._id %>">
+                 <button>view</button> 
             <div>
                 <div>
-                    <%= p.jobTitle %>
+                    Title: <%= p.jobTitle %>
                 </div>
 
                 <div>
-                    <%= p.briefDescription %>
+                    Type: <%= p.type %>
+                </div>
+
+                <div>
+                    Brief Description: <%= p.briefDescription %>
                 </div>
             </div>
+        </form>
             <% }) %>
-
     </div>
+
+</body>
+    
+<br>
+
+<div id="fullPost">
+<% if (jobpost) { %>
+This is the post jobpost selected <br>
+    Title: <%= jobpost.jobTitle %>
+    Type: <%= jobpost.type %>
+    Brief Description: <%= jobpost.briefDescription %>
+    description: <%= jobpost.description %> <br>
+    Responsibilities: <%= jobpost.responsibilities %> <br>
+    Skills: <%= jobpost.skills %> <br>
+    createdAt: <%= jobpost.createdAt %> <br>
+    updatedAt: <%= jobpost.updatedAt %>
+<% } %>
+</div>
 
 </body>
 

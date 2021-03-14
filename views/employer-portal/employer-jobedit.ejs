@@ -1,0 +1,31 @@
+<h1> createpost </h1>
+
+<form action="/employer-portal/employer-jobcreate" method="POST">
+    <input type="text" name="jobTitle" placeholder="Job Title" required>
+
+
+    <label for="discipline">Disciplines:</label>
+
+    <select name="discipline" id="discipline" multiple>
+        <option value="exampleDiscipline">Example Discipline</option>
+        <option value="exampleDiscipline2">Example Discipline 2</option>
+        <option value="exampleDiscipline3">Example Discipline 3</option>
+    </select>
+
+    <input type="radio" id="coop" name="type" value="coop">
+    <label for="coop">Co-op</label><br>
+
+    <input type="radio" id="regular" name="type" value="regular">
+    <label for="coop">Regular</label><br>
+
+
+    <input type="text" name="briefDescription" placeholder="Brief Job Description" required>
+
+    <input type="text" name="description" placeholder="Description" required>
+
+    <input type="text" name="responsibilities" placeholder="Responsibilities" required>
+
+    <input type="text" name="skills" placeholder="Skills" required>
+
+    <button>Submit</button>
+</form>

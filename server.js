@@ -334,6 +334,11 @@ app.post("/emailConfirmation", function (req, res) {
     //res.render("register", { error: false, accountType: req.body.accounttype});
 });
 
+app.post("/resendEmail", function (req, res) {
+    sendEmail(req.user.email, req.user.verificationCode)
+    res.redirect("emailConfirmation", { error: false });
+});
+
 
 //login page
 app.get("/login", function (req, res) {
@@ -428,24 +433,35 @@ app.post('/changepassword', function (req, res) {
     });
 });
 
+var userPosts;
+
 app.get("/employer-portal/employer-jobview", isLoggedIn, async function (req, res) {
 
     jobPost = require("./models/jobpost");
 
-const userPosts = await jobPost.find({ creator: req.user.email })
-res.render('employer-portal/employer-jobview', { currentUser: req.user.email, userPosts });
-
-    // jobPost.find({ creator: req.user.email }, (err, posts) => {
-    //     if (err) {
-    //         console.log(err);
-    //         res.render('employer-portal/employer-profile')
-    //     } else {
-    //         res.render('employer-portal/employer-view', { currentUser: req.user, posts: posts });
-    //     }
-    // });
-
+    userPosts = await jobPost.find({ creator: req.user.email })
+    res.render('employer-portal/employer-jobview', { currentUser: req.user.email, userPosts, jobpost: false });
 });
 
+app.post("/employer-portal/employer-jobview", function (req, res) {
+
+    jobPost = require("./models/jobpost");
+
+    jobPost.findOne({ _id: req.body.postId }, (err, jobpost) => {
+        // Check if error connecting
+        if (err) {
+            res.json({ success: false, message: err }); // Return error
+        } else {
+            // Check if it's their post.
+            if (jobpost.creator != req.user.email) {
+                res.render("employer-portal/employer-jobview", { currentUser: req.user.email, userPosts, message: 'not your post' });
+            } else {
+                res.render("employer-portal/employer-jobview", { currentUser: req.user.email, userPosts, jobpost});
+            }
+        }
+    });
+
+});
 
 app.get("/employer-portal/employer-jobcreate", isLoggedIn, function (req, res) {
     res.render('employer-portal/employer-jobcreate');
@@ -507,7 +523,7 @@ app.post("/employer-portal/employer-jobcreate", function (req, res) {
 // //res.redirect("/login");
 // return next();
 
-function search(){
+function search() {
     var result = db.collection('jobposts', 'users').find({
         $or: [{ vehicleDescription: { $regex: search.keyWord, $options: 'i' } },
         { adDescription: { $regex: search.keyWord, $options: 'i' } }]
