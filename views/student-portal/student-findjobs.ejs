@@ -1,13 +1,24 @@
 <div class="topnav">
-    <a class="active" href="/student-portal/student-findjobs">Find Jobs</a>
-    <a href="/student-portal/student-bookmarks">Bookmarks</a>
-    <a href="/student-portal/student-applications">My Applications</a>
-    <a href="/resources">Resources</a>
-    <a href="/helpCenter">Help Center</a>
-    <a href="/student-portal/student-viewprofile">Account</a>
-    <a href="/logout">Logout</a>
-  </div>
+  <a class="active" href="/student-portal/student-findjobs">Find Jobs</a>
+  <a href="/student-portal/student-bookmarks">Bookmarks</a>
+  <a href="/student-portal/student-applications">My Applications</a>
+  <a href="/resources">Resources</a>
+  <a href="/helpCenter">Help Center</a>
+  <a href="/student-portal/student-viewprofile">Account</a>
+  <a href="/logout">Logout</a>
+</div>
 
 
+<!-- <form action="/student-portal/non-dynamic-search" method="POST">
+  <input type="text" name="firstname" placeholder="firstname" required>
+  <button>Search</button>
+</form> -->
 
-    <input type="text" name="firstname" placeholder="firstname" required>
+<p>
+  <form action = "/student-portal/student-findjobs" method="GET">
+    <div>
+      <input type="text" name = "search" placeholder="jobPostSearch">
+      <input type="submit" value="Search" >
+    </div>
+  </form>
+</p>

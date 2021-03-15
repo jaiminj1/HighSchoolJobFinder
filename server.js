@@ -6,7 +6,6 @@ var express = require("express"),
     flash = require('express-flash'),
     mongoose = require("mongoose"),
     passport = require("passport"),
-    bodyParser = require("body-parser"),
     LocalStrategy = require("passport-local"),
     passportLocalMongoose =
         require("passport-local-mongoose"),
@@ -15,6 +14,12 @@ var express = require("express"),
 //const bcrypt = require('bcrypt')
 const nodemailer = require("nodemailer");
 const jobpost = require('./models/jobpost');
+const Cors = require("cors");
+const { response } = require('express');
+const bodyParser = require("body-parser");
+//const { MongoClient } = require('mongodb');
+
+//const client = new MongoClient("mongodb+srv://Dhirhan:database.8b60p.mongodb.net/login?retryWrites=true&w=majority");
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
@@ -22,17 +27,23 @@ mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
 
 // Connection URL
-mongoose.connect(process.env.MONGO_CONNECT_KEY,);
+mongoose.connect(process.env.MONGO_CONNECT_KEY);
+
+//const client = new mongoose(process.env.MONGO_CONNECT_KEY);
 
 const app = express();
 app.set("view engine", "ejs");
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(Cors());
 
 app.use(require("express-session")({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false
 }));
+
+
 
 app.use(flash());
 
@@ -110,7 +121,7 @@ app.get("/resources", function (req, res) {
 //help center page
 app.get("/helpCenter", isLoggedIn, function (req, res) {
     res.render("helpCenter", { error: false });
-    search();
+    // search();
 });
 
 //student myapplications page
@@ -438,8 +449,8 @@ app.get("/employer-portal/employer-jobview", isLoggedIn, async function (req, re
 
     jobPost = require("./models/jobpost");
 
-const userPosts = await jobPost.find({ creator: req.user.email })
-res.render('employer-portal/employer-jobview', { currentUser: req.user.email, userPosts });
+    const userPosts = await jobPost.find({ creator: req.user.email })
+    res.render('employer-portal/employer-jobview', { currentUser: req.user.email, userPosts });
 
     // jobPost.find({ creator: req.user.email }, (err, posts) => {
     //     if (err) {
@@ -523,14 +534,14 @@ app.post("/employer-portal/employer-jobcreate", function (req, res) {
 //     console.log(result)
 // }
 // jobPost = require("./models/jobpost");
-// var newUser = mongoose.model("jobPost", jobPostSchema);
-// const allusers = newUser.find({}, "type title", function(err, docs) {
+// var newJob = mongoose.model("jobPost", jobPostSchema);
+// const allusers = newJob.find({}, "type title", function(err, docs) {
 // if (err) console.log(err);
 // console.log(docs);
 // });
 
 
-// newUser.find({ name: { $regex: "s", $options: "i" } }, function(err, docs) {
+// newJob.find({ name: { $regex: "s", $options: "i" } }, function(err, docs) {
 // console.log("Partial Search Begins");
 // console.log(docs);
 // });
@@ -539,34 +550,128 @@ app.post("/employer-portal/employer-jobcreate", function (req, res) {
 
 //student find jobs page
 app.get("/student-portal/student-findjobs", isLoggedIn, function (req, res) {
-    res.render("student-portal/student-findjobs", { error: false, id: req.user._id, name: req.user.firstname, school: req.user.school });
+    res.render("student-portal/student-findjobs", {
+        error: false, creator: req.user.email, jobTitle: req.body.jobTitle, discipline: req.body.discipline,
+        type: req.body.type, briefDescription: req.body.briefDescription, description: req.body.description,
+        jobTitle: req.body.jobTitle, discipline: req.body.discipline, type: req.body.type,
+        briefDescription: req.body.briefDescription, description: req.body.description,
+        responsibilities: req.body.responsibilities, skills: req.body.skills
+    });
 });
 
 //student job view function
-app.post("/login", passport.authenticate("local", {
-    successRedirect: "/portal",
-    failureRedirect: "/login",
-    failureFlash: { type: 'error', message: 'Invalid username or password.' }
-}), function (req, res) {
+// app.post("/student-portal/student-findjobs"), 
+
+// // passport.authenticate("local", {
+// //     successRedirect: "/student-portal/non-dynamic-search",
+// //     failureRedirect: "/student-portal/student-findjobs",
+// //     failureFlash: { type: 'error', message: 'Invalid username or password.' }
+// // }),
+// function (req, res) {
+//     jobpost.findById({ _id: req.jobpost._id })
+//         .then(jobpost => {
+//             if (!jobpost) {
+//                 res.status(404).send();
+//             }
+//             res.send({ jobpost });
+//         }).catch((e) => {
+//             res.status(400).send(e);
+//         });
+//     console.log("Server Running");
+// };
+
+//non-dynamic-search page
+app.get("/student-portal/non-dynamic-search", isLoggedIn, function (req, res) {
+    eval(require('locus'));
+    res.render("student-portal/non-dynamic-search", { error: false });
 });
 
-app.get('/jobPost/id/:id', (req, res) => {     
-    jobpost.findById({_id: req.jobpost._id})
-        .then(jobpost => {
-           if(!jobpost) {            
-             res.status(404).send();          
-           }        
-           res.send({jobpost}); 
-        }).catch((e) => {     
-             res.status(400).send(e);  
-        });
-        console.log("Server Running");
-    });
+
+// app.get('/jobPost/id/:id', (req, res) => {
+
+// });
+
+// app.get('/student-portal/non-dynamic-search',function(req,res){ 
+
+//     var search_key = req.param('search'); 
+
+//     jobPost.find({title: search_key}) 
+
+//     .then(jobpost => res.json(jobpost)) 
+
+//     .catch(err => res.status(404).json({ success: false})); 
+
+//     });
 
 
 
 
-var port = process.env.PORT || 3000;
-app.listen(port, function () {
-    console.log("Server Running");
-});
+
+
+// var port = process.env.PORT || 3000;
+// app.listen(port, function () {
+//     console.log("Server Running");
+// });
+var collection;
+
+app.get("/search", async (req, res) => {
+    try {
+        let result = await collection.aggregate([
+            {
+                "$search": {
+                    "autocomplete": {
+                        "query": `${request.query.term}`,
+                        "path": "name",
+                        "fuzzy": {
+                            "maxEdits": 2
+                        }
+                    }
+                }
+            }
+        ]).toArray();
+        response / send(result);
+    } catch (e) {
+        console.error(e);
+        // response.status(500).send({ message: e.message });
+    }
+})
+
+
+
+app.listen("3000", async () => {
+    try {
+        await mongoose.connect(process.env.MONGO_CONNECT_KEY);
+        // collection = mongoose.collection("jobposts");
+        jobPost = require("./models/jobpost");
+
+    } catch (e) {
+        console.error(e);
+    }
+})
+
+
+
+// const schema = new mongoose.Schema({ _id: mongoose.ObjectId });
+// const Model = mongoose.model('MyModel', schema);
+
+// await Model.create({ _id: new mongoose.Types.ObjectId(_id) });
+
+// typeof _id; // 'string'
+// // `{ _id: '5d273f9ed58f5e7093b549b0' }`
+// const doc = await Model.findById(_id);
+
+// typeof doc._id; // 'object'
+// doc._id instanceof mongoose.Types.ObjectId; // true
+
+// module.exports = mongoose.model("Search function", EmployerSchema);
+
+// var result = db.collection('jobposts', 'users').find({
+//     $or: [{ vehicleDescription: { $regex: search.keyWord, $options: 'i' } },
+//     { adDescription: { $regex: search.keyWord, $options: 'i' } }]
+// });
+
+// function find (name, query, cb) {
+//     mongoose.connection.db.collection(name, function (err, collection) {
+//        collection.find(query).toArray(cb);
+//    });
+// }
