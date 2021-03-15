@@ -1,7 +1,7 @@
-<h1> createpost </h1>
+<h1> editpost </h1>
 
-<form action="/employer-portal/employer-jobcreate" method="POST">
-    <input type="text" name="jobTitle" placeholder="Job Title" required>
+<form action="/employer-portal/employer-jobedit" method="POST">
+    <input type="text" name="jobTitle" value="<%= jobpost.jobTitle %>" required>
 
 
     <label for="discipline">Disciplines:</label>
@@ -12,20 +12,20 @@
         <option value="exampleDiscipline3">Example Discipline 3</option>
     </select>
 
-    <input type="radio" id="coop" name="type" value="coop">
+    <input type="radio" id="coop" name="type" value="coop" <% if(jobpost.type == "coop"){ %> checked="checked" <% } %> >
     <label for="coop">Co-op</label><br>
 
-    <input type="radio" id="regular" name="type" value="regular">
+    <input type="radio" id="regular" name="type" value="regular" <% if(jobpost.type == "regular"){ %> checked="checked" <% } %> >
     <label for="coop">Regular</label><br>
 
 
-    <input type="text" name="briefDescription" placeholder="Brief Job Description" required>
+    <input type="text" name="briefDescription" value="<%= jobpost.briefDescription %>" required>
 
-    <input type="text" name="description" placeholder="Description" required>
+    <input type="text" name="description" value="<%= jobpost.description %>" required>
 
-    <input type="text" name="responsibilities" placeholder="Responsibilities" required>
+    <input type="text" name="responsibilities" value="<%= jobpost.responsibilities %>" required>
 
-    <input type="text" name="skills" placeholder="Skills" required>
+    <input type="text" name="skills" value="<%= jobpost.skills %>" required>
 
     <button>Submit</button>
 </form>

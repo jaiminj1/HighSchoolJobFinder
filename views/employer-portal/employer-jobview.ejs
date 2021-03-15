@@ -41,6 +41,11 @@ This is the post jobpost selected <br>
     Skills: <%= jobpost.skills %> <br>
     createdAt: <%= jobpost.createdAt %> <br>
     updatedAt: <%= jobpost.updatedAt %>
+
+    <form action="/employer-portal/employer-jobedit" method="GET">
+        <input type="hidden" id="postID" name="postID" value="<%= jobpost._id %>">
+         <button>Edit</button> 
+
 <% } %>
 </div>
 

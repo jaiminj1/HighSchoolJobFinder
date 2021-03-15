@@ -484,6 +484,26 @@ app.post("/employer-portal/employer-jobcreate", function (req, res) {
 
 });
 
+app.get("/employer-portal/employer-jobedit", isLoggedIn, function (req, res) {
+
+    jobPost.findOne({ _id: req.query.postID}, (err, jobpost) => {
+        // Check if error connecting
+        if (err) {
+            res.json({ success: false, message: err }); // Return error
+        } else {
+            // Check if it's their post.
+            if (jobpost.creator != req.user.email) {
+                res.redirect("/employer-portal/employer-jobview");
+            } else {
+                res.render('employer-portal/employer-jobedit', {jobpost : jobpost});
+            }
+        }
+    });
+});
+
+app.post("/employer-portal/employer-jobedit", function (req, res) {
+    console.log(req.body.post)
+});
 // function getSelectedOptions(sel) {
 //     var opts = [], opt;
 
