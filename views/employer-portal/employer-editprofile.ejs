@@ -1,0 +1,44 @@
+<div class="topnav">
+</div>
+
+<!-- this page has no proper post. refer to the post of changepassword. -->
+
+<h2>Photo</h2>
+
+<form action="/employer-portal/employer-editprofile" method="POST">
+    Company Name: <input type="text" name="companyName" placeholder="Company Name">
+    <hr>
+
+    <h2>Location:</h2>
+    address: <input type="text" name="address" placeholder="Address">
+    unit: <input type="text" name="unit" placeholder="Unit">
+    city: <input type="text" name="city" placeholder="City">
+    province: <input type="text" name="province" placeholder="Province">
+    Country: <input type="text" name="Country" placeholder="Country">
+    Postal Code: <input type="text" name="postalCode" placeholder="Postal Code">
+    <hr>
+
+    <h2>Company Website:</h2>
+    <input type="text" name="companyURL" placeholder="Company Website">
+
+    <hr>
+
+    <h2>Company Description:</h2>
+    <input type="text" name="companyDescription" placeholder="Company Description">
+    
+    <hr>
+
+    <button>Submit</button>
+</form>
+
+<hr>
+
+<!-- post might need to be changed -->
+<form action="/changepassword" method="POST">
+    <input type="password" name="Current Password" placeholder="Current Password">
+    <input type="password" name="New Password" placeholder="New Password">
+    <input type="password" name="New Password" placeholder="Confirm Password">
+    <button>Submit</button>
+</form>
+
+<body>If any of your account information is incorrect, please contact XXXX.</body>

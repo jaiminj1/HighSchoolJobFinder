@@ -335,8 +335,20 @@ app.post("/emailConfirmation", function (req, res) {
 });
 
 app.post("/resendEmail", function (req, res) {
-    sendEmail(req.user.email, req.user.verificationCode)
-    res.redirect("emailConfirmation", { error: false });
+
+    var verificationCode = randomString(4)
+
+    User.updateOne({ _id: req.user._id }, { verificationCode: verificationCode }, function (err, docs) {
+        if (err) {
+            console.log(err)
+        }
+        else {
+            console.log("Updated Docs : ", docs);
+        }
+    });
+
+    sendEmail(req.user.email, verificationCode)
+    res.redirect("/emailConfirmation", { error: false });
 });
 
 
@@ -456,7 +468,7 @@ app.post("/employer-portal/employer-jobview", function (req, res) {
             if (jobpost.creator != req.user.email) {
                 res.render("employer-portal/employer-jobview", { currentUser: req.user.email, userPosts, message: 'not your post' });
             } else {
-                res.render("employer-portal/employer-jobview", { currentUser: req.user.email, userPosts, jobpost});
+                res.render("employer-portal/employer-jobview", { currentUser: req.user.email, userPosts, jobpost });
             }
         }
     });
@@ -486,7 +498,7 @@ app.post("/employer-portal/employer-jobcreate", function (req, res) {
 
 app.get("/employer-portal/employer-jobedit", isLoggedIn, function (req, res) {
 
-    jobPost.findOne({ _id: req.query.postID}, (err, jobpost) => {
+    jobPost.findOne({ _id: req.query.postID }, (err, jobpost) => {
         // Check if error connecting
         if (err) {
             res.json({ success: false, message: err }); // Return error
@@ -495,15 +507,59 @@ app.get("/employer-portal/employer-jobedit", isLoggedIn, function (req, res) {
             if (jobpost.creator != req.user.email) {
                 res.redirect("/employer-portal/employer-jobview");
             } else {
-                res.render('employer-portal/employer-jobedit', {jobpost : jobpost});
+                res.render('employer-portal/employer-jobedit', { jobpost: jobpost });
             }
         }
     });
+
 });
 
 app.post("/employer-portal/employer-jobedit", function (req, res) {
-    console.log(req.body.post)
+
+    if (req.body.creator != req.user.email) {
+        res.redirect("/employer-portal/employer-jobview", { currentUser: req.user.email, userPosts, message: 'not your post' });
+    } else {
+
+        if (!req.body.deleteButton) {
+
+            jobPost.updateOne({ _id: req.body.postID }, {
+                jobTitle: req.body.jobTitle, discipline: req.body.discipline, type: req.body.type, briefDescription: req.body.briefDescription, description: req.body.description,
+                responsibilities: req.body.responsibilities, skills: req.body.skills
+            }, function (err, docs) {
+                if (err) {
+                    console.log(err)
+                }
+                else {
+                    console.log("Updated Docs : ", docs);
+                }
+            });
+
+        } else {
+
+            jobPost.deleteOne({ _id: req.body.postID }, function (err, docs) {
+                if (err) {
+                    console.log(err)
+                }
+                else {
+                    console.log("Updated Docs : ", docs);
+                }
+            });
+
+        }
+        res.redirect("/employer-portal/employer-jobview");
+
+    }
 });
+
+app.get("/employer-portal/employer-editprofile", isLoggedIn, function (req, res) {
+    res.render('employer-portal/employer-editprofile');
+});
+
+app.post("/employer-portal/employer-editprofile", function (req, res) {
+
+});
+
+
 // function getSelectedOptions(sel) {
 //     var opts = [], opt;
 

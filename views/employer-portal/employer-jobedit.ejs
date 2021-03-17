@@ -1,15 +1,20 @@
 <h1> editpost </h1>
 
 <form action="/employer-portal/employer-jobedit" method="POST">
+
+    <input type="hidden" id="postID" name="postID" value="<%= jobpost._id %>">
+
+    <input type="hidden" id="creator" name="creator" value="<%= jobpost.creator %>">
+
     <input type="text" name="jobTitle" value="<%= jobpost.jobTitle %>" required>
 
 
     <label for="discipline">Disciplines:</label>
 
     <select name="discipline" id="discipline" multiple>
-        <option value="exampleDiscipline">Example Discipline</option>
-        <option value="exampleDiscipline2">Example Discipline 2</option>
-        <option value="exampleDiscipline3">Example Discipline 3</option>
+        <option value="exampleDiscipline" <% if((jobpost.discipline).includes("exampleDiscipline")){ %> selected <% } %>>Example Discipline</option>
+        <option value="exampleDiscipline2" <% if((jobpost.discipline).includes("exampleDiscipline2")){ %> selected <% } %>>Example Discipline 2</option>
+        <option value="exampleDiscipline3" <% if((jobpost.discipline).includes("exampleDiscipline3")){ %> selected <% } %>>Example Discipline 3</option>
     </select>
 
     <input type="radio" id="coop" name="type" value="coop" <% if(jobpost.type == "coop"){ %> checked="checked" <% } %> >
@@ -28,4 +33,11 @@
     <input type="text" name="skills" value="<%= jobpost.skills %>" required>
 
     <button>Submit</button>
+</form>
+
+<form action="/employer-portal/employer-jobedit" method="POST">
+    <input type="hidden" id="postID" name="postID" value="<%= jobpost._id %>">
+    <input type="hidden" id="creator" name="creator" value="<%= jobpost.creator %>">
+    <input type="hidden" id="deleteButton" name="deleteButton" value="deleteButton">
+    <button>Delete</button>
 </form>
