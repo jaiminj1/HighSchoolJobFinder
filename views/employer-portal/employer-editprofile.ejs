@@ -6,25 +6,25 @@
 <h2>Photo</h2>
 
 <form action="/employer-portal/employer-editprofile" method="POST">
-    Company Name: <input type="text" name="companyName" placeholder="Company Name">
+    Company Name: <input type="text" name="companyName" placeholder="Company Name" value="<%= user.companyName %>">
     <hr>
 
     <h2>Location:</h2>
-    address: <input type="text" name="address" placeholder="Address">
-    unit: <input type="text" name="unit" placeholder="Unit">
-    city: <input type="text" name="city" placeholder="City">
-    province: <input type="text" name="province" placeholder="Province">
-    Country: <input type="text" name="Country" placeholder="Country">
-    Postal Code: <input type="text" name="postalCode" placeholder="Postal Code">
+    address: <input type="text" name="address" placeholder="Address" value="<%= user.address %>">
+    unit: <input type="text" name="unit" placeholder="Unit" value="<%= user.unit %>">
+    city: <input type="text" name="city" placeholder="City" value="<%= user.city %>">
+    province: <input type="text" name="province" placeholder="Province" value="<%= user.province %>">
+    Country: <input type="text" name="Country" placeholder="Country" value="<%= user.Country %>">
+    Postal Code: <input type="text" name="postalCode" placeholder="Postal Code" value="<%= user.postalCode %>">
     <hr>
 
     <h2>Company Website:</h2>
-    <input type="text" name="companyURL" placeholder="Company Website">
+    <input type="text" name="companyWebsite" placeholder="Company Website" value= "<%=user.companyWebsite %>" >
 
     <hr>
 
     <h2>Company Description:</h2>
-    <input type="text" name="companyDescription" placeholder="Company Description">
+    <input type="text" name="companyDescription" placeholder="Company Description" value= "<%=user.companyDescription %>" >
     
     <hr>
 

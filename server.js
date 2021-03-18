@@ -374,6 +374,42 @@ app.post("/login", passport.authenticate("local", {
 }), function (req, res) {
 });
 
+app.get("/forgotpassword", function (req, res) {
+    res.render('forgotpassword');
+});
+
+app.post("/forgotpassword", function (req, res) {
+    resetCode = randomString(4)
+
+    //CHECK IF THE USER EXISTS FIRST
+    //CHECK IF THE USER EXISTS FIRST
+    sendEmailReset(req.body.email, resetCode)
+
+    User.updateOne({ email: req.body.email}, { resetCode: resetCode}, function (err, docs) {
+        if (err) {
+            console.log(err)
+        }
+        else {
+            console.log("Updated Docs : ", docs);
+        }
+    });
+    res.render('forgotpasswordcode', {email: req.body.email})
+
+});
+
+app.get("/forgotpasswordcode", function (req, res) {
+    res.render('forgotpassword');
+});
+
+app.post("/forgotpasswordcode", function (req, res) {
+
+    const query = User.findOne({ email: req.body.email});
+
+    if (req.body.code == query.resetCode) {
+        res.render('forgotpasswordreset')
+    }
+});
+
 // Make sure the user has been verified
 //if (!user.isVerified) return res.render("login", { error: "passwords don't match" }); 
 
@@ -409,6 +445,33 @@ async function sendEmail(email, code) {
         subject: "Confirmation Code", // Subject line
         text: "Your confirmation code is " + code, // plain text body
         html: "<b>Your confirmation code is </b>" + code, // html body
+    });
+
+    console.log("Message sent: %s", info.messageId);
+}
+//sendEmail().catch(console.error);
+
+//current example code taken from https://nodemailer.com/about/ 
+async function sendEmailReset(email, code) {
+
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true, // true for 465, false for other ports
+        auth: {
+            user: process.env.EMAIL, // generated ethereal user
+            pass: process.env.PASSWORD, // generated ethereal password
+        },
+    });
+
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+        from: '"Testing Account" <no-reply@jobfinder.com>', // sender address
+        to: email, // list of receivers
+        subject: "Reset Password Code", // Subject line
+        text: "Your reset password code is " + code, // plain text body
+        html: "<b>Your reset password code is </b>" + code, // html body
     });
 
     console.log("Message sent: %s", info.messageId);
@@ -552,10 +615,25 @@ app.post("/employer-portal/employer-jobedit", function (req, res) {
 });
 
 app.get("/employer-portal/employer-editprofile", isLoggedIn, function (req, res) {
-    res.render('employer-portal/employer-editprofile');
+    res.render('employer-portal/employer-editprofile', {user: req.user});
 });
 
 app.post("/employer-portal/employer-editprofile", function (req, res) {
+
+    User.updateOne({ _id: req.user._id }, {
+        companyName: req.body.companyName, address: req.body.address, unit: req.body.unit, city: req.body.city,
+        province: req.body.province, Country: req.body.Country, postalCode: req.body.postalCode, companyWebsite: req.body.companyWebsite, 
+        companyDescription: req.body.companyDescription
+    }, function (err, docs) {
+        if (err) {
+            console.log(err)
+        }
+        else {
+            console.log("Updated Docs : ", docs);
+        }
+    });
+
+res.redirect("/employer-portal/employer-editprofile")
 
 });
 
