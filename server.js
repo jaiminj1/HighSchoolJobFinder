@@ -124,6 +124,54 @@ app.get("/student-portal/student-viewprofile", isLoggedIn, function (req, res) {
     res.render("student-portal/student-viewprofile", { error: false, name: req.user.firstname, school: req.user.school });
 });
 
+var employerPosts;
+
+app.get("/student-portal/student-employerprofile", isLoggedIn, isStudent, async function (req, res) {
+
+    jobPost = require("./models/jobpost");
+
+    User.findOne({ _id: req.query.employerID }, async function (err, employer) {
+        // Check if error connecting
+        if (err) {
+            res.json({ success: false, message: err }); // Return error
+        } else {
+            employerPosts = await jobPost.find({ creator: employer.email })
+
+            if (req.query.postId) {
+            
+                jobPost = require("./models/jobpost");
+
+                jobPost.findOne({ _id: req.query.postId }, (err, jobpost) => {
+                    // Check if error connecting
+                    if (err) {
+                        res.json({ success: false, message: err }); // Return error
+                    } else {
+                        res.render('student-portal/student-employerprofile', { employerPosts, employer: employer, jobpost });
+                    }
+                });
+
+            } else {
+                res.render('student-portal/student-employerprofile', { employerPosts, employer: employer, jobpost: false });
+            }
+        }
+    });
+
+});
+
+// app.post("/student-portal/student-employerprofile", isLoggedIn, isStudent, async function (req, res) {
+
+//     jobPost = require("./models/jobpost");
+
+//     jobPost.findOne({ _id: req.body.postId }, (err, jobpost) => {
+//         // Check if error connecting
+//         if (err) {
+//             res.json({ success: false, message: err }); // Return error
+//         } else {
+//             res.render('student-portal/student-employerprofile', { employerPosts, employer: req.body.employer, jobpost });
+//         }
+//     });
+
+// });
 
 
 //presignup page
@@ -385,7 +433,7 @@ app.post("/forgotpassword", function (req, res) {
     //CHECK IF THE USER EXISTS FIRST
     sendEmailReset(req.body.email, resetCode)
 
-    User.updateOne({ email: req.body.email}, { resetCode: resetCode}, function (err, docs) {
+    User.updateOne({ email: req.body.email }, { resetCode: resetCode }, function (err, docs) {
         if (err) {
             console.log(err)
         }
@@ -393,7 +441,7 @@ app.post("/forgotpassword", function (req, res) {
             console.log("Updated Docs : ", docs);
         }
     });
-    res.render('forgotpasswordcode', {email: req.body.email})
+    res.render('forgotpasswordcode', { email: req.body.email })
 
 });
 
@@ -403,7 +451,7 @@ app.get("/forgotpasswordcode", function (req, res) {
 
 app.post("/forgotpasswordcode", function (req, res) {
 
-    const query = User.findOne({ email: req.body.email});
+    const query = User.findOne({ email: req.body.email });
 
     if (req.body.code == query.resetCode) {
         res.render('forgotpasswordreset')
@@ -422,6 +470,24 @@ app.get("/logout", function (req, res) {
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) return next();
     res.redirect("/login");
+}
+
+function isEmployer(req, res, next) {
+    if (req.user.accountType == "employer") { return next(); }
+    else if (req.user.accountType == "student") { res.redirect("/student-portal/student-findjobs"); }
+    else { res.redirect("/admin-portal/admin-userview"); }
+}
+
+function isStudent(req, res, next) {
+    if (req.user.accountType == "student") { return next(); }
+    else if (req.user.accountType == "employer") { res.redirect("/employer-portal/employer-editprofile"); }
+    else { res.redirect("/admin-portal/admin-userview"); }
+}
+
+function isAdmin(req, res, next) {
+    if (req.user.accountType == "admin") { return next(); }
+    else if (req.user.accountType == "student") { res.redirect("/student-portal/student-findjobs"); }
+    else { res.redirect("/employer-portal/employer-editprofile"); }
 }
 
 //current example code taken from https://nodemailer.com/about/ 
@@ -460,8 +526,8 @@ async function sendEmailReset(email, code) {
         port: 465,
         secure: true, // true for 465, false for other ports
         auth: {
-            user: process.env.EMAIL, // generated ethereal user
-            pass: process.env.PASSWORD, // generated ethereal password
+            user: process.env.EMAIL,
+            pass: process.env.PASSWORD,
         },
     });
 
@@ -510,7 +576,7 @@ app.post('/changepassword', function (req, res) {
 
 var userPosts;
 
-app.get("/employer-portal/employer-jobview", isLoggedIn, async function (req, res) {
+app.get("/employer-portal/employer-jobview", isLoggedIn, isEmployer, async function (req, res) {
 
     jobPost = require("./models/jobpost");
 
@@ -615,14 +681,14 @@ app.post("/employer-portal/employer-jobedit", function (req, res) {
 });
 
 app.get("/employer-portal/employer-editprofile", isLoggedIn, function (req, res) {
-    res.render('employer-portal/employer-editprofile', {user: req.user});
+    res.render('employer-portal/employer-editprofile', { user: req.user });
 });
 
 app.post("/employer-portal/employer-editprofile", function (req, res) {
 
     User.updateOne({ _id: req.user._id }, {
         companyName: req.body.companyName, address: req.body.address, unit: req.body.unit, city: req.body.city,
-        province: req.body.province, Country: req.body.Country, postalCode: req.body.postalCode, companyWebsite: req.body.companyWebsite, 
+        province: req.body.province, Country: req.body.Country, postalCode: req.body.postalCode, companyWebsite: req.body.companyWebsite,
         companyDescription: req.body.companyDescription
     }, function (err, docs) {
         if (err) {
@@ -633,7 +699,7 @@ app.post("/employer-portal/employer-editprofile", function (req, res) {
         }
     });
 
-res.redirect("/employer-portal/employer-editprofile")
+    res.redirect("/employer-portal/employer-editprofile")
 
 });
 

@@ -8,7 +8,63 @@
     <a href="/logout">Logout</a>
 </div>
 
-<h2>Photo: xxx</h2>
+<h2>Photo</h2>
+<h2>Company Name: <%= employer.companyName %></h2>
+<h2>Company Website: <%=employer.companyWebsite %></h2>
+<h3>Address:</h3><h4><%= employer.address %>, <%= employer.unit %>, <br>
+    <%= employer.city %>, <%= employer.province %>, <%= employer.Country %>, <br>
+    <%= employer.postalCode %></h4> <br>
+Company Description: <%=employer.companyDescription %>
+
+
+    <div>
+        <% employerPosts.forEach(p=> { %>
+            <br>
+                <form action="/student-portal/student-employerprofile" method="GET">
+                <input type="hidden" id="postId" name="postId" value="<%= p._id %>">
+                <input type="hidden" id="employerID" name="employerID" value="<%= employer._id %>">
+                 <button>view</button> 
+            <div>
+                <div>
+                    Title: <%= p.jobTitle %>
+                </div>
+
+                <div>
+                    Type: <%= p.type %>
+                </div>
+
+                <div>
+                    Brief Description: <%= p.briefDescription %>
+                </div>
+            </div>
+        </form>
+            <% }) %>
+    </div>
+
+</body>
+    
+<br>
+
+<div id="fullPost">
+<% if (jobpost) { %>
+This is the post jobpost selected <br>
+    Title: <%= jobpost.jobTitle %> <br>
+    Type: <%= jobpost.type %> <br>
+    Discipline: <%= jobpost.discipline %> <br>
+    Brief Description: <%= jobpost.briefDescription %> <br>
+    description: <%= jobpost.description %> <br>
+    Responsibilities: <%= jobpost.responsibilities %> <br>
+    Skills: <%= jobpost.skills %> <br>
+    createdAt: <%= jobpost.createdAt %> <br>
+
+    <form action="" method="">
+        <input type="hidden" id="postID" name="postID" value="<%= jobpost._id %>">
+         <button>Apply</button> 
+
+<% } %>
+</div>
+
+<!-- <h2>Photo: xxx</h2>
 <h2>Company: Company Name</h2>
 <h2>Location: Location</h2>
 <h2>Company Website: Website URL</h2>
@@ -19,4 +75,4 @@
 <body>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
     Proin lorem justo, euismod ac ultrices ut, vehicula ut dui. Vivamus leo nunc, lacinia iaculis efficitur a, dapibus non augue. 
     Curabitur feugiat dui quis sollicitudin sagittis. Donec finibus nulla risus, at interdum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-    Proin lorem justo, euismod ac ultrices ut, vehicula ut dui. Vivamus leo nunc</body>
+    Proin lorem justo, euismod ac ultrices ut, vehicula ut dui. Vivamus leo nunc</body> -->
