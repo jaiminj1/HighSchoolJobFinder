@@ -104,13 +104,53 @@ app.get("/resources", function (req, res) {
 });
 
 //help center page
-app.get("/helpCenter", isLoggedIn, function (req, res) {
-    res.render("helpCenter", { error: false });
-    search();
+app.get("/helpcenter", function (req, res) {
+    res.render("helpcenter", { error: false });
 });
+
+//help center page
+app.post("/helpcenter", function (req, res) {
+
+    if (req.body.name && req.body.email && req.body.subject && req.body.message) {
+    contactUs(req.body.name, req.body.email, req.body.subject, req.body.message)
+    res.render("helpcenter", { error: "Message sent" });
+    } else {
+        res.render("helpcenter", { error: "Ensure all fields are filled in" });
+    }
+});
+
+async function contactUs(name, email, subject, message) {
+
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true, // true for 465, false for other ports
+        auth: {
+            user: process.env.EMAIL, // generated ethereal user
+            pass: process.env.PASSWORD, // generated ethereal password
+        },
+    });
+
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+        from: email, // sender address
+        to: process.env.EMAIL, // list of receivers
+        subject: subject, // Subject line
+        text: "Message from" + name + " (" + email + ") " + ": " + message, // plain text body
+        html: "<b> Message from </b>" + name + " (" + email + ") " + ": <br>" + message, // html body
+    });
+
+    console.log("Message sent: %s", info.messageId);
+}
 
 //student myapplications page
 app.get("/student-portal/student-applications", isLoggedIn, function (req, res) {
+    res.render("student-portal/student-applications", { error: false });
+});
+
+//student myapplications page
+app.post("/student-portal/student-applications", isLoggedIn, function (req, res) {
     res.render("student-portal/student-applications", { error: false });
 });
 
@@ -611,9 +651,11 @@ app.get("/employer-portal/employer-jobcreate", isLoggedIn, function (req, res) {
 app.post("/employer-portal/employer-jobcreate", function (req, res) {
     jobPost = require("./models/jobpost");
 
+    console.log(req.body.question)
+
     jobPost.create({
         creator: req.user.email, jobTitle: req.body.jobTitle, discipline: req.body.discipline, type: req.body.type, briefDescription: req.body.briefDescription, description: req.body.description,
-        responsibilities: req.body.responsibilities, skills: req.body.skills
+        responsibilities: req.body.responsibilities, skills: req.body.skills, questions: req.body.question
     }, function (err) {
         if (err) {
             console.log(err);

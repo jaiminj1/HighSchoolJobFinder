@@ -27,5 +27,20 @@
 
     <input type="text" name="skills" placeholder="Skills" required>
 
+<br>
+
+    <div id="div">
+        <button onclick="appendRow()" value="Add Question">Add Question</button> <br>
+    </div>
+
     <button>Submit</button>
 </form>
+
+<script>
+var x=1
+function appendRow()
+{
+   var d = document.getElementById('div');
+   d.innerHTML += "<input type='text' name='question[]' id='question"+ x++ +"'><br >";
+}
+</script>

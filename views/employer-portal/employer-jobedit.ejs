@@ -1,5 +1,20 @@
 <h1> editpost </h1>
 
+<script>
+    var x=1
+    function appendRow()
+    {
+       var d = document.getElementById('div');
+       d.innerHTML += "<input type='text' name='question[]' id='question"+ x++ +"'><br >";
+    }
+
+    function appendRowPreset(p)
+    {
+       var d = document.getElementById('div');
+       d.innerHTML += "<input type='text' name='question[]' value='"+ p +"' id='question"+ x++ +"'><br >";
+    }
+    </script>
+
 <form action="/employer-portal/employer-jobedit" method="POST">
 
     <input type="hidden" id="postID" name="postID" value="<%= jobpost._id %>">
@@ -32,6 +47,15 @@
 
     <input type="text" name="skills" value="<%= jobpost.skills %>" required>
 
+    <div id="div">
+        <button onclick="appendRow()" value="Add Question">Add Question</button> <br>
+
+        <% jobpost.questions.forEach(p=> { %>
+            <script>appendRowPreset("<%=p%>")</script>
+            <% }) %>
+
+    </div>
+
     <button>Submit</button>
 </form>
 
@@ -41,3 +65,5 @@
     <input type="hidden" id="deleteButton" name="deleteButton" value="deleteButton">
     <button>Delete</button>
 </form>
+
+    
