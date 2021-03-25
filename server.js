@@ -14,6 +14,10 @@ var express = require("express"),
 
 //const bcrypt = require('bcrypt')
 const nodemailer = require("nodemailer");
+const jobpost = require('./models/jobpost');
+
+const path = require('path');
+const fileUpload = require('express-fileupload');
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
@@ -25,6 +29,9 @@ mongoose.connect(process.env.MONGO_CONNECT_KEY,);
 
 const app = express();
 app.set("view engine", "ejs");
+
+app.use(bodyParser.json());
+
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(require("express-session")({
@@ -41,6 +48,8 @@ app.use(passport.session());
 passport.use(new LocalStrategy({
     usernameField: 'email'
 }, User.authenticate()));
+
+app.use(fileUpload());
 
 // passport.use('employerLocal', new LocalStrategy({
 //     usernameField: 'email'
@@ -112,8 +121,8 @@ app.get("/helpcenter", function (req, res) {
 app.post("/helpcenter", function (req, res) {
 
     if (req.body.name && req.body.email && req.body.subject && req.body.message) {
-    contactUs(req.body.name, req.body.email, req.body.subject, req.body.message)
-    res.render("helpcenter", { error: "Message sent" });
+        contactUs(req.body.name, req.body.email, req.body.subject, req.body.message)
+        res.render("helpcenter", { error: "Message sent" });
     } else {
         res.render("helpcenter", { error: "Ensure all fields are filled in" });
     }
@@ -146,13 +155,64 @@ async function contactUs(name, email, subject, message) {
 
 //student myapplications page
 app.get("/student-portal/student-applications", isLoggedIn, function (req, res) {
-    res.render("student-portal/student-applications", { error: false });
+
+    jobPost.findOne({ _id: req.query.postID }, (err, jobpost) => {
+        // Check if error connecting
+        if (err) {
+            res.json({ success: false, message: err }); // Return error
+        } else {
+            res.render('student-portal/student-applications', { jobpost: jobpost });
+        }
+    });
 });
 
 //student myapplications page
 app.post("/student-portal/student-applications", isLoggedIn, function (req, res) {
-    res.render("student-portal/student-applications", { error: false });
+
+    jobPost.findOne({ _id: req.body.postID }, (err, jobpost) => {
+        // Check if error connecting
+        if (err) {
+            res.json({ success: false, message: err }); // Return error
+        } else {
+            applicationEmail(req.user.firstname + " " + req.user.lastname, req.user.email, jobpost, req.body, req.files.Resume, req.files.coverLetter)
+            res.render("student-portal/student-findjobs");
+        }
+    });
+
 });
+
+
+async function applicationEmail(name, email, jobpost, response, resume, coverLetter) {
+
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true, // true for 465, false for other ports
+        auth: {
+            user: process.env.EMAIL, // generated ethereal user
+            pass: process.env.PASSWORD, // generated ethereal password
+        },
+    });
+
+    var htmlText;
+    var i;
+    for (i = 0; i < jobpost.questions.length; i++) {
+        htmlText += "<b>" + jobpost.questions[i] + "</b> <br>" + response.response[i];
+    }
+
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+        from: email, // sender address
+        to: jobpost.creator, // list of receivers
+        subject: "Application from " + name + " for " + jobpost.title, // Subject line
+        text: htmlText,
+        html: htmlText,
+        attachments: [{ path: resume }, { path: coverLetter }]
+    });
+
+    console.log("Message sent: %s", info.messageId);
+}
 
 //student bookmarks page
 app.get("/student-portal/student-bookmarks", isLoggedIn, function (req, res) {
@@ -178,7 +238,7 @@ app.get("/student-portal/student-employerprofile", isLoggedIn, isStudent, async 
             employerPosts = await jobPost.find({ creator: employer.email })
 
             if (req.query.postId) {
-            
+
                 jobPost = require("./models/jobpost");
 
                 jobPost.findOne({ _id: req.query.postId }, (err, jobpost) => {
@@ -695,7 +755,7 @@ app.post("/employer-portal/employer-jobedit", function (req, res) {
 
             jobPost.updateOne({ _id: req.body.postID }, {
                 jobTitle: req.body.jobTitle, discipline: req.body.discipline, type: req.body.type, briefDescription: req.body.briefDescription, description: req.body.description,
-                responsibilities: req.body.responsibilities, skills: req.body.skills
+                responsibilities: req.body.responsibilities, skills: req.body.skills, questions: req.body.question
             }, function (err, docs) {
                 if (err) {
                     console.log(err)

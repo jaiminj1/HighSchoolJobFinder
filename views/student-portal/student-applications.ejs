@@ -1,1 +1,32 @@
 
+
+<form action="/student-portal/student-applications" method="POST" enctype="multipart/form-data">
+
+  <input type="hidden" id="postID" name="postID" value="<%= jobpost._id %>">
+  
+<% jobpost.questions.forEach(p=> { %>
+  <%=p%>
+  <input type="text" name="response[]">
+  <br>
+  <br>
+  <% }) %>
+
+ Resume <input type="file" name="Resume"> <br>
+
+ Cover Letter(optional) <input type="file" name="coverLetter"> <br>
+
+  <button>Submit</button> 
+</form>
+
+ <div id="fullPost">
+  <% if (jobpost) { %>
+        Title: <%= jobpost.jobTitle %> <br>
+        Type: <%= jobpost.type %> <br>
+        Discipline: <%= jobpost.discipline %> <br>
+        Brief Description: <%= jobpost.briefDescription %> <br>
+        description: <%= jobpost.description %> <br>
+        Responsibilities: <%= jobpost.responsibilities %> <br>
+        Skills: <%= jobpost.skills %> <br>
+        createdAt: <%= jobpost.createdAt %> <br>
+    <% } %>
+  </div>
