@@ -17,9 +17,13 @@ const jobpost = require('./models/jobpost');
 const Cors = require("cors");
 const { response } = require('express');
 const bodyParser = require("body-parser");
-//const { MongoClient } = require('mongodb');
 
-//const client = new MongoClient("mongodb+srv://Dhirhan:database.8b60p.mongodb.net/login?retryWrites=true&w=majority");
+const { MongoClient } = require('mongodb');
+const client = new MongoClient(process.env.MONGO_CONNECT_KEY);
+
+
+const atlasPlugin = require('mongoose-atlas-search');
+
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
@@ -101,11 +105,24 @@ app.get("/student-portal/student-findjobs", isLoggedIn, function (req, res) {
 });
 
 
-
-
-//employer profile page
+//employer edit profile page
 app.get("/employer-portal/employer-profile", isLoggedIn, function (req, res) {
     res.render("employer-portal/employer-profile", { error: false });
+});
+
+//employer job create page
+app.get("/employer-portal/employer-jobcreate", isLoggedIn, function (req, res) {
+    res.render("employer-portal/employer-jobcreate", { error: false });
+});
+
+//employer job view page
+app.get("/employer-portal/employer-jobview", isLoggedIn, function (req, res) {
+    res.render("employer-portal/employer-jobview", { error: false });
+});
+
+//employer job edit page
+app.get("/employer-portal/employer-jobedit", isLoggedIn, function (req, res) {
+    res.render("employer-portal/employer-jobedit", { error: false });
 });
 
 //admin user view page
@@ -460,7 +477,6 @@ app.get("/employer-portal/employer-jobview", isLoggedIn, async function (req, re
     //         res.render('employer-portal/employer-view', { currentUser: req.user, posts: posts });
     //     }
     // });
-
 });
 
 
@@ -533,31 +549,76 @@ app.post("/employer-portal/employer-jobcreate", function (req, res) {
 
 //     console.log(result)
 // }
-// jobPost = require("./models/jobpost");
-// var newJob = mongoose.model("jobPost", jobPostSchema);
-// const allusers = newJob.find({}, "type title", function(err, docs) {
-// if (err) console.log(err);
-// console.log(docs);
-// });
 
-
-// newJob.find({ name: { $regex: "s", $options: "i" } }, function(err, docs) {
-// console.log("Partial Search Begins");
-// console.log(docs);
-// });
 
 
 
 //student find jobs page
-app.get("/student-portal/student-findjobs", isLoggedIn, function (req, res) {
-    res.render("student-portal/student-findjobs", {
-        error: false, creator: req.user.email, jobTitle: req.body.jobTitle, discipline: req.body.discipline,
-        type: req.body.type, briefDescription: req.body.briefDescription, description: req.body.description,
-        jobTitle: req.body.jobTitle, discipline: req.body.discipline, type: req.body.type,
-        briefDescription: req.body.briefDescription, description: req.body.description,
-        responsibilities: req.body.responsibilities, skills: req.body.skills
-    });
-});
+// app.get("/student-portal/student-findjobs", isLoggedIn, function (req, res) {
+//     res.render("student-portal/student-findjobs", {
+//         error: false, creator: req.user.email, jobTitle: req.body.jobTitle, discipline: req.body.discipline,
+//         type: req.body.type, briefDescription: req.body.briefDescription, description: req.body.description,
+//         jobTitle: req.body.jobTitle, discipline: req.body.discipline, type: req.body.type,
+//         briefDescription: req.body.briefDescription, description: req.body.description,
+//         responsibilities: req.body.responsibilities, skills: req.body.skills
+//     });
+// });
+
+// app.get('/student-portal/student-findjobs' , function (req , res) {
+//     User.find({}).then(function (users) {
+//     res.send(users);
+//     });
+//    });
+// app.get("/student-portal/student-findjobs", function (req, res) {
+//     jobPost = require("./models/jobpost");
+
+//     jobPost.find({}, function (err, jobPost) {
+//         var jobPosts = {};
+
+//         jobPosts.forEach(function (jobPost) {
+//             jobPostMap[user._id] = jobPost;
+//         });
+
+//         res.send(jobPostMap);
+//         console.log(jobPostMap)
+//     });
+    // exports.product_update = function (req, res, next) {
+    //     Product.findByIdAndUpdate(req.params.id, {$set: req.body}, function (err, product) {
+    //         if (err) return next(err);
+    //         Product.find({}).then(function (products) {
+    //             res.send(products);
+    //             });
+    //         //res.send('Product udpated.');
+    //     });
+    // };
+//});
+
+
+
+// app.post("/student-portal/student-findjobs", async function (req, res) {
+//     jobPost = require("./models/jobpost");
+
+//     const studentViewJobs = jobPost.find({
+//         creator: req.user.email, creator: req.user.email, jobTitle: req.body.jobTitle, discipline: req.body.discipline,
+//         type: req.body.type, briefDescription: req.body.briefDescription, description: req.body.description,
+//         jobTitle: req.body.jobTitle, discipline: req.body.discipline, type: req.body.type,
+//         briefDescription: req.body.briefDescription, description: req.body.description,
+//         responsibilities: req.body.responsibilities, skills: req.body.skills
+//     })
+//     var newJob = mongoose.model("jobPost", jobPostSchema);
+//     const allusers = newJob.find({}, "discipline", function (err, docs) {
+//         if (err) console.log(err);
+//         console.log(docs);
+//     });
+
+
+//     newJob.find({ name: { $regex: "s", $options: "i" } }, function (err, docs) {
+//         console.log("Partial Search Begins");
+//         console.log(docs);
+//     });
+//     res.redirect("/student-portal/student-findjobs")
+// });
+
 
 //student job view function
 // app.post("/student-portal/student-findjobs"), 
@@ -574,7 +635,7 @@ app.get("/student-portal/student-findjobs", isLoggedIn, function (req, res) {
 //                 res.status(404).send();
 //             }
 //             res.send({ jobpost });
-//         }).catch((e) => {
+//         }).catch((e) => { 
 //             res.status(400).send(e);
 //         });
 //     console.log("Server Running");
@@ -582,7 +643,7 @@ app.get("/student-portal/student-findjobs", isLoggedIn, function (req, res) {
 
 //non-dynamic-search page
 app.get("/student-portal/non-dynamic-search", isLoggedIn, function (req, res) {
-    eval(require('locus'));
+    jobPost = require("./models/jobpost");
     res.render("student-portal/non-dynamic-search", { error: false });
 });
 
@@ -612,9 +673,11 @@ app.get("/student-portal/non-dynamic-search", isLoggedIn, function (req, res) {
 // app.listen(port, function () {
 //     console.log("Server Running");
 // });
+
 var collection;
 
-app.get("/search", async (req, res) => {
+
+app.get("/student-portal/student-findjobs", async (req, res) => {
     try {
         let result = await collection.aggregate([
             {
@@ -629,25 +692,26 @@ app.get("/search", async (req, res) => {
                 }
             }
         ]).toArray();
-        response / send(result);
+        response.send(result);
     } catch (e) {
         console.error(e);
-        // response.status(500).send({ message: e.message });
+        response.status(500).send({ message: e.message });
     }
 })
-
 
 
 app.listen("3000", async () => {
     try {
-        await mongoose.connect(process.env.MONGO_CONNECT_KEY);
-        // collection = mongoose.collection("jobposts");
-        jobPost = require("./models/jobpost");
+        await client.connect();
+        collection = client.db("login").collection("jobposts");
+        // jobPost = require("./models/jobpost");
 
     } catch (e) {
         console.error(e);
     }
 })
+
+
 
 
 
@@ -675,3 +739,34 @@ app.listen("3000", async () => {
 //        collection.find(query).toArray(cb);
 //    });
 // }
+
+// const Model = mongoose.model('jobPost', jobPostSchema);
+
+
+// //atlasPlugin.initialize(<options>);
+// atlasPlugin.initialize({
+//     model: Model,
+//     overwriteFind: true,
+//     searchKey: 'search',
+//     addFields: {
+//       id: '$_id'
+//     },
+//     searchFunction: query => {
+//       return {
+//         'wildcard': {
+//           'query': `${query}*`,
+//           'path': '_id',
+//           'allowAnalyzedField': true
+//         }
+//       }
+//     }
+
+//   });
+
+
+//   (async () => {
+//     const resultWithSearch = await jobPostSchema.find({search: 'test user'}); //aggregation is used
+//     const resultWithoutSearch = await jobPostSchema.find({name: 'test user'}); //standard "find" is used
+//   })();
+
+

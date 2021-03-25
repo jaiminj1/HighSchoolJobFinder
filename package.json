@@ -28,6 +28,7 @@
     "locus": "^2.0.4",
     "mongodb": "^3.6.4",
     "mongoose": "^5.11.18",
+    "mongoose-atlas-search": "^1.0.6",
     "nodemailer": "^6.5.0",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
