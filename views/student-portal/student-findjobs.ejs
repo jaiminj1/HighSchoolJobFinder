@@ -46,10 +46,10 @@
      $(document).ready(function () {
        $("#jobpost").autocomplete({
          source: async function (req, res) {
-           let data = await fetch(`/student-portal/student-findjobs?term=${req.term}`)
+           let data = await fetch(`/search?term=${req.term}`)
              .then(results => results.json())
              .then(results => results.map(result => {
-               console.log(result);
+            //    console.log(result);
                 return { label: result.jobTitle, value: result.jobTitle, id: result._id };
              }));
            res(data);

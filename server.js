@@ -676,11 +676,11 @@ app.get("/student-portal/non-dynamic-search", isLoggedIn, function (req, res) {
 
 var collection;
 
-app.get("/searching", (req, res) =>{
+app.get("/student-portal/student-findjobs", (req, res) =>{
     res.render("student-portal/student-findjobs");
 })
 
-app.get("/student-portal/student-findjobs", async (req, res) => {
+app.get("/search", async (req, res) => {
     // console.log("in get")
     try {
         let result = await collection.aggregate([
