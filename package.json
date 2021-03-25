@@ -33,6 +33,7 @@
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^6.1.0",
+    "serve": "^11.3.2",
     "vue": "^2.6.12",
     "vuesax": "^4.0.1-alpha.25"
   },

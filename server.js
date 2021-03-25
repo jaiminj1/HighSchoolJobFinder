@@ -100,9 +100,9 @@ app.get("/portal", isLoggedIn, function (req, res) {
 });
 
 //employer find jobs page
-app.get("/student-portal/student-findjobs", isLoggedIn, function (req, res) {
-    res.render("student-portal/student-findjobs", { error: false });
-});
+// app.get("/student-portal/student-findjobs", isLoggedIn, function (req, res) {
+//     res.render("student-portal/student-findjobs", { error: false });
+// });
 
 
 //employer edit profile page
@@ -676,28 +676,37 @@ app.get("/student-portal/non-dynamic-search", isLoggedIn, function (req, res) {
 
 var collection;
 
+app.get("/searching", (req, res) =>{
+    res.render("student-portal/student-findjobs");
+})
 
 app.get("/student-portal/student-findjobs", async (req, res) => {
+    // console.log("in get")
     try {
         let result = await collection.aggregate([
             {
                 "$search": {
                     "autocomplete": {
-                        "query": `${request.query.term}`,
-                        "path": "name",
+                        "query": `${req.query.term}`,
+                        "path": "jobTitle",
                         "fuzzy": {
-                            "maxEdits": 2
+                            "maxEdits": 1
                         }
                     }
                 }
             }
         ]).toArray();
-        response.send(result);
+        // console.log(result[0].jobTitle);
+        res.send(result);
+        // console.log("went through")
     } catch (e) {
         console.error(e);
-        response.status(500).send({ message: e.message });
+        res.status(500).send({ message: e.message });
+        // console.log("nope")
     }
 })
+
+
 
 
 app.listen("3000", async () => {
