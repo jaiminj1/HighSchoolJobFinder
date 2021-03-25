@@ -17,7 +17,10 @@ const nodemailer = require("nodemailer");
 const jobpost = require('./models/jobpost');
 
 const path = require('path');
-const fileUpload = require('express-fileupload');
+//const fileUpload = require('express-fileupload');
+
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/' })
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
@@ -49,7 +52,7 @@ passport.use(new LocalStrategy({
     usernameField: 'email'
 }, User.authenticate()));
 
-app.use(fileUpload());
+//app.use(fileUpload());
 
 // passport.use('employerLocal', new LocalStrategy({
 //     usernameField: 'email'
@@ -154,6 +157,10 @@ async function contactUs(name, email, subject, message) {
 }
 
 //student myapplications page
+app.get("/student-portal/student-myapplications", isLoggedIn, function (req, res) {
+});
+
+//student application page
 app.get("/student-portal/student-applications", isLoggedIn, function (req, res) {
 
     jobPost.findOne({ _id: req.query.postID }, (err, jobpost) => {
@@ -166,15 +173,15 @@ app.get("/student-portal/student-applications", isLoggedIn, function (req, res) 
     });
 });
 
-//student myapplications page
-app.post("/student-portal/student-applications", isLoggedIn, function (req, res) {
+//student application page
+app.post("/student-portal/student-applications", isLoggedIn, upload.fields([{ name: 'Resume', maxCount: 1}, {name: 'coverLetter', maxCount: 1}]), function (req, res) {
 
     jobPost.findOne({ _id: req.body.postID }, (err, jobpost) => {
         // Check if error connecting
         if (err) {
             res.json({ success: false, message: err }); // Return error
         } else {
-            applicationEmail(req.user.firstname + " " + req.user.lastname, req.user.email, jobpost, req.body, req.files.Resume, req.files.coverLetter)
+            applicationEmail(req.user.firstname + " " + req.user.lastname, req.user.email, jobpost, req.body, req.files['Resume'][0], req.files['coverLetter'][0])
             res.render("student-portal/student-findjobs");
         }
     });
@@ -195,20 +202,20 @@ async function applicationEmail(name, email, jobpost, response, resume, coverLet
         },
     });
 
-    var htmlText;
+    var htmlText = "Application from " + name + " (" + email + " )" + " for " + jobpost.jobTitle + "<br>";
     var i;
     for (i = 0; i < jobpost.questions.length; i++) {
-        htmlText += "<b>" + jobpost.questions[i] + "</b> <br>" + response.response[i];
+        htmlText += "<b>" + jobpost.questions[i] + "</b> <br>" + response.response[i] + "<br><br>";
     }
 
     // send mail with defined transport object
     let info = await transporter.sendMail({
         from: email, // sender address
         to: jobpost.creator, // list of receivers
-        subject: "Application from " + name + " for " + jobpost.title, // Subject line
+        subject: "Application from " + name + " for " + jobpost.jobTitle, // Subject line
         text: htmlText,
         html: htmlText,
-        attachments: [{ path: resume }, { path: coverLetter }]
+        attachments: [{filename: resume.originalname, path: resume.path}, { filename: coverLetter.originalname, path: coverLetter.path }]
     });
 
     console.log("Message sent: %s", info.messageId);
