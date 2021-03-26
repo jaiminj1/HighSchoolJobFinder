@@ -19,7 +19,7 @@
 
     <input type="text" name="country" placeholder="Country" required>
     
-    <input type="text" name="postalCode" placeholder="Postal Code" required>
+    <br> <input type="text" name="postalCode" placeholder="Postal Code" pattern="[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]" required> (Format: A0A 0A0)
 
     <% if (error) { %>
         <%= error %>

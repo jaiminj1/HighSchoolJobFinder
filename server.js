@@ -324,10 +324,10 @@ app.get("/registerAdmin", function (req, res) {
     res.render("registerAdmin", { error: false });
 });
 
-//signup page
-app.get("/register", function (req, res) {
-    res.render("register", { error: false });
-});
+// //signup page
+// app.get("/register", function (req, res) {
+//     res.render("register", { error: false });
+// });
 
 app.post("/registerAdmin", function (req, res) {
     var email = req.body.email
@@ -338,7 +338,7 @@ app.post("/registerAdmin", function (req, res) {
     if (password != confirmPassword) {
         console.log(password)
         console.log(confirmPassword)
-        return res.render("register", { error: "passwords don't match" });
+        return res.render("registerAdmin", { error: "passwords don't match" });
     }
 
     User.register(new User({ email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType: accountType, school: req.body.School, verificationCode: verificationCode }),
@@ -370,7 +370,7 @@ app.post("/registerStudent", function (req, res) {
     if (password != confirmPassword) {
         console.log(password)
         console.log(confirmPassword)
-        return res.render("register", { error: "passwords don't match" });
+        return res.render("registerStudent", { error: "Passwords don't match" });
     }
 
     User.register(new User({ email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType: accountType, school: req.body.School, grade: req.body.grade, verificationCode: verificationCode, dateOfBirth: dateOfBirth }),
@@ -405,7 +405,7 @@ app.post("/registerEmployer", function (req, res) {
     if (password != confirmPassword) {
         console.log(password)
         console.log(confirmPassword)
-        return res.render("register", { error: "passwords don't match" });
+        return res.render("registerEmployer", { error: "passwords don't match" });
     }
 
     User.register(new User({ email: email, companyName: req.body.companyName, accountType: accountType, school: req.body.School, verificationCode: verificationCode, address: req.body.address, unit: req.body.unit, city: req.body.city, province: req.body.province, country: req.body.country, postalCode: req.body.postalCode }),

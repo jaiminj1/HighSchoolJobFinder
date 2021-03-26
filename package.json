@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/jaiminj1/HighSchoolJobFinder#readme",
   "dependencies": {
+    "@google-cloud/storage": "^5.8.2",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "ejs": "^3.1.6",
