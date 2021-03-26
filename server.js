@@ -11,6 +11,7 @@ var express = require("express"),
     passportLocalMongoose =
         require("passport-local-mongoose"),
     User = require("./models/user");
+    jobPost = require("./models/jobpost");
 
 //const bcrypt = require('bcrypt')
 const nodemailer = require("nodemailer");
@@ -18,6 +19,10 @@ const jobpost = require('./models/jobpost');
 
 const path = require('path');
 //const fileUpload = require('express-fileupload');
+const fs = require('fs');
+
+const { MongoClient } = require('mongodb');
+const client = new MongoClient(process.env.MONGO_CONNECT_KEY);
 
 var multer  = require('multer')
 var upload = multer({ dest: 'uploads/' })
@@ -78,15 +83,11 @@ app.get("/portal", isLoggedIn, function (req, res) {
         });
     } else {
 
-        // accounType = req.user.accountType
-        // console.log(req.user.accountType)
-        // console.log(accountType)
-
         if (req.user.accountType == "student") {
             res.redirect("student-portal/student-findjobs");
         }
         else if (req.user.accountType == "employer") {
-            res.redirect("employer-portal/employer-profile");
+            res.redirect("employer-portal/employer-editprofile");
         }
         else if (req.user.accountType == "admin") {
             res.redirect("admin-portal/admin-userview");
@@ -96,9 +97,9 @@ app.get("/portal", isLoggedIn, function (req, res) {
 });
 
 //student find jobs page
-app.get("/student-portal/student-findjobs", isLoggedIn, function (req, res) {
-    res.render("student-portal/student-findjobs", { error: false });
-});
+// app.get("/student-portal/student-findjobs", isLoggedIn, function (req, res) {
+//     res.render("student-portal/student-findjobs", { error: false });
+// });
 
 //employer profile page
 app.get("/employer-portal/employer-profile", isLoggedIn, function (req, res) {
@@ -181,8 +182,16 @@ app.post("/student-portal/student-applications", isLoggedIn, upload.fields([{ na
         if (err) {
             res.json({ success: false, message: err }); // Return error
         } else {
-            applicationEmail(req.user.firstname + " " + req.user.lastname, req.user.email, jobpost, req.body, req.files['Resume'][0], req.files['coverLetter'][0])
-            res.render("student-portal/student-findjobs");
+            
+            f()
+
+            async function f() {
+                await applicationEmail(req.user.firstname + " " + req.user.lastname, req.user.email, jobpost, req.body, req.files['Resume'][0], req.files['coverLetter'][0])
+                fs.unlinkSync(req.files['Resume'][0].path)
+                fs.unlinkSync(req.files['coverLetter'][0].path)
+            }
+
+            res.redirect("/student-portal/student-findjobs");
         }
     });
 
@@ -415,36 +424,6 @@ app.post("/registerEmployer", function (req, res) {
         });
 });
 
-
-// app.post("/register", function (req, res) {
-//     var email = req.body.email
-//     var password = req.body.password
-//     var confirmPassword = req.body.confirmPassword
-//     var verificationCode = randomString(4)
-
-//     if (password != confirmPassword) {
-//         console.log(password)
-//         console.log(confirmPassword)
-//         return res.render("register", { error: "passwords don't match" });
-//     }
-
-//     User.register(new User({ email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType: accountType, school: req.body.School, verificationCode: verificationCode }),
-//         password, function (err, user) {
-//             if (err) {
-//                 console.log(err);
-//                 return res.render("register", { error: false });
-//             }
-
-//             //res.render("emailConfirmation", { email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType, school: req.body.School, verificationCode});
-//             passport.authenticate("local")(
-//                 req, res, function () {
-//                     sendEmail(email, verificationCode)
-//                     console.log(req.user.verificationCode)
-//                     res.render("emailConfirmation", { email: email, firstname: req.user.firstname, lastname: req.user.lastname, accountType, school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
-//                 });
-//         });
-// });
-
 function randomString(length) {
     var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     var string = '';
@@ -595,6 +574,8 @@ function isAdmin(req, res, next) {
     if (req.user.accountType == "admin") { return next(); }
     else if (req.user.accountType == "student") { res.redirect("/student-portal/student-findjobs"); }
     else { res.redirect("/employer-portal/employer-editprofile"); }
+
+
 }
 
 //current example code taken from https://nodemailer.com/about/ 
@@ -656,6 +637,7 @@ app.get("/changepassword", isLoggedIn, function (req, res) {
 });
 
 app.post('/changepassword', function (req, res) {
+    
     User.findOne({ _id: req.user._id }, (err, user) => {
         // Check if error connecting
         if (err) {
@@ -812,58 +794,75 @@ app.post("/employer-portal/employer-editprofile", function (req, res) {
 
 });
 
+var collection;
 
-// function getSelectedOptions(sel) {
-//     var opts = [], opt;
+app.get("/student-portal/student-findjobs", (req, res) =>{
+    res.render("student-portal/student-findjobs", {result: false});
+})
 
-//     // loop through options in select list
-//     for (var i = 0, len = sel.options.length; i < len; i++) {
-//         opt = sel.options[i];
+app.get("/search", async (req, res) => {
+    try {
+        let result = await collection.aggregate([
+            {
+                "$search": {
+                    "autocomplete": {
+                        "query": `${req.query.term}`,
+                        "path": "jobTitle",
+                        "fuzzy": {
+                            "maxEdits": 1
+                        }
+                    }
+                }
+            }
+        ]).toArray();
+        res.render("student-portal/student-findjobs", {result: result})
+        res.send(result);
+    } catch (e) {
+        console.error(e);
+        res.status(500).send({ message: e.message });
+    }
+})
 
-//         // check if selected
-//         if (opt.selected) {
-//             // add to array of option elements to return from this function
-//             opts.push(opt);
-//         }
+            // {
+            //     "$search": {
+            //         "text": {
+            //             "query": `${req.query.term}`,
+            //             "path": "jobTitle",
+            //             "fuzzy": {
+            //                 "maxEdits": 1
+            //             }
+            //         }
+            //     }
+            // }
+
+
+
+// app.listen("3000", async () => {
+//     try {
+//         await client.connect();
+//         collection = client.db("login").collection("jobposts");
+//         // jobPost = require("./models/jobpost");
+
+//     } catch (e) {
+//         console.error(e);
 //     }
-//     // return array containing references to selected option elements
-//     return opts;
-// }
-
-// function search(){
-//     // n = number of items
-//     // var input, n, discipline, type;
-//     var n = req.jobposts.find({});
-//     // discipline = req.jobposts.discipline;
-//     // type = req.jobposts.type;
-// ff
-//     console.log(n);
-
-//         next();
-
-// }
-
-
-
-
-// var n = req.jobposts.find({})
-// console.log(n);
-
-// //res.redirect("/login");
-// return next();
-
-function search() {
-    var result = db.collection('jobposts', 'users').find({
-        $or: [{ vehicleDescription: { $regex: search.keyWord, $options: 'i' } },
-        { adDescription: { $regex: search.keyWord, $options: 'i' } }]
-    });
-
-    console.log(result)
-}
+// })
 
 
 
 var port = process.env.PORT || 3000;
-app.listen(port, function () {
+app.listen(port, async function () {
+    
+    try {
+        await client.connect();
+        collection = client.db("login").collection("jobposts");
+        // jobPost = require("./models/jobpost");
+
+    } catch (e) {
+        console.error(e);
+    }
+
     console.log("Server Running");
 });
+
+//
