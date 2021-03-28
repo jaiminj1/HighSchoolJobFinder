@@ -34,10 +34,14 @@ var UserSchema = mongoose.Schema({
     verificationCode: String,
 
     //reset code
-    resetCode: String
+    resetCode: String,
+
+    previouslyApplied: [{type: String}],
+    bookmarks: [{type: String}]
+
 });
 
 UserSchema.plugin(passportlocalmongoose, 
     {usernameField: 'email'},
-    { selectFields: 'firstname lastname accountType school verificationCode dateOfBirth companyName accountType address unit city province Country postalCode profilePhoto companyWebsite companyDescription resetCode' });
+    { selectFields: 'firstname lastname accountType school verificationCode dateOfBirth companyName accountType address unit city province Country postalCode profilePhoto companyWebsite companyDescription resetCode previouslyApplied bookmarks' });
 module.exports = mongoose.model("User", UserSchema);

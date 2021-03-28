@@ -57,6 +57,9 @@ passport.use(new LocalStrategy({
     usernameField: 'email'
 }, User.authenticate()));
 
+app.use(express.static(__dirname + "/public"));
+
+
 //app.use(fileUpload());
 
 // passport.use('employerLocal', new LocalStrategy({
@@ -158,11 +161,35 @@ async function contactUs(name, email, subject, message) {
 }
 
 //student myapplications page
-app.get("/student-portal/student-myapplications", isLoggedIn, function (req, res) {
+app.get("/student-portal/student-myapplications", isLoggedIn, async function (req, res) {
+
+    var previouslyAppliedObj = []
+    var v;
+
+    for (i = 0; i < req.user.previouslyApplied.length; i++) {
+
+        await jobPost.findOne({ _id: req.user.previouslyApplied[i] }, (err, jobpost) => {
+            // Check if error connecting
+            if (err) {
+                console.log("error")
+                //res.json({ success: false, message: err }); // Return error
+            } else {
+                if (jobpost) {
+                    previouslyAppliedObj[i] = jobpost
+                    v++
+                }
+            }
+        });
+    }
+    res.render("student-portal/student-myapplications", {previouslyApplied: previouslyAppliedObj})
 });
 
 //student application page
 app.get("/student-portal/student-applications", isLoggedIn, function (req, res) {
+
+    if (!req.query.postID) {
+        res.redirect("/student-portal/student-findjobs")
+    } else {
 
     jobPost.findOne({ _id: req.query.postID }, (err, jobpost) => {
         // Check if error connecting
@@ -172,10 +199,20 @@ app.get("/student-portal/student-applications", isLoggedIn, function (req, res) 
             res.render('student-portal/student-applications', { jobpost: jobpost });
         }
     });
+}
 });
 
 //student application page
 app.post("/student-portal/student-applications", isLoggedIn, upload.fields([{ name: 'Resume', maxCount: 1}, {name: 'coverLetter', maxCount: 1}]), function (req, res) {
+
+    User.updateOne({ _id: req.user._id }, { $push: { previouslyApplied: req.body.postID } }, function (err, docs) {
+        if (err) {
+            console.log(err)
+        }
+        else {
+            console.log("Updated Docs : ", docs);
+        }
+    });
 
     jobPost.findOne({ _id: req.body.postID }, (err, jobpost) => {
         // Check if error connecting
@@ -221,6 +258,7 @@ async function applicationEmail(name, email, jobpost, response, resume, coverLet
     let info = await transporter.sendMail({
         from: email, // sender address
         to: jobpost.creator, // list of receivers
+        cc: email,
         subject: "Application from " + name + " for " + jobpost.jobTitle, // Subject line
         text: htmlText,
         html: htmlText,
@@ -794,6 +832,36 @@ app.post("/employer-portal/employer-editprofile", function (req, res) {
 
 });
 
+
+function bookmark(action, postID) {
+
+    if (action) {
+
+        User.updateOne({ _id: req.user._id }, { $push: { bookmarks: postID } }, function (err, docs) {
+            if (err) {
+                console.log(err)
+            }
+            else {
+                console.log("Updated Docs : ", docs);
+            }
+        });
+
+    } else {
+
+        User.updateOne({ _id: req.user._id }, { $pull: { bookmarks: postID } }, function (err, docs) {
+            if (err) {
+                console.log(err)
+            }
+            else {
+                console.log("Updated Docs : ", docs);
+            }
+        });
+
+    }
+
+}
+
+
 var collection;
 
 app.get("/student-portal/student-findjobs", (req, res) =>{
@@ -816,7 +884,7 @@ app.get("/search", async (req, res) => {
             }
         ]).toArray();
         res.render("student-portal/student-findjobs", {result: result})
-        res.send(result);
+        //res.send(result);
     } catch (e) {
         console.error(e);
         res.status(500).send({ message: e.message });

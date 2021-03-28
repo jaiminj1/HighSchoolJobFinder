@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>vv</title>
+    <script type="text/javascript" src="test.js"> </script>
+</head>
+
 <div class="topnav">
     <a class="active" href="/student-portal/student-findjobs">Find Jobs</a>
     <a href="/student-portal/student-bookmarks">Bookmarks</a>
@@ -8,6 +16,7 @@
     <a href="/logout">Logout</a>
 </div>
 
+<body>
 <h2>Photo</h2>
 <h2>Company Name: <%= employer.companyName %></h2>
 <h2>Company Website: <%=employer.companyWebsite %></h2>
@@ -38,13 +47,15 @@ Company Description: <%=employer.companyDescription %>
                 </div>
             </div>
         </form>
+        <script type="text/javascript" src="test.js"> 
+        bookmark("h","h")
+        </script>
+<input type="checkbox" onclick="bookmark(this, '<%= p._id %>' );">
             <% }) %>
     </div>
 
 </body>
-    
 <br>
-
 <div id="fullPost">
 <% if (jobpost) { %>
 This is the post jobpost selected <br>
@@ -64,6 +75,7 @@ This is the post jobpost selected <br>
 <% } %>
 </div>
 
+</html>
 <!-- <h2>Photo: xxx</h2>
 <h2>Company: Company Name</h2>
 <h2>Location: Location</h2>
