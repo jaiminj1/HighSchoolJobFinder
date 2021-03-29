@@ -26,65 +26,76 @@
     <input id="jobpost">
   </div> -->
 
-  <script>
-    // stringify the data passed from router to ejs (within the EJS template only)
-    var jobpost = <%- JSON.stringify(result) %>  
+<script>
+  // stringify the data passed from router to ejs (within the EJS template only)
+  var jobpost = <%- JSON.stringify(result) %>
+  console.log(jobpost)
 </script>
 
-  <form action="/search" method="GET">
-    <input type="text" id="term" name="term">
-    <button>Search</button>
-  </form>
+<form action="/search" method="GET">
+  <input type="text" id="term" name="term">
+  <button>Search</button>
+</form>
 
-    <div>
-      <% var x = 0 %>
-      <% if (result) { %>
+<div>
+  <% var x=0 %>
+    <% if (result) { %>
       <% result.forEach(p=> { %>
-          <br>
-          <button onclick="display(jobpost[<%=x%>])"> View </button>
+        <br>
+        <button onclick="display(jobpost[<%=x%>])"> View </button>
+        <div>
+
           <div>
-              <div>
-                  Title: <%= p.jobTitle %>
-              </div>
-
-              <div>
-                  Type: <%= p.type %>
-              </div>
-
-              <div>
-                Company Name: <%= p.companyName %>
-            </div>
-
-              <div>
-                  Brief Description: <%= p.briefDescription %>
-              </div>
+            <a href="student-portal/student-employerprofile?employerID=<%= p.creatorID %>"> <%= p.creatorName %> </a>
           </div>
-      </form>
-          <% x++ }) %>
+
+          <div>
+            Title: <%= p.jobTitle %>
+          </div>
+
+          <div>
+            location: <%= p.location %>
+          </div>
+
+          <div>
+            Type: <%= p.type %>
+          </div>
+
+          <div>
+            Company Name: <%= p.companyName %>
+          </div>
+
+          <div>
+            Brief Description: <%= p.briefDescription %>
+          </div>
+        </div>
+        </form>
+        <% x++ }) %>
           <% } %>
-  </div>
+</div>
 
-  <script>
-   function display(jobpost) {
-     console.log(jobpost)
-    $("div.fullPost").html("<br> Title:" + jobpost.jobTitle + "<br>" +
-              "Type:" + jobpost.type + "<br>" +
-              "Discipline:" + jobpost.discipline + "<br>" +
-              "briefDescription:" + jobpost.briefDescription + "<br>" +
-              "Description:" + jobpost.description + "<br>" +
-              "Responsibilities:" + jobpost.responsibilities + "<br>" +
-              "Skills:" + jobpost.skills + "<br>" +
-              "Posted on:" + jobpost.createdAt + "<br>" +
-              '<form action="/student-portal/student-applications" method="GET">' +
-              '<input type="hidden" id="postID" name="postID" value=' + jobpost._id + '>' +
-              '<button>Apply</button>'
-            )
-   }
-  </script>
+<script>
+    function display(jobpost) {
+      console.log(jobpost)
+      $("div.fullPost").html("<br> Title:" + jobpost.jobTitle + "<br>" +
+      "Location:" + jobpost.location + "<br>" +
+        "Type:" + jobpost.type + "<br>" +
+        "Discipline:" + jobpost.discipline + "<br>" +
+        "briefDescription:" + jobpost.briefDescription + "<br>" +
+        "Description:" + jobpost.description + "<br>" +
+        "Responsibilities:" + jobpost.responsibilities + "<br>" +
+        "Skills:" + jobpost.skills + "<br>" +
+        "Posted on:" + jobpost.createdAt + "<br>" +
+        '<form action="/student-portal/student-applications" method="GET">' +
+        '<input type="hidden" id="postID" name="postID" value=' + jobpost._id + '>' +
+        '<button>Apply</button>'
+      )
+    }
+</script>
 
-    <!-- <button onclick="search()">Search</button> -->
+<!-- <button onclick="search()">Search</button> -->
 
-    <!-- <script>
+<!-- <script>
       function search() {
         async (req, res) => {
             let data = await fetch(`/search?term=${req.term}`)
@@ -92,7 +103,7 @@
       }
     </script> -->
 
-    <!-- <script>
+<!-- <script>
       $(document).ready(function () {
         $("#jobpost").autocomplete({
           source: async function (req, res) {
@@ -125,7 +136,7 @@
      //  https://localhost:3000
 
     </script> -->
-    
+
 </body>
 
 <div class="fullPost">

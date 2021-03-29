@@ -47,10 +47,9 @@ Company Description: <%=employer.companyDescription %>
                 </div>
             </div>
         </form>
-        <script type="text/javascript" src="test.js"> 
-        bookmark("h","h")
-        </script>
+
 <input type="checkbox" onclick="bookmark(this, '<%= p._id %>' );">
+
             <% }) %>
     </div>
 
@@ -60,6 +59,7 @@ Company Description: <%=employer.companyDescription %>
 <% if (jobpost) { %>
 This is the post jobpost selected <br>
     Title: <%= jobpost.jobTitle %> <br>
+    Location: <%= jobpost.location %> <br>
     Type: <%= jobpost.type %> <br>
     Discipline: <%= jobpost.discipline %> <br>
     Brief Description: <%= jobpost.briefDescription %> <br>

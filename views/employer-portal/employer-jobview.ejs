@@ -22,6 +22,10 @@
                 </div>
 
                 <div>
+                    Location: <%= p.location %>
+                </div>
+
+                <div>
                     Type: <%= p.type %>
                 </div>
 
@@ -41,6 +45,7 @@
 <% if (jobpost) { %>
 This is the post jobpost selected <br>
     Title: <%= jobpost.jobTitle %> <br>
+    Location: <%= jobpost.location %> <br>
     Type: <%= jobpost.type %> <br>
     Discipline: <%= jobpost.discipline %> <br>
     Brief Description: <%= jobpost.briefDescription %> <br>

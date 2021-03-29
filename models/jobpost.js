@@ -2,6 +2,9 @@ var mongoose = require('mongoose');
 
 var jobPostSchema = new mongoose.Schema({
     creator: String,
+    creatorID: String,
+    creatorName: String,
+    location: String,
     jobTitle: String,
     discipline: [{type: String}],
     type: String,

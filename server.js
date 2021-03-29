@@ -737,11 +737,9 @@ app.get("/employer-portal/employer-jobcreate", isLoggedIn, function (req, res) {
 
 app.post("/employer-portal/employer-jobcreate", function (req, res) {
     jobPost = require("./models/jobpost");
-
-    console.log(req.body.question)
-
+    
     jobPost.create({
-        creator: req.user.email, jobTitle: req.body.jobTitle, discipline: req.body.discipline, type: req.body.type, briefDescription: req.body.briefDescription, description: req.body.description,
+        creator: req.user.email, creatorID: req.user._id, creatorName: req.user.companyName, jobTitle: req.body.jobTitle, location: req.body.location, discipline: req.body.discipline, type: req.body.type, briefDescription: req.body.briefDescription, description: req.body.description,
         responsibilities: req.body.responsibilities, skills: req.body.skills, questions: req.body.question
     }, function (err) {
         if (err) {
@@ -781,7 +779,7 @@ app.post("/employer-portal/employer-jobedit", function (req, res) {
         if (!req.body.deleteButton) {
 
             jobPost.updateOne({ _id: req.body.postID }, {
-                jobTitle: req.body.jobTitle, discipline: req.body.discipline, type: req.body.type, briefDescription: req.body.briefDescription, description: req.body.description,
+                jobTitle: req.body.jobTitle, location: req.body.location, discipline: req.body.discipline, type: req.body.type, briefDescription: req.body.briefDescription, description: req.body.description,
                 responsibilities: req.body.responsibilities, skills: req.body.skills, questions: req.body.question
             }, function (err, docs) {
                 if (err) {
@@ -883,6 +881,7 @@ app.get("/search", async (req, res) => {
                 }
             }
         ]).toArray();
+        console.log(result)
         res.render("student-portal/student-findjobs", {result: result})
         //res.send(result);
     } catch (e) {
