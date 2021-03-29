@@ -11,7 +11,7 @@ var express = require("express"),
     passportLocalMongoose =
         require("passport-local-mongoose"),
     User = require("./models/user");
-    jobPost = require("./models/jobpost");
+jobPost = require("./models/jobpost");
 
 //const bcrypt = require('bcrypt')
 const nodemailer = require("nodemailer");
@@ -24,7 +24,7 @@ const fs = require('fs');
 const { MongoClient } = require('mongodb');
 const client = new MongoClient(process.env.MONGO_CONNECT_KEY);
 
-var multer  = require('multer')
+var multer = require('multer')
 var upload = multer({ dest: 'uploads/' })
 
 mongoose.set('useNewUrlParser', true);
@@ -109,11 +109,6 @@ app.get("/employer-portal/employer-profile", isLoggedIn, function (req, res) {
     res.render("employer-portal/employer-profile", { error: false });
 });
 
-//admin user view page
-app.get("/admin-portal/admin-userview", isLoggedIn, function (req, res) {
-    res.render("admin-portal/admin-userview", { error: false });
-});
-
 //resources page
 app.get("/resources", function (req, res) {
     res.render("resources", { error: false });
@@ -181,7 +176,7 @@ app.get("/student-portal/student-myapplications", isLoggedIn, async function (re
             }
         });
     }
-    res.render("student-portal/student-myapplications", {previouslyApplied: previouslyAppliedObj})
+    res.render("student-portal/student-myapplications", { previouslyApplied: previouslyAppliedObj })
 });
 
 //student application page
@@ -191,19 +186,19 @@ app.get("/student-portal/student-applications", isLoggedIn, function (req, res) 
         res.redirect("/student-portal/student-findjobs")
     } else {
 
-    jobPost.findOne({ _id: req.query.postID }, (err, jobpost) => {
-        // Check if error connecting
-        if (err) {
-            res.json({ success: false, message: err }); // Return error
-        } else {
-            res.render('student-portal/student-applications', { jobpost: jobpost });
-        }
-    });
-}
+        jobPost.findOne({ _id: req.query.postID }, (err, jobpost) => {
+            // Check if error connecting
+            if (err) {
+                res.json({ success: false, message: err }); // Return error
+            } else {
+                res.render('student-portal/student-applications', { jobpost: jobpost });
+            }
+        });
+    }
 });
 
 //student application page
-app.post("/student-portal/student-applications", isLoggedIn, upload.fields([{ name: 'Resume', maxCount: 1}, {name: 'coverLetter', maxCount: 1}]), function (req, res) {
+app.post("/student-portal/student-applications", isLoggedIn, upload.fields([{ name: 'Resume', maxCount: 1 }, { name: 'coverLetter', maxCount: 1 }]), function (req, res) {
 
     User.updateOne({ _id: req.user._id }, { $push: { previouslyApplied: req.body.postID } }, function (err, docs) {
         if (err) {
@@ -219,7 +214,7 @@ app.post("/student-portal/student-applications", isLoggedIn, upload.fields([{ na
         if (err) {
             res.json({ success: false, message: err }); // Return error
         } else {
-            
+
             f()
 
             async function f() {
@@ -262,7 +257,7 @@ async function applicationEmail(name, email, jobpost, response, resume, coverLet
         subject: "Application from " + name + " for " + jobpost.jobTitle, // Subject line
         text: htmlText,
         html: htmlText,
-        attachments: [{filename: resume.originalname, path: resume.path}, { filename: coverLetter.originalname, path: coverLetter.path }]
+        attachments: [{ filename: resume.originalname, path: resume.path }, { filename: coverLetter.originalname, path: coverLetter.path }]
     });
 
     console.log("Message sent: %s", info.messageId);
@@ -675,7 +670,7 @@ app.get("/changepassword", isLoggedIn, function (req, res) {
 });
 
 app.post('/changepassword', function (req, res) {
-    
+
     User.findOne({ _id: req.user._id }, (err, user) => {
         // Check if error connecting
         if (err) {
@@ -737,7 +732,7 @@ app.get("/employer-portal/employer-jobcreate", isLoggedIn, function (req, res) {
 
 app.post("/employer-portal/employer-jobcreate", function (req, res) {
     jobPost = require("./models/jobpost");
-    
+
     jobPost.create({
         creator: req.user.email, creatorID: req.user._id, creatorName: req.user.companyName, jobTitle: req.body.jobTitle, location: req.body.location, discipline: req.body.discipline, type: req.body.type, briefDescription: req.body.briefDescription, description: req.body.description,
         responsibilities: req.body.responsibilities, skills: req.body.skills, questions: req.body.question
@@ -860,10 +855,48 @@ function bookmark(action, postID) {
 }
 
 
+//ADMIN SECTION
+
+//admin user view page
+app.get("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res) {
+    res.render("admin-portal/admin-userview", { error: false });
+});
+
+//admin job view page
+app.get("/admin-portal/admin-jobview", isLoggedIn, isAdmin, function (req, res) {
+    res.render("admin-portal/admin-userview", { error: false });
+});
+
+
+//admin profile page
+app.get("/admin-portal/admin-viewprofile", isLoggedIn, isAdmin, function (req, res) {
+    res.render("admin-portal/admin-userview", { error: false });
+});
+
+//admin edit job page
+app.get("/admin-portal/admin-jobedit", isLoggedIn, isAdmin, function (req, res) {
+    if (!req.query.postID) {
+        res.redirect("/student-portal/student-findjobs")
+    } else {
+        res.render("admin-portal/admin-userview", { error: false });
+    }
+});
+
+//admin account settings page
+app.get("/admin-portal/admin-myaccount", isLoggedIn, isAdmin, function (req, res) {
+    res.render("admin-portal/admin-myaccount", { error: false });
+});
+
+
+
+
+
+
+
 var collection;
 
-app.get("/student-portal/student-findjobs", (req, res) =>{
-    res.render("student-portal/student-findjobs", {result: false});
+app.get("/student-portal/student-findjobs", (req, res) => {
+    res.render("student-portal/student-findjobs", { result: false });
 })
 
 app.get("/search", async (req, res) => {
@@ -882,7 +915,7 @@ app.get("/search", async (req, res) => {
             }
         ]).toArray();
         console.log(result)
-        res.render("student-portal/student-findjobs", {result: result})
+        res.render("student-portal/student-findjobs", { result: result })
         //res.send(result);
     } catch (e) {
         console.error(e);
@@ -890,17 +923,17 @@ app.get("/search", async (req, res) => {
     }
 })
 
-            // {
-            //     "$search": {
-            //         "text": {
-            //             "query": `${req.query.term}`,
-            //             "path": "jobTitle",
-            //             "fuzzy": {
-            //                 "maxEdits": 1
-            //             }
-            //         }
-            //     }
-            // }
+// {
+//     "$search": {
+//         "text": {
+//             "query": `${req.query.term}`,
+//             "path": "jobTitle",
+//             "fuzzy": {
+//                 "maxEdits": 1
+//             }
+//         }
+//     }
+// }
 
 
 
@@ -919,7 +952,7 @@ app.get("/search", async (req, res) => {
 
 var port = process.env.PORT || 3000;
 app.listen(port, async function () {
-    
+
     try {
         await client.connect();
         collection = client.db("login").collection("jobposts");
