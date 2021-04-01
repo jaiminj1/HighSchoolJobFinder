@@ -4,6 +4,7 @@ var UserSchema = mongoose.Schema({
 
     //all users
     isVerified: { type: Boolean, default: false },
+    isApproved: { type: Boolean, default: false },
     firstname: String,
     lastname: String,
     accountType: String,
@@ -12,9 +13,10 @@ var UserSchema = mongoose.Schema({
     accountType: String,
 
     //student only information
-    dateOfBirth: {type: Date, default: Date.now},
+    dateOfBirth: { type: Date, default: Date.now },
     school: String,
     grade: Number,
+    isCoop: Boolean,
 
     //employer only information
     companyName: String,
@@ -36,12 +38,12 @@ var UserSchema = mongoose.Schema({
     //reset code
     resetCode: String,
 
-    previouslyApplied: [{type: String}],
-    bookmarks: [{type: String}]
+    previouslyApplied: [{ type: String }],
+    bookmarks: [{ type: String }]
 
 });
 
-UserSchema.plugin(passportlocalmongoose, 
-    {usernameField: 'email'},
-    { selectFields: 'firstname lastname accountType school verificationCode dateOfBirth companyName accountType address unit city province Country postalCode profilePhoto companyWebsite companyDescription resetCode previouslyApplied bookmarks' });
+UserSchema.plugin(passportlocalmongoose,
+    { usernameField: 'email' },
+    { selectFields: 'firstname lastname accountType school verificationCode dateOfBirth companyName accountType address unit city province Country postalCode profilePhoto companyWebsite companyDescription resetCode previouslyApplied bookmarks isCoop' });
 module.exports = mongoose.model("User", UserSchema);

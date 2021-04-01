@@ -4,4 +4,56 @@
     <a href="/admin-portal/admin-myaccount">My Account</a>
   </div>
 
+
+  <div>
+    <% unapprovedUsers.forEach(p=> { %>
+        <br>
+
+<% if (p.accountType == "student") { %>
+        <div>
+            <div>
+                <%= p.firstname %>  <%= p.lastname %> 
+            </div>
+
+            <div>
+                <%= p.accountType %>
+            </div>
+
+            <div>
+                <%= p.school %>
+            </div>
+        </div>
+<% } else if (p.accountType == "employer") { %>
+    <div>
+        <div>
+            <%= companyName %> 
+        </div>
+
+        <div>
+            <%= p.accountType %>
+        </div>
+
+        <div>
+            <%= p.city %>
+        </div>
+    </div>
+<% } else if (p.accountType == "admin") { %>
+    <div>
+        <div>
+            <%= p.firstname %>  <%= p.lastname %> 
+        </div>
+
+        <div>
+            <%= p.accountType %>
+        </div>
+
+        <div>
+            <%= p.school %>
+        </div>
+    </div>
+<% } %>
+        <% }) %>
+
+</div>
+
 <li><a href="/logout">Logout</a></li>

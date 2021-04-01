@@ -406,7 +406,7 @@ app.post("/registerStudent", function (req, res) {
         return res.render("registerStudent", { error: "Passwords don't match" });
     }
 
-    User.register(new User({ email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType: accountType, school: req.body.School, grade: req.body.grade, verificationCode: verificationCode, dateOfBirth: dateOfBirth }),
+    User.register(new User({ email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType: accountType, school: req.body.School, grade: req.body.grade, verificationCode: verificationCode, dateOfBirth: dateOfBirth, isCoop: false }),
         password, function (err, user) {
             if (err) {
                 console.log(err);
@@ -859,18 +859,26 @@ function bookmark(action, postID) {
 
 //admin user view page
 app.get("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res) {
-    res.render("admin-portal/admin-userview", { error: false });
+
+    User.find({ isApproved: false }, async function (err, unapprovedUsers) {
+        // Check if error connecting
+        if (err) {
+            res.json({ success: false, message: err }); // Return error
+        } else {
+            res.render("admin-portal/admin-userview", { unapprovedUsers: unapprovedUsers, error: false });
+        }
+    });
 });
 
 //admin job view page
 app.get("/admin-portal/admin-jobview", isLoggedIn, isAdmin, function (req, res) {
-    res.render("admin-portal/admin-userview", { error: false });
+    res.render("admin-portal/admin-jobview", { error: false });
 });
 
 
 //admin profile page
 app.get("/admin-portal/admin-viewprofile", isLoggedIn, isAdmin, function (req, res) {
-    res.render("admin-portal/admin-userview", { error: false });
+    res.render("admin-portal/admin-viewprofile", { error: false });
 });
 
 //admin edit job page
@@ -878,7 +886,7 @@ app.get("/admin-portal/admin-jobedit", isLoggedIn, isAdmin, function (req, res) 
     if (!req.query.postID) {
         res.redirect("/student-portal/student-findjobs")
     } else {
-        res.render("admin-portal/admin-userview", { error: false });
+        res.render("admin-portal/admin-jobedit", { error: false });
     }
 });
 
