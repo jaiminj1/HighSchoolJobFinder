@@ -870,6 +870,23 @@ app.get("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res)
     });
 });
 
+//admin user view put function
+app.put("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res) {
+
+    console.log(req.body.userID)
+
+    User.updateOne({ _id: req.body.userID }, { isApproved: true }, function (err, docs) {
+        if (err) {
+            console.log(err)
+        }
+        else {
+            console.log("Updated Docs : ", docs);
+            res.json({success : "Updated Successfully", status : 200});
+        }
+    });
+
+});
+
 //admin job view page
 app.get("/admin-portal/admin-jobview", isLoggedIn, isAdmin, function (req, res) {
     res.render("admin-portal/admin-jobview", { error: false });
