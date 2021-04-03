@@ -1,59 +1,151 @@
+<!DOCTYPE html>
+<html>
+
 <div class="topnav">
-    <a class="active" href="/admin-portal/admin-userview">View Users</a>
-    <a href="/student-portal/student-applications">View Jobs</a>
-    <a href="/admin-portal/admin-myaccount">My Account</a>
-  </div>
+  <a class="active" href="/admin-portal/admin-userview">View Users</a>
+  <a href="/student-portal/student-applications">View Jobs</a>
+  <a href="/admin-portal/admin-myaccount">My Account</a>
+</div>
 
+<head>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+</head>
 
-  <div>
+<script>
+  // stringify the data passed from router to ejs (within the EJS template only)
+  var selectedID = "null"
+  var unapprovedUsersJSON = <%- JSON.stringify(unapprovedUsers) %>
+</script>
+
+<script>
+
+function verifyUser(userID) {
+  console.log("hello")
+    $.ajax({
+      url: '/admin-portal/admin-userview',
+      type: 'PUT',
+      data: {userID: userID},
+      success: function (result) {
+        return
+      }
+    });
+  }
+
+    function display(user) {
+
+      selectedID = user._id
+
+      if (user.accountType == "student") {
+        $("div.fullUser").html(
+          "<br> Full Name:" + user.firstname + user.lastname + "<br>" +
+          "Email: " + user.email + "<br>" +
+          "Account Type:" + user.accountType + "<br>" +
+          "School: " + user.school + "<br>" +
+          "Grade: " + user.grade + "<br>" +
+          "Date of Birth: " + user.dateOfBirth + "<br>" +
+          "isCoop?: " + user.isCoop + "<br>" 
+        )
+                    var r = $('<input/>').attr({
+                         type: "button",
+                         id: "field",
+                         value: "Approve",
+                         onclick: "verifyUser(selectedID)"
+                    });
+            $("div.fullUser").append(r);
+      } else if (user.accountType == "employer") {
+        $("div.fullUser").html(
+          "<br> Full Name: " + user.firstname + user.lastname + "<br>" +
+          "Email: " + user.email + "<br>" +
+          "Account Type: " + user.accountType + "<br>" +
+          "School: " + user.school + "<br>" +
+          "Grade: " + user.grade + "<br>" +
+          "Date of Birth: " + user.dateOfBirth + "<br>" +
+          "isCoop?: " + user.isCoop + "<br>"
+          // +
+          // '<form action="/student-portal/student-applications" method="GET">' +
+          // '<input type="hidden" id="postID" name="postID" value=' + jobpost._id + '>' +
+          // '<button>Apply</button>'
+        )
+      } else {
+        $("div.fullUser").html(
+          "<br> Full Name: " + user.firstname + user.lastname + "<br>" +
+          "Email: " + user.email + "<br>" +
+          "Account Type: " + user.accountType + "<br>" +
+          "School: " + user.school + "<br>"
+          // +
+          // '<form action="/student-portal/student-applications" method="GET">' +
+          // '<input type="hidden" id="postID" name="postID" value=' + jobpost._id + '>' +
+          // '<button>Apply</button>'
+        )
+      }
+    }
+
+</script>
+
+<div>
+  <% var x=0 %>
     <% unapprovedUsers.forEach(p=> { %>
-        <br>
+      <br>
+      <br>
+      <button onclick="display(unapprovedUsersJSON[<%=x%>])"> View </button>
+      <br>
 
-<% if (p.accountType == "student") { %>
+      <% if (p.accountType=="student" ) { %>
         <div>
-            <div>
-                <%= p.firstname %>  <%= p.lastname %> 
-            </div>
+          <div>
+            <%= p.firstname %>
+              <%= p.lastname %>
+          </div>
 
-            <div>
-                <%= p.accountType %>
-            </div>
-
-            <div>
-                <%= p.school %>
-            </div>
-        </div>
-<% } else if (p.accountType == "employer") { %>
-    <div>
-        <div>
-            <%= companyName %> 
-        </div>
-
-        <div>
+          <div>
             <%= p.accountType %>
-        </div>
+          </div>
 
-        <div>
-            <%= p.city %>
-        </div>
-    </div>
-<% } else if (p.accountType == "admin") { %>
-    <div>
-        <div>
-            <%= p.firstname %>  <%= p.lastname %> 
-        </div>
-
-        <div>
-            <%= p.accountType %>
-        </div>
-
-        <div>
+          <div>
             <%= p.school %>
+          </div>
         </div>
-    </div>
-<% } %>
-        <% }) %>
+        <% } else if (p.accountType=="employer" ) { %>
+          <div>
+            <div>
+              <%= companyName %>
+            </div>
+
+            <div>
+              <%= p.accountType %>
+            </div>
+
+            <div>
+              <%= p.city %>
+            </div>
+          </div>
+          <% } else if (p.accountType=="admin" ) { %>
+            <div>
+              <div>
+                <%= p.firstname %>
+                  <%= p.lastname %>
+              </div>
+
+              <div>
+                <%= p.accountType %>
+              </div>
+
+              <div>
+                <%= p.school %>
+              </div>
+            </div>
+            <% } %>
+              <% x++ }) %>
+
+</div>
+
+<div class="fullUser" id="fullUser">
 
 </div>
 
 <li><a href="/logout">Logout</a></li>
+
+</html>
