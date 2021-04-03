@@ -22,8 +22,7 @@
 
 <script>
 
-function verifyUser(userID) {
-  console.log("hello")
+function verifyUser(userID, number) {
     $.ajax({
       url: '/admin-portal/admin-userview',
       type: 'PUT',
@@ -32,9 +31,15 @@ function verifyUser(userID) {
         return
       }
     });
+
+    $( "div." + number ).remove();
+    $( "#approveButton" ).remove();
+
   }
 
-    function display(user) {
+    function display(user, number) {
+
+      numberV = number
 
       selectedID = user._id
 
@@ -50,9 +55,9 @@ function verifyUser(userID) {
         )
                     var r = $('<input/>').attr({
                          type: "button",
-                         id: "field",
+                         id: "approveButton",
                          value: "Approve",
-                         onclick: "verifyUser(selectedID)"
+                         onclick: "verifyUser(selectedID, numberV)"
                     });
             $("div.fullUser").append(r);
       } else if (user.accountType == "employer") {
@@ -61,25 +66,29 @@ function verifyUser(userID) {
           "Email: " + user.email + "<br>" +
           "Account Type: " + user.accountType + "<br>" +
           "School: " + user.school + "<br>" +
-          "Grade: " + user.grade + "<br>" +
-          "Date of Birth: " + user.dateOfBirth + "<br>" +
-          "isCoop?: " + user.isCoop + "<br>"
-          // +
-          // '<form action="/student-portal/student-applications" method="GET">' +
-          // '<input type="hidden" id="postID" name="postID" value=' + jobpost._id + '>' +
-          // '<button>Apply</button>'
+          "Company Website: " + user.companyWebsite
         )
-      } else {
+                    var r = $('<input/>').attr({
+                         type: "button",
+                         id: "approveButton",
+                         value: "Approve",
+                         onclick: "verifyUser(selectedID, numberV)"
+                    });
+            $("div.fullUser").append(r);
+      } else if (user.accountType == "admin") {
         $("div.fullUser").html(
           "<br> Full Name: " + user.firstname + user.lastname + "<br>" +
           "Email: " + user.email + "<br>" +
           "Account Type: " + user.accountType + "<br>" +
           "School: " + user.school + "<br>"
-          // +
-          // '<form action="/student-portal/student-applications" method="GET">' +
-          // '<input type="hidden" id="postID" name="postID" value=' + jobpost._id + '>' +
-          // '<button>Apply</button>'
         )
+                    var r = $('<input/>').attr({
+                         type: "button",
+                         id: "approveButton",
+                         value: "Approve",
+                         onclick: "verifyUser(selectedID, numberV)"
+                    });
+            $("div.fullUser").append(r);
       }
     }
 
@@ -90,7 +99,9 @@ function verifyUser(userID) {
     <% unapprovedUsers.forEach(p=> { %>
       <br>
       <br>
-      <button onclick="display(unapprovedUsersJSON[<%=x%>])"> View </button>
+
+      <div class="<%=x%>" id="<%=x%>">
+      <button onclick="display(unapprovedUsersJSON[<%=x%>], <%=x%>)"> View </button>
       <br>
 
       <% if (p.accountType=="student" ) { %>
@@ -138,6 +149,7 @@ function verifyUser(userID) {
               </div>
             </div>
             <% } %>
+          </div>
               <% x++ }) %>
 
 </div>

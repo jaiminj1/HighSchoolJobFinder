@@ -675,6 +675,10 @@ app.get("/changepassword", isLoggedIn, function (req, res) {
 
 app.post('/changepassword', function (req, res) {
 
+    if (req.body.newpassword == req.body.confirmpassword) {
+        res.render("changepassword", { message: "Passwords don't match" });
+    }
+
     User.findOne({ _id: req.user._id }, (err, user) => {
         // Check if error connecting
         if (err) {
