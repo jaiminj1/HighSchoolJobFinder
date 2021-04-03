@@ -1,3 +1,84 @@
-<h1>High School Job Tracker</h1> 
-  
-<li><a href="/login">Login</a></li> 
+<!-- <!DOCTYPE html>
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/vuesax/dist/vuesax.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<template>
+    
+</template>
+ <script>
+        new Vue({
+            el: '#app'
+        })
+    </script>
+     -->
+    <!-- <script>
+    export default {
+        data: () => ({
+            activeItem: 0
+        })
+    }
+</script> --> 
+
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/vuesax/dist/vuesax.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+<body>
+    <div id="login">
+        <vs-navbar v-model="activeItem" class="nabarx">
+            <div slot="title">
+                <vs-navbar-title>
+                    High School JobFinder
+                </vs-navbar-title>
+            </div>
+
+            <vs-navbar-item index="0">
+                <a href="/login">Sign In</a>
+            </vs-navbar-item>
+            <vs-navbar-item index="1">
+                <a href="/resources">Resources</a>
+            </vs-navbar-item>
+            <vs-navbar-item index="2">
+                <a href="/helpCenter">Help Center</a>
+            </vs-navbar-item>
+        </vs-navbar>
+    </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuesax/dist/vuesax.umd.js"></script>
+  <script>
+    new Vue({
+        el: '#login'
+    })
+  </script>
+</body>
+</html>
+
+<!-- <body>
+    <div id="app">
+        <vs-button onclick="window.location.href='/login'" vs-type="border" vs-color="danger">Login</vs-button>
+    </div>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuesax/dist/vuesax.umd.js"></script>
+    
+</body> -->
+<!-- <h1>High School Job Tracker</h1> -->
+
+<!-- <li></li>  -->
+
+<!-- <html>
+
+
+
+
+</html> -->
+
+<!-- border,  filled, flat, -->
+
+<!-- vs-color: primary, success, danger, warning, rgb(11, 189, 135) -->
