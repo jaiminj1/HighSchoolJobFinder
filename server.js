@@ -28,7 +28,8 @@ const fs = require('fs');
 const { MongoClient } = require('mongodb');
 const client = new MongoClient(process.env.MONGO_CONNECT_KEY);
 
-var multer = require('multer')
+var multer = require('multer');
+const user = require('./models/user');
 var upload = multer({ dest: 'uploads/' })
 
 mongoose.set('useNewUrlParser', true);
@@ -892,9 +893,9 @@ app.put("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res)
 });
 
 //admin job view page
-app.get("/admin-portal/admin-jobview", isLoggedIn, isAdmin, function (req, res) {
-    res.render("admin-portal/admin-jobview", { error: false });
-});
+// app.get("/admin-portal/admin-jobview", isLoggedIn, isAdmin, function (req, res) {
+//     res.render("admin-portal/admin-jobview", { error: false });
+// });
 
 
 //admin profile page
@@ -928,7 +929,11 @@ app.get("/student-portal/student-findjobs", (req, res) => {
     res.render("student-portal/student-findjobs", { result: false });
 })
 
-app.get("/search", async (req, res) => {
+app.get("/admin-portal/admin-jobview", (req, res) => {
+    res.render("admin-portal/admin-jobview", { result: false });
+})
+
+app.get("/search", isLoggedIn, async (req, res) => {
     try {
         let result = await collection.aggregate([
             {
@@ -944,7 +949,37 @@ app.get("/search", async (req, res) => {
             }
         ]).toArray();
         console.log(result)
+        if (req.user.accountType=="student"){
         res.render("student-portal/student-findjobs", { result: result })
+        }
+        else if(req.user.accountType=="admin") {
+            res.render("admin-portal/admin-jobview", { result: result })
+        }
+        //res.send(result);
+    } catch (e) {
+        console.error(e);
+        res.status(500).send({ message: e.message });
+    }
+})
+
+
+app.get("/search2", isLoggedIn, async (req, res) => {
+    try {
+        let result = await collection.aggregate([
+            {
+                "$search": {
+                    "autocomplete": {
+                        "query": `${req.query.term}`,
+                        "path": "users",
+                        "fuzzy": {
+                            "maxEdits": 1
+                        }
+                    }
+                }
+            }
+        ]).toArray();
+        console.log(result)
+        res.render("admin-portal/admin-userview", { result: result })
         //res.send(result);
     } catch (e) {
         console.error(e);

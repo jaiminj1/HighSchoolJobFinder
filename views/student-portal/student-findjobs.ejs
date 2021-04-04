@@ -29,6 +29,7 @@
 <script>
   // stringify the data passed from router to ejs (within the EJS template only)
   var jobpost = <%- JSON.stringify(result) %>
+  console.log(jobpost)
 </script>
 
 <form action="/search" method="GET">
