@@ -1,7 +1,21 @@
 <div class="topnav">
-    <a href="/admin-portal/admin-userview">View Users</a>
-    <a href="/student-portal/student-applications">View Jobs</a>
-    <a class="active" href="/admin-portal/admin-myaccount">My Account</a>
-  </div>
+  <a href="/admin-portal/admin-userview">View Users</a>
+  <a href="/student-portal/student-applications">View Jobs</a>
+  <a class="active" href="/admin-portal/admin-myaccount">My Account</a>
+</div>
+
+<form action="/admin-portal/admin-myaccount" method="POST">
+  First Name: <input type="text" name="firstname" placeholder="First Name" value="<%= firstname %>"> <br>
+  Last Name: <input type="text" name="firstname" placeholder="First Name" value="<%= lastname %>"> <br>
+  <button>Submit</button> <br>
+</form>
+
+<form action="/changepassword" method="POST">
+  <input type="password" name="currentpassword" placeholder="Current Password">
+  <input type="password" name="newpassword" placeholder="New Password">
+  <input type="password" name="confirmpassword" placeholder="Confirm Password">
+  <button>Submit</button>
+</form>
+
 
 <li><a href="/logout">Logout</a></li>

@@ -865,6 +865,7 @@ function bookmark(action, postID) {
 
 //ADMIN SECTION
 
+
 //admin user view page
 app.get("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res) {
 
@@ -873,10 +874,44 @@ app.get("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res)
         if (err) {
             res.json({ success: false, message: err }); // Return error
         } else {
-            res.render("admin-portal/admin-userview", { unapprovedUsers: unapprovedUsers, error: false });
+            res.render("admin-portal/admin-userview", { unapprovedUsers: unapprovedUsers, error: false, result: false});
         }
     });
 });
+
+var userCollection;
+
+app.get("/searchUser", async (req, res) => {
+    
+    try {
+        let result = await userCollection.aggregate([
+            {
+                "$search": {
+                    "autocomplete": {
+                        "query": `${req.query.term}`,
+                        "path": "firstname",
+                        "fuzzy": {
+                            "maxEdits": 1
+                        }
+                    }
+                }
+            }
+        ]).toArray();
+
+        User.find({ isApproved: false }, async function (err, unapprovedUsers) {
+            // Check if error connecting
+            if (err) {
+                res.json({ success: false, message: err }); // Return error
+            } else {
+                res.render("admin-portal/admin-userview", { unapprovedUsers: unapprovedUsers, error: false, result: result});
+            }
+        });
+
+    } catch (e) {
+        console.error(e);
+        res.status(500).send({ message: e.message });
+    }
+})
 
 //admin user view put function
 app.put("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res) {
@@ -889,7 +924,7 @@ app.put("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res)
         }
         else {
             console.log("Updated Docs : ", docs);
-            res.json({success : "Updated Successfully", status : 200});
+            res.json({ success: "Updated Successfully", status: 200 });
         }
     });
 
@@ -917,16 +952,29 @@ app.get("/admin-portal/admin-jobedit", isLoggedIn, isAdmin, function (req, res) 
 
 //admin account settings page
 app.get("/admin-portal/admin-myaccount", isLoggedIn, isAdmin, function (req, res) {
-    res.render("admin-portal/admin-myaccount", { error: false });
+    res.render("admin-portal/admin-myaccount", { error: false, firstname: req.user.firstname, lastname: req.user.lastname });
+});
+
+app.post("/admin-portal/admin-myaccount", isLoggedIn, isAdmin, function (req, res) {
+
+    User.updateOne({ _id: req.user._id }, {firstname: req.body.firstname, lastname: req.body.lastname}, function (err, docs) {
+        if (err) {
+            console.log(err)
+        }
+        else {
+            console.log("Updated Docs : ", docs);
+        }
+    });
+
+    res.redirect("/admin-portal/admin-myaccount")
+
 });
 
 
 
 
 
-
-
-var collection;
+var jobpostCollection;
 
 app.get("/student-portal/student-findjobs", (req, res) => {
     res.render("student-portal/student-findjobs", { result: false });
@@ -934,7 +982,7 @@ app.get("/student-portal/student-findjobs", (req, res) => {
 
 app.get("/search", async (req, res) => {
     try {
-        let result = await collection.aggregate([
+        let result = await jobpostCollection.aggregate([
             {
                 "$search": {
                     "autocomplete": {
@@ -947,9 +995,7 @@ app.get("/search", async (req, res) => {
                 }
             }
         ]).toArray();
-        console.log(result)
         res.render("student-portal/student-findjobs", { result: result })
-        //res.send(result);
     } catch (e) {
         console.error(e);
         res.status(500).send({ message: e.message });
@@ -988,8 +1034,8 @@ app.listen(port, async function () {
 
     try {
         await client.connect();
-        collection = client.db("login").collection("jobposts");
-        // jobPost = require("./models/jobpost");
+        jobpostCollection = client.db("login").collection("jobposts");
+        userCollection = client.db("login").collection("users");
 
     } catch (e) {
         console.error(e);

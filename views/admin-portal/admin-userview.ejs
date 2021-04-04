@@ -94,6 +94,7 @@ function verifyUser(userID, number) {
 
 </script>
 
+<% if (unapprovedUsers != false) { %>}
 <div>
   <% var x=0 %>
     <% unapprovedUsers.forEach(p=> { %>
@@ -153,10 +154,67 @@ function verifyUser(userID, number) {
               <% x++ }) %>
 
 </div>
+<% } %>
 
 <div class="fullUser" id="fullUser">
 
 </div>
+
+<script>
+  // stringify the data passed from router to ejs (within the EJS template only)
+  var jobpost = <%- JSON.stringify(result) %>
+</script>
+
+<form action="/searchUser" method="GET">
+  <input type="text" id="term" name="term">
+  <button>Search</button>
+</form>
+
+<div>
+  <% var x=0 %>
+    <% if (result) { %>
+      <% result.forEach(p=> { %>
+        <br>
+        <button onclick="display(jobpost[<%=x%>])"> View </button>
+        <div>
+
+          <div>
+           <%= p.firstname %> <%= p.lastname %>
+          </div>
+
+          <div>
+   
+          </div>
+        </div>
+        </form>
+        <% x++ }) %>
+          <% } %>
+</div>
+
+<script>
+    function display(jobpost) {
+      console.log(jobpost)
+      $("div.fullPost").html("<br> Title:" + jobpost.jobTitle + "<br>" +
+      "Location:" + jobpost.location + "<br>" +
+        "Type:" + jobpost.type + "<br>" +
+        "Discipline:" + jobpost.discipline + "<br>" +
+        "briefDescription:" + jobpost.briefDescription + "<br>" +
+        "Description:" + jobpost.description + "<br>" +
+        "Responsibilities:" + jobpost.responsibilities + "<br>" +
+        "Skills:" + jobpost.skills + "<br>" +
+        "Posted on:" + jobpost.createdAt + "<br>" +
+        '<form action="/student-portal/student-applications" method="GET">' +
+        '<input type="hidden" id="postID" name="postID" value=' + jobpost._id + '>' +
+        '<button>Apply</button>'
+      )
+    }
+</script>
+
+<div class="fullPost">
+
+</div>
+
+
 
 <li><a href="/logout">Logout</a></li>
 
