@@ -103,10 +103,6 @@ app.get("/portal", isLoggedIn, function (req, res) {
     }
 });
 
-//student find jobs page
-// app.get("/student-portal/student-findjobs", isLoggedIn, function (req, res) {
-//     res.render("student-portal/student-findjobs", { error: false });
-// });
 
 //employer profile page
 app.get("/employer-portal/employer-profile", isLoggedIn, function (req, res) {
@@ -998,7 +994,7 @@ app.put("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res)
 
 //admin job view page
 app.get("/admin-portal/admin-jobview", isLoggedIn, isAdmin, function (req, res) {
-    res.render("admin-portal/admin-jobview", { error: false });
+    res.render("admin-portal/admin-jobview", { result: false, error: false });
 });
 
 
@@ -1096,78 +1092,6 @@ app.get("/search", isLoggedIn, async function (req, res) {
         res.status(500).send({ message: e.message });
     }
 });
-
-
-// app.get("/search", isLoggedIn, async (req, res) => {
-
-// var discipline = req.query.discipline
-// var query = req.query.term
-// var type = req.query.type
-
-// console.log(discipline)
-
-
-//         try {
-//             let result = await userCollection.aggregate([
-//                 {
-//                     "$search": {
-//                         "compound": {
-//                                 "must": [
-//                                   {
-//                                     "text": {
-//                                       "query": discipline,
-//                                       "path": "discipline"
-//                                     //}
-//                                   },
-//                                   //{
-//                                     "text": {
-//                                       "value": type,
-//                                       "path": "type"
-//                                     //}
-//                                   },
-//                                   //{
-//                                     "text": {
-//                                       "value": query,
-//                                       "path": "jobTitle"
-//                                     }
-//                                   }
-//                                 ]
-//                         }
-//                     }
-//                 }
-//             ]).toArray();
-//         res.render("student-portal/student-findjobs", { result: result })
-//     } catch (e) {
-//         console.error(e);
-//         res.status(500).send({ message: e.message });
-//     }
-// })
-
-
-// "$search": {
-//     "autocomplete": {
-//         "query": `${req.query.term}`,
-//         "path": "firstname",
-//         "fuzzy": {
-//             "maxEdits": 1
-//         }
-//     }
-// }
-
-
-
-// app.listen("3000", async () => {
-//     try {
-//         await client.connect();
-//         collection = client.db("login").collection("jobposts");
-//         // jobPost = require("./models/jobpost");
-
-//     } catch (e) {
-//         console.error(e);
-//     }
-// })
-
-
 
 var port = process.env.PORT || 3000;
 app.listen(port, async function () {
