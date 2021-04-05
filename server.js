@@ -311,6 +311,38 @@ app.get("/student-portal/student-employerprofile", isLoggedIn, isStudent, async 
 
 });
 
+app.get("/admin-portal/admin-viewprofile", isLoggedIn, isAdmin, async function (req, res) {
+
+    jobPost = require("./models/jobpost");
+
+    User.findOne({ _id: req.query.employerID }, async function (err, employer) {
+        // Check if error connecting
+        if (err) {
+            res.json({ success: false, message: err }); // Return error
+        } else {
+            employerPosts = await jobPost.find({ creator: employer.email })
+
+            if (req.query.postId) {
+
+                jobPost = require("./models/jobpost");
+
+                jobPost.findOne({ _id: req.query.postId }, (err, jobpost) => {
+                    // Check if error connecting
+                    if (err) {
+                        res.json({ success: false, message: err }); // Return error
+                    } else {
+                        res.render('admin-portal/admin-viewprofile', { employerPosts, employer: employer, jobpost });
+                    }
+                });
+
+            } else {
+                res.render('admin-portal/admin-viewprofile', { employerPosts, employer: employer, jobpost: false });
+            }
+        }
+    });
+
+});
+
 // app.post("/student-portal/student-employerprofile", isLoggedIn, isStudent, async function (req, res) {
 
 //     jobPost = require("./models/jobpost");

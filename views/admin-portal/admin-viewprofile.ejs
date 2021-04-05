@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>vv</title>
+    <script type="text/javascript" src="test.js"> </script>
+</head>
+
+<div class="topnav">
+    <a class="active" href="/student-portal/student-findjobs">Find Jobs</a>
+    <a href="/student-portal/student-bookmarks">Bookmarks</a>
+    <a href="/student-portal/student-applications">My Applications</a>
+    <a href="/resources">Resources</a>
+    <a href="/helpCenter">Help Center</a>
+    <a href="/student-portal/student-viewprofile">Account</a>
+    <a href="/logout">Logout</a>
+</div>
+
+<body>
+<h2>Photo</h2>
+<h2>Company Name: <%= employer.companyName %></h2>
+<h2>Company Website: <%=employer.companyWebsite %></h2>
+<h3>Address:</h3><h4><%= employer.address %>, <%= employer.unit %>, <br>
+    <%= employer.city %>, <%= employer.province %>, <%= employer.Country %>, <br>
+    <%= employer.postalCode %></h4> <br>
+Company Description: <%=employer.companyDescription %>
+
+
+    <div>
+        <% employerPosts.forEach(p=> { %>
+            <br>
+                <form action="/admin-portal/admin-viewprofile" method="GET">
+                <input type="hidden" id="postId" name="postId" value="<%= p._id %>">
+                <input type="hidden" id="employerID" name="employerID" value="<%= employer._id %>">
+                 <button>view</button> 
+            <div>
+                <div>
+                    Title: <%= p.jobTitle %>
+                </div>
+
+                <div>
+                    Type: <%= p.type %>
+                </div>
+
+                <div>
+                    Brief Description: <%= p.briefDescription %>
+                </div>
+            </div>
+        </form>
+
+<input type="checkbox" onclick="bookmark(this, '<%= p._id %>' );">
+
+            <% }) %>
+    </div>
+
+</body>
+<br>
+<div id="fullPost">
+<% if (jobpost) { %>
+This is the post jobpost selected <br>
+    Title: <%= jobpost.jobTitle %> <br>
+    Location: <%= jobpost.location %> <br>
+    Type: <%= jobpost.type %> <br>
+    Discipline: <%= jobpost.discipline %> <br>
+    Brief Description: <%= jobpost.briefDescription %> <br>
+    description: <%= jobpost.description %> <br>
+    Responsibilities: <%= jobpost.responsibilities %> <br>
+    Skills: <%= jobpost.skills %> <br>
+    createdAt: <%= jobpost.createdAt %> <br>
+
+    <form action="/student-portal/student-applications" method="GET">
+        <input type="hidden" id="postID" name="postID" value="<%= jobpost._id %>">
+         <button>Apply</button> 
+
+<% } %>
+</div>
+
+</html>

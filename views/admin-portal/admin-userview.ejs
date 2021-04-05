@@ -62,7 +62,7 @@ function verifyUser(userID, number) {
             $("div.fullUser").append(r);
       } else if (user.accountType == "employer") {
         $("div.fullUser").html(
-          "<br> Full Name: " + user.firstname + user.lastname + "<br>" +
+          "<a href='student-portal/student-employerprofile?employerID=" + p._id + "'>" + p.companyName + "</a>" +
           "Email: " + user.email + "<br>" +
           "Account Type: " + user.accountType + "<br>" +
           "School: " + user.school + "<br>" +
@@ -119,6 +119,10 @@ function verifyUser(userID, number) {
           <div>
             <%= p.school %>
           </div>
+
+          <div>
+            <%= p.grade %>
+          </div>
         </div>
         <% } else if (p.accountType=="employer" ) { %>
           <div>
@@ -131,7 +135,7 @@ function verifyUser(userID, number) {
             </div>
 
             <div>
-              <%= p.city %>
+              <%= p.city %>, <%= p.province %>
             </div>
           </div>
           <% } else if (p.accountType=="admin" ) { %>
@@ -186,16 +190,31 @@ function verifyUser(userID, number) {
     <% if (result) { %>
       <% result.forEach(p=> { %>
         <br>
-        <button onclick="display(usersSearched[<%=x%>])"> View </button>
+        <button onclick="display2(usersSearched[<%=x%>], <%=x%>)"> View </button>
         <div>
 
           <div>
+            <% if (p.accountType == "student" || p.accountType == "admin") { %>
            <%= p.firstname %> <%= p.lastname %>
+           <% } else if (p.accountType == "employer") { %>
+            <%= p.companyName %>
+            <% } %>
           </div>
 
           <div>
-   
+            <%= p.accountType %>
           </div>
+
+          <div>
+            <% if (p.accountType == "student") { %>
+            <%= p.school %> <br>
+            Grade <%= p.grade %>
+            <% } else if (p.accountType == "employer") { %>
+            <%= p.city %> , <%= p.province %>
+            <% } %>
+          </div>
+
+
         </div>
         </form>
         <% x++ }) %>
@@ -203,25 +222,126 @@ function verifyUser(userID, number) {
 </div>
 
 <script>
-    function display(jobpost) {
-      console.log(jobpost)
-      $("div.fullPost").html("<br> Title:" + jobpost.jobTitle + "<br>" +
-      "Location:" + jobpost.location + "<br>" +
-        "Type:" + jobpost.type + "<br>" +
-        "Discipline:" + jobpost.discipline + "<br>" +
-        "briefDescription:" + jobpost.briefDescription + "<br>" +
-        "Description:" + jobpost.description + "<br>" +
-        "Responsibilities:" + jobpost.responsibilities + "<br>" +
-        "Skills:" + jobpost.skills + "<br>" +
-        "Posted on:" + jobpost.createdAt + "<br>" +
-        '<form action="/student-portal/student-applications" method="GET">' +
-        '<input type="hidden" id="postID" name="postID" value=' + jobpost._id + '>' +
-        '<button>Apply</button>'
-      )
-    }
+
+function updateUser(userID, number, radioButton, firstname, lastname) {
+
+  console.log(userID)
+  console.log(number)
+  console.log(document.querySelector('input[name = "accountStatus"]:checked').value)
+  console.log(firstname)
+  console.log(lastname)
+
+    $.ajax({
+      url: '/admin-portal/admin-userview',
+      type: 'PUT',
+      data: {userID: userID},
+      success: function (result) {
+        return
+      }
+    });
+
+  }
+
+    function display2(user, number) {
+
+numberV = number
+
+selectedID = user._id
+
+if (user.accountType == "student") {
+  $("div.fullUserSecond").html(
+    "<br> Full Name:" + user.firstname + user.lastname + "<br>" +
+    "Email: " + user.email + "<br>" +
+    "Account Type:" + user.accountType + "<br>" +
+    "School: " + user.school + "<br>" +
+    "Grade: " + user.grade + "<br>" +
+    "Date of Birth: " + user.dateOfBirth + "<br>" +
+    "isCoop?: " + user.isCoop + "<br>" 
+  )
+
+              var r = $('<input/>').attr({
+                   type: "radio",
+                   id: "accountEnabled",
+                   name: "accountStatus",
+                   value: "enabled",
+                   label: "Enabled"
+              });
+              
+              var labelR = document.createElement('label');
+              labelR.setAttribute('for', r);
+              labelR.innerHTML = "Enabled";
+
+              var s = $('<input/>').attr({
+                   type: "radio",
+                   id: "accountDisabled",
+                   name: "accountStatus",
+                   value: "disabled",
+                   label: "Disabled"
+              });
+
+              var labelS = document.createElement('label');
+              labelS.setAttribute('for', s);
+              labelS.innerHTML = "Disabled";
+
+              var t = $('<input/>').attr({
+                   type: "text",
+                   id: "firstname",
+              });
+
+              var u = $('<input/>').attr({
+                   type: "text",
+                   id: "lastname",
+              });
+
+              var v = $('<input/>').attr({
+                   type: "button",
+                   id: "confirmButton",
+                   value: "Confirm",
+                   onclick: "updateUser(selectedID, numberV, 'value', document.getElementById('firstname').value, document.getElementById('lastname').value)"
+              });
+
+      $("div.fullUserSecond").append(r); 
+      $("div.fullUserSecond").append(labelR); 
+      $("div.fullUserSecond").append(s); 
+      $("div.fullUserSecond").append(labelS); $("div.fullUserSecond").append("<br>")
+      $("div.fullUserSecond").append(t); 
+      $("div.fullUserSecond").append(u); $("div.fullUserSecond").append("<br>")
+      $("div.fullUserSecond").append(v);
+} else if (user.accountType == "employer") {
+  $("div.fullUser").html(
+    "<a href='student-portal/student-employerprofile?employerID=" + p._id + "'>" + p.companyName + "</a>" +
+    "Email: " + user.email + "<br>" +
+    "Account Type: " + user.accountType + "<br>" +
+    "School: " + user.school + "<br>" +
+    "Company Website: " + user.companyWebsite
+  )
+              var r = $('<input/>').attr({
+                   type: "button",
+                   id: "approveButton",
+                   value: "Approve",
+                   onclick: "verifyUser(selectedID, numberV)"
+              });
+      $("div.fullUser").append(r);
+} else if (user.accountType == "admin") {
+  $("div.fullUser").html(
+    "<br> Full Name: " + user.firstname + user.lastname + "<br>" +
+    "Email: " + user.email + "<br>" +
+    "Account Type: " + user.accountType + "<br>" +
+    "School: " + user.school + "<br>"
+  )
+              var r = $('<input/>').attr({
+                   type: "button",
+                   id: "approveButton",
+                   value: "Approve",
+                   onclick: "verifyUser(selectedID, numberV)"
+              });
+      $("div.fullUser").append(r);
+}
+}
+
 </script>
 
-<div class="fullPost">
+<div class="fullUserSecond">
 
 </div>
 
