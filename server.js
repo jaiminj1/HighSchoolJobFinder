@@ -886,7 +886,7 @@ app.put("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res)
         }
         else {
             console.log("Updated Docs : ", docs);
-            res.json({success : "Updated Successfully", status : 200});
+            res.json({ success: "Updated Successfully", status: 200 });
         }
     });
 
@@ -933,33 +933,81 @@ app.get("/admin-portal/admin-jobview", (req, res) => {
     res.render("admin-portal/admin-jobview", { result: false });
 })
 
+
+
 app.get("/search", isLoggedIn, async (req, res) => {
-    try {
-        let result = await collection.aggregate([
-            {
-                "$search": {
-                    "autocomplete": {
-                        "query": `${req.query.term}`,
-                        "path": "jobTitle",
-                        "fuzzy": {
-                            "maxEdits": 1
-                        }
-                    }
-                }
-            }
-        ]).toArray();
-        console.log(result)
-        if (req.user.accountType=="student"){
-        res.render("student-portal/student-findjobs", { result: result })
-        }
-        else if(req.user.accountType=="admin") {
-            res.render("admin-portal/admin-jobview", { result: result })
-        }
-        //res.send(result);
-    } catch (e) {
-        console.error(e);
-        res.status(500).send({ message: e.message });
-    }
+
+    // console.log("this is the displine" + discipline);
+    // console.log("this is the type" + type);
+    // try {
+    //     let result = await collection.aggregate([
+    //         {
+    //             // "$match": {
+    //             //     "discipline": req.body.discipline,
+    //             //     "type": req.body.type,
+    //             // },
+
+    //             // "$search": {
+    //             //     "autocomplete": {
+    //             //         "query": `${req.query.term}`,
+    //             //         "path": "jobTitle",
+    //             //         "fuzzy": {
+    //             //             "maxEdits": 1
+    //             //         }
+    //             //     }
+    //             // },
+
+
+    //             "$search": {
+    //                 "compound": {
+    //                     "must": [{
+    //                         "text": {
+    //                             "query": discipline,
+    //                             "path": "discipline",
+
+    //                         },
+    //                         "text": {
+    //                             "query": type,
+    //                             "path": "type",
+
+    //                         }
+    //                     }] 
+    //                     // "query": `${req.query.term}`,
+    //                     // "path": "jobTitle",
+    //                     // ,
+    //                     // "filter": [{
+    //                     //     "text": {
+    //                     //         "query": discipline,
+    //                     //         "path": "discipline"
+    //                     //     }
+    //                     // }]
+    //                 }
+
+
+
+
+    //             }
+
+
+    //             // ,
+    //             // "$project": {
+    //             //     "_id": 0,
+    //             //     "discipline": 1
+    //             // }
+    //         }
+    //     ]).toArray();
+    //     console.log(result)
+    //     if (req.user.accountType == "student") {
+    //         res.render("student-portal/student-findjobs", { result: result })
+    //     }
+    //     else if (req.user.accountType == "admin") {
+    //         res.render("admin-portal/admin-jobview", { result: result })
+    //     }
+    //     //res.send(result);
+    // } catch (e) {
+    //     console.error(e);
+    //     res.status(500).send({ message: e.message });
+    // }
 })
 
 
@@ -986,6 +1034,121 @@ app.get("/search2", isLoggedIn, async (req, res) => {
         res.status(500).send({ message: e.message });
     }
 })
+
+app.post("/search", isLoggedIn, async function (req, res) {
+    var discipline = req.body.discipline
+    var type = req.body.type
+    var query = req.body.term
+    console.log("this is the displine " + discipline);
+    console.log("this is the type " + type);
+    
+    if(type == "coop"){
+        var notType = "regular"
+    }
+
+    else if(type == "regular"){
+        var notType = "coop"
+    }
+
+    if(discipline == "technology"){
+        var notDiscipline = "retail"
+    }
+
+    else if(discipline == "retail"){
+        var notDiscipline = "technology"
+    }
+
+
+
+    try {
+        let result = await collection.aggregate([
+            {
+                // "$match": {
+                //     "discipline": req.body.discipline,
+                //     "type": req.body.type,
+                // },
+
+                // "$search": {
+                //     "autocomplete": {
+                //         "query": `${req.query.term}`,
+                //         "path": "jobTitle",
+                //         "fuzzy": {
+                //             "maxEdits": 1
+                //         }
+                //     }
+                // },
+
+
+                "$search": {
+                    "compound": {
+                        "must": [{
+                            "text": {
+                                "query": discipline,
+                                "path": "discipline",
+
+                            },
+                            "text": {
+                                "query": type,
+                                "path": "type",
+
+                            }
+                            ,
+                            "text": {
+                                "query": query,
+                                "path": "jobTitle"
+                            }
+
+                        }],
+                        "mustNot": {
+                            "text": {
+                                "query": notDiscipline,
+                                "path": "discipline",
+
+                            },
+                            "text": {
+                                "query": notType,
+                                "path": "type",
+
+                            }
+                        }
+
+                        // "query": `${req.query.term}`,
+                        // "path": "jobTitle",
+                        // ,
+                        // "filter": [{
+                        //     "text": {
+                        //         "query": discipline,
+                        //         "path": "discipline"
+                        //     }
+                        // }]
+                    }
+
+
+
+
+                }
+
+
+                // ,
+                // "$project": {
+                //     "_id": 0,
+                //     "discipline": 1
+                // }
+            }
+        ]).toArray();
+        console.log(result)
+        if (req.user.accountType == "student") {
+            res.render("student-portal/student-findjobs", { result: result })
+        }
+        else if (req.user.accountType == "admin") {
+            res.render("admin-portal/admin-jobview", { result: result })
+        }
+        //res.send(result);
+    } catch (e) {
+        console.error(e);
+        res.status(500).send({ message: e.message });
+    }
+});
 
 // {
 //     "$search": {

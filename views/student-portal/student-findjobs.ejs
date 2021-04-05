@@ -28,25 +28,45 @@
 
 <script>
   // stringify the data passed from router to ejs (within the EJS template only)
-  var jobpost = <%- JSON.stringify(result) %>
-  console.log(jobpost)
+  var jobpost = <% - JSON.stringify(result) %>
+    console.log(jobpost)
 </script>
 
-<form action="/search" method="GET">
+<form action="/search" method="POST">
+  <select name="discipline" id="discipline" placeholder="">
+    <option value="technology">Technology</option>
+    <option value="retail">Retail</option>
+  </select>
+
+  <select name="type" id="type" placeholder="">
+    <option value="coop">Coop</option>
+    <option value="regular">Regular</option>
+  </select>
+    
   <input type="text" id="term" name="term">
   <button>Search</button>
 </form>
 
+<form action="/search" method="GET">
+  
+</form>
 <div>
   <% var x=0 %>
     <% if (result) { %>
       <% result.forEach(p=> { %>
         <br>
+
+
+
+
         <button onclick="display(jobpost[<%=x%>])"> View </button>
+
         <div>
 
           <div>
-            <a href="student-portal/student-employerprofile?employerID=<%= p.creatorID %>"> <%= p.creatorName %> </a>
+            <a href="student-portal/student-employerprofile?employerID=<%= p.creatorID %>">
+              <%= p.creatorName %>
+            </a>
           </div>
 
           <div>
@@ -75,22 +95,22 @@
 </div>
 
 <script>
-    function display(jobpost) {
-      console.log(jobpost)
-      $("div.fullPost").html("<br> Title:" + jobpost.jobTitle + "<br>" +
+  function display(jobpost) {
+    console.log(jobpost)
+    $("div.fullPost").html("<br> Title:" + jobpost.jobTitle + "<br>" +
       "Location:" + jobpost.location + "<br>" +
-        "Type:" + jobpost.type + "<br>" +
-        "Discipline:" + jobpost.discipline + "<br>" +
-        "briefDescription:" + jobpost.briefDescription + "<br>" +
-        "Description:" + jobpost.description + "<br>" +
-        "Responsibilities:" + jobpost.responsibilities + "<br>" +
-        "Skills:" + jobpost.skills + "<br>" +
-        "Posted on:" + jobpost.createdAt + "<br>" +
-        '<form action="/student-portal/student-applications" method="GET">' +
-        '<input type="hidden" id="postID" name="postID" value=' + jobpost._id + '>' +
-        '<button>Apply</button>'
-      )
-    }
+      "Type:" + jobpost.type + "<br>" +
+      "Discipline:" + jobpost.discipline + "<br>" +
+      "briefDescription:" + jobpost.briefDescription + "<br>" +
+      "Description:" + jobpost.description + "<br>" +
+      "Responsibilities:" + jobpost.responsibilities + "<br>" +
+      "Skills:" + jobpost.skills + "<br>" +
+      "Posted on:" + jobpost.createdAt + "<br>" +
+      '<form action="/student-portal/student-applications" method="GET">' +
+      '<input type="hidden" id="postID" name="postID" value=' + jobpost._id + '>' +
+      '<button>Apply</button>'
+    )
+  }
 </script>
 
 <!-- <button onclick="search()">Search</button> -->

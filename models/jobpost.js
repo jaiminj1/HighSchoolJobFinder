@@ -7,6 +7,8 @@ var jobPostSchema = new mongoose.Schema({
     location: String,
     jobTitle: String,
     discipline: [{type: String}],
+    //  discipline: String,
+
     type: String,
     briefDescription: String,
     description: String,
