@@ -32,6 +32,17 @@
 </script>
 
 <form action="/search" method="GET">
+
+  <select name="discipline" id="discipline" placeholder="">
+    <option value="technology">Technology</option>
+    <option value="retail">Retail</option>
+  </select>
+
+  <select name="type" id="type" placeholder="">
+    <option value="coop">Coop</option>
+    <option value="regular">Regular</option>
+  </select>
+
   <input type="text" id="term" name="term">
   <button>Search</button>
 </form>

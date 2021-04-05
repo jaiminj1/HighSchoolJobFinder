@@ -874,7 +874,7 @@ app.get("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res)
         if (err) {
             res.json({ success: false, message: err }); // Return error
         } else {
-            res.render("admin-portal/admin-userview", { unapprovedUsers: unapprovedUsers, error: false, result: false});
+            res.render("admin-portal/admin-userview", { unapprovedUsers: unapprovedUsers, error: false, result: false });
         }
     });
 });
@@ -882,35 +882,59 @@ app.get("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res)
 var userCollection;
 
 app.get("/searchUser", async (req, res) => {
-    
+
     try {
         let result = await userCollection.aggregate([
             {
                 "$search": {
-                    "autocomplete": {
-                        "query": `${req.query.term}`,
-                        "path": "firstname",
-                        "fuzzy": {
-                            "maxEdits": 1
-                        }
+                    "compound": {
+                            "must": [
+                              {
+                                "text": {
+                                  "query": discipline,
+                                  "path": "discipline"
+                                }
+                              },
+                              {
+                                "text": {
+                                  "value": type,
+                                  "path": "type"
+                                }
+                              },
+                              {
+                                "text": {
+                                  "value": query,
+                                  "path": "jobTitle"
+                                }
+                              }
+                            ]
                     }
                 }
+                // "$search": {
+                //     "autocomplete": {
+                //         "query": `${req.query.term}`,
+                //         "path": "firstname",
+                //         "fuzzy": {
+                //             "maxEdits": 1
+                //         }
+                //     }
+                // }
             }
         ]).toArray();
 
-        User.find({ isApproved: false }, async function (err, unapprovedUsers) {
-            // Check if error connecting
-            if (err) {
-                res.json({ success: false, message: err }); // Return error
-            } else {
-                res.render("admin-portal/admin-userview", { unapprovedUsers: unapprovedUsers, error: false, result: result});
-            }
-        });
+User.find({ isApproved: false }, async function (err, unapprovedUsers) {
+    // Check if error connecting
+    if (err) {
+        res.json({ success: false, message: err }); // Return error
+    } else {
+        res.render("admin-portal/admin-userview", { unapprovedUsers: unapprovedUsers, error: false, result: result });
+    }
+});
 
     } catch (e) {
-        console.error(e);
-        res.status(500).send({ message: e.message });
-    }
+    console.error(e);
+    res.status(500).send({ message: e.message });
+}
 })
 
 //admin user view put function
@@ -957,7 +981,7 @@ app.get("/admin-portal/admin-myaccount", isLoggedIn, isAdmin, function (req, res
 
 app.post("/admin-portal/admin-myaccount", isLoggedIn, isAdmin, function (req, res) {
 
-    User.updateOne({ _id: req.user._id }, {firstname: req.body.firstname, lastname: req.body.lastname}, function (err, docs) {
+    User.updateOne({ _id: req.user._id }, { firstname: req.body.firstname, lastname: req.body.lastname }, function (err, docs) {
         if (err) {
             console.log(err)
         }
@@ -980,39 +1004,114 @@ app.get("/student-portal/student-findjobs", (req, res) => {
     res.render("student-portal/student-findjobs", { result: false });
 })
 
-app.get("/search", async (req, res) => {
+
+app.get("/search", isLoggedIn, async function (req, res) {
+    var discipline = req.query.discipline
+    var type = req.query.type
+    var query = req.query.term
+
     try {
         let result = await jobpostCollection.aggregate([
             {
                 "$search": {
-                    "autocomplete": {
-                        "query": `${req.query.term}`,
-                        "path": "jobTitle",
-                        "fuzzy": {
-                            "maxEdits": 1
-                        }
+                    "compound": {
+                        "must": [
+                            
+                            {
+                            "text": {
+                                "query": discipline,
+                                "path": "discipline",
+                                }
+                            },
+
+                            {
+                            "text": {
+                                "query": type,
+                                "path": "type",
+                                }
+                            },
+
+                            {
+                            "text": {
+                                "query": query,
+                                "path": "jobTitle"
+                                    }
+                            }
+                        ]   
                     }
                 }
+
             }
         ]).toArray();
-        res.render("student-portal/student-findjobs", { result: result })
+        if (req.user.accountType == "student") {
+            res.render("student-portal/student-findjobs", { result: result })
+        }
+        else if (req.user.accountType == "admin") {
+            res.render("admin-portal/admin-jobview", { result: result })
+        }
+
     } catch (e) {
         console.error(e);
         res.status(500).send({ message: e.message });
     }
-})
+});
 
-// {
-//     "$search": {
-//         "text": {
-//             "query": `${req.query.term}`,
-//             "path": "jobTitle",
-//             "fuzzy": {
-//                 "maxEdits": 1
-//             }
-//         }
+
+// app.get("/search", isLoggedIn, async (req, res) => {
+
+// var discipline = req.query.discipline
+// var query = req.query.term
+// var type = req.query.type
+
+// console.log(discipline)
+
+
+//         try {
+//             let result = await userCollection.aggregate([
+//                 {
+//                     "$search": {
+//                         "compound": {
+//                                 "must": [
+//                                   {
+//                                     "text": {
+//                                       "query": discipline,
+//                                       "path": "discipline"
+//                                     //}
+//                                   },
+//                                   //{
+//                                     "text": {
+//                                       "value": type,
+//                                       "path": "type"
+//                                     //}
+//                                   },
+//                                   //{
+//                                     "text": {
+//                                       "value": query,
+//                                       "path": "jobTitle"
+//                                     }
+//                                   }
+//                                 ]
+//                         }
+//                     }
+//                 }
+//             ]).toArray();
+//         res.render("student-portal/student-findjobs", { result: result })
+//     } catch (e) {
+//         console.error(e);
+//         res.status(500).send({ message: e.message });
 //     }
-// }
+// })
+
+
+                    // "$search": {
+                    //     "autocomplete": {
+                    //         "query": `${req.query.term}`,
+                    //         "path": "firstname",
+                    //         "fuzzy": {
+                    //             "maxEdits": 1
+                    //         }
+                    //     }
+                    // }
 
 
 

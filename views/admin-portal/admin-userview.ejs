@@ -162,7 +162,7 @@ function verifyUser(userID, number) {
 
 <script>
   // stringify the data passed from router to ejs (within the EJS template only)
-  var jobpost = <%- JSON.stringify(result) %>
+  var usersSearched = <%- JSON.stringify(result) %>
 </script>
 
 <form action="/searchUser" method="GET">
@@ -175,7 +175,7 @@ function verifyUser(userID, number) {
     <% if (result) { %>
       <% result.forEach(p=> { %>
         <br>
-        <button onclick="display(jobpost[<%=x%>])"> View </button>
+        <button onclick="display(usersSearched[<%=x%>])"> View </button>
         <div>
 
           <div>
