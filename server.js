@@ -874,7 +874,7 @@ app.get("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res)
         if (err) {
             res.json({ success: false, message: err }); // Return error
         } else {
-            res.render("admin-portal/admin-userview", { unapprovedUsers: unapprovedUsers, error: false, result: false });
+            res.render("admin-portal/admin-userview", { unapprovedUsers: unapprovedUsers, error: false, result: false, term: "", userType: "" });
         }
     });
 });
@@ -882,59 +882,69 @@ app.get("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res)
 var userCollection;
 
 app.get("/searchUser", async (req, res) => {
+    var term = req.query.term
+    var userType = req.query.userType
 
     try {
         let result = await userCollection.aggregate([
             {
                 "$search": {
                     "compound": {
-                            "must": [
-                              {
+                        "must": [
+                            {
                                 "text": {
-                                  "query": discipline,
-                                  "path": "discipline"
+                                    "query": userType,
+                                    "path": "accountType",
                                 }
-                              },
-                              {
+                            }
+                        ]
+                        ,
+
+                        "should": [
+                            {
                                 "text": {
-                                  "value": type,
-                                  "path": "type"
+                                    "query": term,
+                                    "path": "firstname",
                                 }
-                              },
-                              {
+                            },
+                            {
                                 "text": {
-                                  "value": query,
-                                  "path": "jobTitle"
+                                    "query": term,
+                                    "path": "lastname",
                                 }
-                              }
-                            ]
+                            },
+                            {
+                                "text": {
+                                    "query": term,
+                                    "path": "email",
+                                }
+                            },
+                            {
+                                "text": {
+                                    "query": term,
+                                    "path": "companyName",
+                                }
+                            }
+                        ],
+                        "minimumShouldMatch": 1
                     }
                 }
-                // "$search": {
-                //     "autocomplete": {
-                //         "query": `${req.query.term}`,
-                //         "path": "firstname",
-                //         "fuzzy": {
-                //             "maxEdits": 1
-                //         }
-                //     }
-                // }
             }
         ]).toArray();
 
-User.find({ isApproved: false }, async function (err, unapprovedUsers) {
-    // Check if error connecting
-    if (err) {
-        res.json({ success: false, message: err }); // Return error
-    } else {
-        res.render("admin-portal/admin-userview", { unapprovedUsers: unapprovedUsers, error: false, result: result });
-    }
-});
+        User.find({ isApproved: false }, async function (err, unapprovedUsers) {
+            // Check if error connecting
+            if (err) {
+                res.json({ success: false, message: err }); // Return error
+            } else {
+                res.render("admin-portal/admin-userview", { unapprovedUsers: unapprovedUsers, error: false, result: result, term: term, userType: userType });
+            }
+        });
 
     } catch (e) {
-    console.error(e);
-    res.status(500).send({ message: e.message });
-}
+        console.error(e);
+        res.status(500).send({ message: e.message });
+    }
 })
 
 //admin user view put function
@@ -1016,31 +1026,30 @@ app.get("/search", isLoggedIn, async function (req, res) {
                 "$search": {
                     "compound": {
                         "must": [
-                            
+
                             {
-                            "text": {
-                                "query": discipline,
-                                "path": "discipline",
+                                "text": {
+                                    "query": discipline,
+                                    "path": "discipline",
                                 }
                             },
 
                             {
-                            "text": {
-                                "query": type,
-                                "path": "type",
+                                "text": {
+                                    "query": type,
+                                    "path": "type",
                                 }
                             },
 
                             {
-                            "text": {
-                                "query": query,
-                                "path": "jobTitle"
-                                    }
+                                "text": {
+                                    "query": query,
+                                    "path": "jobTitle"
+                                }
                             }
-                        ]   
+                        ]
                     }
                 }
-
             }
         ]).toArray();
         if (req.user.accountType == "student") {
@@ -1103,15 +1112,15 @@ app.get("/search", isLoggedIn, async function (req, res) {
 // })
 
 
-                    // "$search": {
-                    //     "autocomplete": {
-                    //         "query": `${req.query.term}`,
-                    //         "path": "firstname",
-                    //         "fuzzy": {
-                    //             "maxEdits": 1
-                    //         }
-                    //     }
-                    // }
+// "$search": {
+//     "autocomplete": {
+//         "query": `${req.query.term}`,
+//         "path": "firstname",
+//         "fuzzy": {
+//             "maxEdits": 1
+//         }
+//     }
+// }
 
 
 

@@ -166,7 +166,18 @@ function verifyUser(userID, number) {
 </script>
 
 <form action="/searchUser" method="GET">
-  <input type="text" id="term" name="term">
+
+  <select name="userType" id="userType">
+    <option value="student" <% if((userType).includes("student")){ %> selected <% } %>>Student</option>
+    <option value="employer" <% if((userType).includes("employer")){ %> selected <% } %>>Employer</option>
+    <option value="admin" <% if((userType).includes("admin")){ %> selected <% } %>>Admin</option>
+</select>
+
+  <select name="school" id="school">
+    <option value="Earl of March Secondary School">Earl of March Secondary School</option>
+  </select>
+
+  <input type="text" id="term" name="term" value="<%=term%>">
   <button>Search</button>
 </form>
 
