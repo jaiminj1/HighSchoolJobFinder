@@ -1046,7 +1046,7 @@ var isEnabled
 
 //admin job view page
 app.get("/admin-portal/admin-jobview", isLoggedIn, isAdmin, function (req, res) {
-    res.render("admin-portal/admin-jobview", { result: false, error: false });
+    res.render("admin-portal/admin-jobview", { result: false, error: false, discipline:"", type:"", term:"" });
 });
 
 
@@ -1091,7 +1091,7 @@ app.post("/admin-portal/admin-myaccount", isLoggedIn, isAdmin, function (req, re
 var jobpostCollection;
 
 app.get("/student-portal/student-findjobs", (req, res) => {
-    res.render("student-portal/student-findjobs", { result: false });
+    res.render("student-portal/student-findjobs", { result: false, discipline:"", type:"", term:"" });
 })
 
 
@@ -1133,10 +1133,10 @@ app.get("/search", isLoggedIn, async function (req, res) {
             }
         ]).toArray();
         if (req.user.accountType == "student") {
-            res.render("student-portal/student-findjobs", { result: result })
+            res.render("student-portal/student-findjobs", { result: result, term: query, type: type, discipline: discipline })
         }
         else if (req.user.accountType == "admin") {
-            res.render("admin-portal/admin-jobview", { result: result })
+            res.render("admin-portal/admin-jobview", { result: result, term: query, type: type, discipline: discipline })
         }
 
     } catch (e) {
