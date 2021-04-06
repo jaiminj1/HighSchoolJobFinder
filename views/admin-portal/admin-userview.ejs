@@ -62,7 +62,7 @@ function verifyUser(userID, number) {
             $("div.fullUser").append(r);
       } else if (user.accountType == "employer") {
         $("div.fullUser").html(
-          "<a href='student-portal/student-employerprofile?employerID=" + p._id + "'>" + p.companyName + "</a>" +
+          "<a href='student-portal/student-employerprofile?employerID=" + user._id + "'>" + user.companyName + "</a>" +
           "Email: " + user.email + "<br>" +
           "Account Type: " + user.accountType + "<br>" +
           "School: " + user.school + "<br>" +
@@ -225,32 +225,35 @@ function verifyUser(userID, number) {
 
 function updateUser(userID, number, radioButton, firstname, lastname) {
 
-  console.log(userID)
-  console.log(number)
-  console.log(document.querySelector('input[name = "accountStatus"]:checked').value)
-  console.log(firstname)
-  console.log(lastname)
-
+  if (firstname != 'null' && lastname!='null') {
     $.ajax({
-      url: '/admin-portal/admin-userview',
+      url: '/updateUser',
       type: 'PUT',
-      data: {userID: userID},
+      data: {userID: userID, accountStatus: document.querySelector('input[name = "accountStatus"]:checked').value, firstname: firstname, lastname: lastname},
       success: function (result) {
         return
       }
     });
+  } else {
+    $.ajax({
+      url: '/updateUser',
+      type: 'PUT',
+      data: {userID: userID, accountStatus: document.querySelector('input[name = "accountStatus"]:checked').value},
+      success: function (result) {
+        return
+      }
+    });
+  }
 
   }
 
     function display2(user, number) {
-
 numberV = number
-
 selectedID = user._id
 
 if (user.accountType == "student") {
   $("div.fullUserSecond").html(
-    "<br> Full Name:" + user.firstname + user.lastname + "<br>" +
+    "<br> Full Name:" + user.firstname + " " + user.lastname + "<br>" +
     "Email: " + user.email + "<br>" +
     "Account Type:" + user.accountType + "<br>" +
     "School: " + user.school + "<br>" +
@@ -286,11 +289,13 @@ if (user.accountType == "student") {
               var t = $('<input/>').attr({
                    type: "text",
                    id: "firstname",
+                   value: user.firstname
               });
 
               var u = $('<input/>').attr({
                    type: "text",
                    id: "lastname",
+                   value: user.lastname
               });
 
               var v = $('<input/>').attr({
@@ -307,35 +312,58 @@ if (user.accountType == "student") {
       $("div.fullUserSecond").append(t); 
       $("div.fullUserSecond").append(u); $("div.fullUserSecond").append("<br>")
       $("div.fullUserSecond").append(v);
+
 } else if (user.accountType == "employer") {
-  $("div.fullUser").html(
-    "<a href='student-portal/student-employerprofile?employerID=" + p._id + "'>" + p.companyName + "</a>" +
+  $("div.fullUserSecond").html(
+    "<br> <a href='admin-portal/admin-viewprofile?employerID=" + user._id + "'>" + user.companyName + "</a> <br>" +
     "Email: " + user.email + "<br>" +
     "Account Type: " + user.accountType + "<br>" +
-    "School: " + user.school + "<br>" +
-    "Company Website: " + user.companyWebsite
+    "Company Website: " + user.companyWebsite + "<br>"
   )
-              var r = $('<input/>').attr({
-                   type: "button",
-                   id: "approveButton",
-                   value: "Approve",
-                   onclick: "verifyUser(selectedID, numberV)"
+  var r = $('<input/>').attr({
+                   type: "radio",
+                   id: "accountEnabled",
+                   name: "accountStatus",
+                   value: "enabled",
+                   label: "Enabled"
               });
-      $("div.fullUser").append(r);
+              
+              var labelR = document.createElement('label');
+              labelR.setAttribute('for', r);
+              labelR.innerHTML = "Enabled";
+
+              var s = $('<input/>').attr({
+                   type: "radio",
+                   id: "accountDisabled",
+                   name: "accountStatus",
+                   value: "disabled",
+                   label: "Disabled"
+              });
+
+              var labelS = document.createElement('label');
+              labelS.setAttribute('for', s);
+              labelS.innerHTML = "Disabled";
+
+              var v = $('<input/>').attr({
+                   type: "button",
+                   id: "confirmButton",
+                   value: "Confirm",
+                   onclick: "updateUser(selectedID, numberV, 'value', 'null', 'null')"
+              });
+
+      $("div.fullUserSecond").append(r); 
+      $("div.fullUserSecond").append(labelR); 
+      $("div.fullUserSecond").append(s); 
+      $("div.fullUserSecond").append(labelS); $("div.fullUserSecond").append("<br>")
+      $("div.fullUserSecond").append(v);
+
 } else if (user.accountType == "admin") {
-  $("div.fullUser").html(
+  $("div.fullUserSecond").html(
     "<br> Full Name: " + user.firstname + user.lastname + "<br>" +
     "Email: " + user.email + "<br>" +
     "Account Type: " + user.accountType + "<br>" +
     "School: " + user.school + "<br>"
   )
-              var r = $('<input/>').attr({
-                   type: "button",
-                   id: "approveButton",
-                   value: "Approve",
-                   onclick: "verifyUser(selectedID, numberV)"
-              });
-      $("div.fullUser").append(r);
 }
 }
 

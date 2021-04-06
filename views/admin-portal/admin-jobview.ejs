@@ -88,8 +88,9 @@
         "Responsibilities:" + jobpost.responsibilities + "<br>" +
         "Skills:" + jobpost.skills + "<br>" +
         "Posted on:" + jobpost.createdAt + "<br>" +
-        '<form action="/student-portal/student-applications" method="GET">' +
-        '<input type="hidden" id="postID" name="postID" value=' + jobpost._id)
+        '<form action="/deleteOne" method="POST">' +
+        '<input type="hidden" id="postID" name="postID" value=' + jobpost._id + '>' +
+        '<button>Delete</button>'
     }
 </script>
 

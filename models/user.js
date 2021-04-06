@@ -5,6 +5,7 @@ var UserSchema = mongoose.Schema({
     //all users
     isVerified: { type: Boolean, default: false },
     isApproved: { type: Boolean, default: false },
+    isEnabled: {type: Boolean, default: true},
     firstname: String,
     lastname: String,
     accountType: String,

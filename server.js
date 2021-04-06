@@ -703,7 +703,7 @@ app.get("/changepassword", isLoggedIn, function (req, res) {
 
 app.post('/changepassword', function (req, res) {
 
-    if (req.body.newpassword == req.body.confirmpassword) {
+    if (req.body.newpassword != req.body.confirmpassword) {
         res.render("changepassword", { message: "Passwords don't match" });
     }
 
@@ -836,6 +836,20 @@ app.post("/employer-portal/employer-jobedit", function (req, res) {
         res.redirect("/employer-portal/employer-jobview");
 
     }
+});
+
+app.post("/deleteOne", function (req, res) {
+
+            jobPost.deleteOne({ _id: req.body.postID }, function (err, docs) {
+                if (err) {
+                    console.log(err)
+                }
+                else {
+                    console.log("Updated Docs : ", docs);
+                }
+            });
+res.redirect("/admin-portal/admin-jobview");
+
 });
 
 app.get("/employer-portal/employer-editprofile", isLoggedIn, function (req, res) {
@@ -991,6 +1005,44 @@ app.put("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res)
     });
 
 });
+
+//admin user update put function
+app.put("/updateUser", isLoggedIn, isAdmin, function (req, res) {
+
+var isEnabled
+    if (req.body.accountStatus == "enabled") {
+        isEnabled = true;
+    } else {
+        isEnabled = false;
+    }
+    
+    if (firstname || lastname) {
+    User.updateOne({ _id: req.body.userID }, { isEnabled: isEnabled, firstname: req.body.firstname, lastname: req.body.lastname }, function (err, docs) {
+        if (err) {
+            console.log(err)
+        }
+        else {
+            console.log("Updated Docs : ", docs);
+            res.json({ success: "Updated Successfully", status: 200 });
+        }
+    });
+
+} else {
+
+    User.updateOne({ _id: req.body.userID }, { isEnabled: isEnabled}, function (err, docs) {
+        if (err) {
+            console.log(err)
+        }
+        else {
+            console.log("Updated Docs : ", docs);
+            res.json({ success: "Updated Successfully", status: 200 });
+        }
+    });
+
+}
+
+});
+
 
 //admin job view page
 app.get("/admin-portal/admin-jobview", isLoggedIn, isAdmin, function (req, res) {
