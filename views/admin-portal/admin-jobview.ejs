@@ -49,7 +49,7 @@
         <div>
 
           <div>
-            <a href="student-portal/student-employerprofile?employerID=<%= p.creatorID %>"> <%= p.creatorName %> </a>
+            <a href="admin-portal/admin-viewprofile?employerID=<%= p.creatorID %>"> <%= p.creatorName %> </a>
           </div>
 
           <div>
@@ -81,7 +81,6 @@
 
 <script>
     function display(jobpost) {
-      console.log(jobpost)
       $("div.fullPost").html("<br> Title:" + jobpost.jobTitle + "<br>" +
       "Location:" + jobpost.location + "<br>" +
         "Type:" + jobpost.type + "<br>" +
@@ -91,9 +90,9 @@
         "Responsibilities:" + jobpost.responsibilities + "<br>" +
         "Skills:" + jobpost.skills + "<br>" +
         "Posted on:" + jobpost.createdAt + "<br>" +
-        '<form action="/deleteOne" method="POST">' +
+        '<form action="/deletePostAdmin" method="POST">' +
         '<input type="hidden" id="postID" name="postID" value=' + jobpost._id + '>' +
-        '<button>Delete</button>'
+        '<button>Delete</button>')
     }
 </script>
 

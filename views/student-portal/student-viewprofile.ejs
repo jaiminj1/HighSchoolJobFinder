@@ -15,6 +15,13 @@
 <h2>School: <%=school%></h2>
 
 <h2>Grade: xxx</h2>
+
+<br>
+
+<% if (message) { %>
+    <%= message %>
+    <% } %>
+    
 <form action="/changepassword" method="POST">
     <input type="password" name="currentpassword" placeholder="Current Password">
     <hr>

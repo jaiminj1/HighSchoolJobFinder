@@ -103,12 +103,6 @@ app.get("/portal", isLoggedIn, function (req, res) {
     }
 });
 
-
-//employer profile page
-app.get("/employer-portal/employer-profile", isLoggedIn, function (req, res) {
-    res.render("employer-portal/employer-profile", { error: false });
-});
-
 //resources page
 app.get("/resources", function (req, res) {
     res.render("resources", { error: false });
@@ -270,7 +264,8 @@ app.get("/student-portal/student-bookmarks", isLoggedIn, function (req, res) {
 
 //student profile page
 app.get("/student-portal/student-viewprofile", isLoggedIn, function (req, res) {
-    res.render("student-portal/student-viewprofile", { error: false, name: req.user.firstname, school: req.user.school });
+    message = req.session.message
+    res.render("student-portal/student-viewprofile", { error: false, name: req.user.firstname, school: req.user.school, message: message });
 });
 
 var employerPosts;
@@ -705,31 +700,38 @@ app.post('/changepassword', function (req, res) {
 
     if (req.body.newpassword != req.body.confirmpassword) {
         res.render("changepassword", { message: "Passwords don't match" });
+    } else {
+
+        User.findOne({ _id: req.user._id }, (err, user) => {
+            // Check if error connecting
+            if (err) {
+                res.json({ success: false, message: err }); // Return error
+            } else {
+                // Check if user was found in database
+                if (!user) {
+                    res.render("changepassword", { message: 'User not found' });
+                } else {
+                    user.changePassword(req.body.currentpassword, req.body.newpassword, function (err) {
+                        if (err) {
+                            if (err.name === 'IncorrectPasswordError') {
+                                res.render("changepassword", { message: 'Password incorrect' });
+                            } else {
+                                res.render("changepassword", { message: 'Unknown error occurred' });
+                            }
+                        } else {
+                            //res.render("changepassword", { message: 'Your password has been changed' });
+                            req.session.message = 'Your password has been changed'
+                            if (req.user.accountType == "employer") { res.redirect("/employer-portal/employer-editprofile") }
+                            else if (req.user.accountType == "student") { res.redirect("/student-portal/student-viewprofile") }
+                            else { res.redirect("/admin-portal/admin-myaccount") }
+                        }
+                    })
+                }
+            }
+        });
+
     }
 
-    User.findOne({ _id: req.user._id }, (err, user) => {
-        // Check if error connecting
-        if (err) {
-            res.json({ success: false, message: err }); // Return error
-        } else {
-            // Check if user was found in database
-            if (!user) {
-                res.render("changepassword", { message: 'User not found' });
-            } else {
-                user.changePassword(req.body.currentpassword, req.body.newpassword, function (err) {
-                    if (err) {
-                        if (err.name === 'IncorrectPasswordError') {
-                            res.render("changepassword", { message: 'Password incorrect' });
-                        } else {
-                            res.render("changepassword", { message: 'Unknown error occurred' });
-                        }
-                    } else {
-                        res.render("changepassword", { message: 'Your password has been changed' });
-                    }
-                })
-            }
-        }
-    });
 });
 
 var userPosts;
@@ -838,22 +840,23 @@ app.post("/employer-portal/employer-jobedit", function (req, res) {
     }
 });
 
-app.post("/deleteOne", function (req, res) {
+app.post("/deletePostAdmin", function (req, res) {
 
-            jobPost.deleteOne({ _id: req.body.postID }, function (err, docs) {
-                if (err) {
-                    console.log(err)
-                }
-                else {
-                    console.log("Updated Docs : ", docs);
-                }
-            });
-res.redirect("/admin-portal/admin-jobview");
+    jobPost.deleteOne({ _id: req.body.postID }, function (err, docs) {
+        if (err) {
+            console.log(err)
+        }
+        else {
+            console.log("Updated Docs : ", docs);
+        }
+    });
+    res.redirect("/admin-portal/admin-jobview");
 
 });
 
 app.get("/employer-portal/employer-editprofile", isLoggedIn, function (req, res) {
-    res.render('employer-portal/employer-editprofile', { user: req.user });
+    message = req.session.message
+    res.render('employer-portal/employer-editprofile', { user: req.user, message: message});
 });
 
 app.post("/employer-portal/employer-editprofile", function (req, res) {
@@ -1009,44 +1012,44 @@ app.put("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res)
 //admin user update put function
 app.put("/updateUser", isLoggedIn, isAdmin, function (req, res) {
 
-var isEnabled
+    var isEnabled
     if (req.body.accountStatus == "enabled") {
         isEnabled = true;
     } else {
         isEnabled = false;
     }
-    
+
     if (firstname || lastname) {
-    User.updateOne({ _id: req.body.userID }, { isEnabled: isEnabled, firstname: req.body.firstname, lastname: req.body.lastname }, function (err, docs) {
-        if (err) {
-            console.log(err)
-        }
-        else {
-            console.log("Updated Docs : ", docs);
-            res.json({ success: "Updated Successfully", status: 200 });
-        }
-    });
+        User.updateOne({ _id: req.body.userID }, { isEnabled: isEnabled, firstname: req.body.firstname, lastname: req.body.lastname }, function (err, docs) {
+            if (err) {
+                console.log(err)
+            }
+            else {
+                console.log("Updated Docs : ", docs);
+                res.json({ success: "Updated Successfully", status: 200 });
+            }
+        });
 
-} else {
+    } else {
 
-    User.updateOne({ _id: req.body.userID }, { isEnabled: isEnabled}, function (err, docs) {
-        if (err) {
-            console.log(err)
-        }
-        else {
-            console.log("Updated Docs : ", docs);
-            res.json({ success: "Updated Successfully", status: 200 });
-        }
-    });
+        User.updateOne({ _id: req.body.userID }, { isEnabled: isEnabled }, function (err, docs) {
+            if (err) {
+                console.log(err)
+            }
+            else {
+                console.log("Updated Docs : ", docs);
+                res.json({ success: "Updated Successfully", status: 200 });
+            }
+        });
 
-}
+    }
 
 });
 
 
 //admin job view page
 app.get("/admin-portal/admin-jobview", isLoggedIn, isAdmin, function (req, res) {
-    res.render("admin-portal/admin-jobview", { result: false, error: false, discipline:"", type:"", term:"" });
+    res.render("admin-portal/admin-jobview", { result: false, error: false, discipline: "", type: "", term: "" });
 });
 
 
@@ -1066,7 +1069,8 @@ app.get("/admin-portal/admin-jobedit", isLoggedIn, isAdmin, function (req, res) 
 
 //admin account settings page
 app.get("/admin-portal/admin-myaccount", isLoggedIn, isAdmin, function (req, res) {
-    res.render("admin-portal/admin-myaccount", { error: false, firstname: req.user.firstname, lastname: req.user.lastname });
+    message = req.session.message
+    res.render("admin-portal/admin-myaccount", { error: false, firstname: req.user.firstname, lastname: req.user.lastname, message: message });
 });
 
 app.post("/admin-portal/admin-myaccount", isLoggedIn, isAdmin, function (req, res) {
@@ -1091,7 +1095,7 @@ app.post("/admin-portal/admin-myaccount", isLoggedIn, isAdmin, function (req, re
 var jobpostCollection;
 
 app.get("/student-portal/student-findjobs", (req, res) => {
-    res.render("student-portal/student-findjobs", { result: false, discipline:"", type:"", term:"" });
+    res.render("student-portal/student-findjobs", { result: false, discipline: "", type: "", term: "" });
 })
 
 

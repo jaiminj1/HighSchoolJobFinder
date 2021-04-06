@@ -1,19 +1,75 @@
-<h1> Please choose your account type </h1>
+<!DOCTYPE html>
+<html>
 
-<h2> Your school's administrator will be required to approve your account </h2>
+<head>
+  <link href="https://unpkg.com/vuesax@4.0.1-alpha.16/dist/vuesax.min.css" rel="stylesheet">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>
 
-<form action="/preregister" method="POST">
+<body>
+  <div id="app">
 
-    <input type="radio" id="student" name="accounttype" value="student">
+    <vs-row justify="center">
+      <h1 style="font-size:300%"> Please choose your account type </h1>
+    </vs-row>
+
+    <vs-row justify="center">
+      <h3> Your school's administrator will be required to approve your account </h3>
+    </vs-row>
+
+    <form action="/preregister" method="POST">
+
+      <!-- <input type="radio" id="student" name="accounttype" value="student">
     <label for="student">Student</label><br>
 
     <input type="radio" id="employer" name="accounttype" value="employer">
     <label for="employer">Employer</label><br>
 
     <input type="radio" id="admin" name="accounttype" value="admin">
-    <label for="admin">Admin</label>
+    <label for="admin">Admin</label> -->
 
-    <button>Submit</button>
-</form>
+      <div class="center">
+        <vs-radio v-model="picked" val="student">
+          Option A
+        </vs-radio>
+        <vs-radio v-model="picked" val="employer">
+          Option B
+        </vs-radio>
+        <vs-radio v-model="picked" val="admin">
+          Option D
+        </vs-radio>
+      </div>
 
-<li><a href="/login">Login</a></li>
+      <vs-row justify="center">
+        <button>Submit</button>
+    </vs-row>
+
+    </form>
+  </div>
+
+
+
+  <li><a href="/login">Login</a></li>
+
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vuesax@4.0.1-alpha.16/dist/vuesax.min.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+
+      data: () => ({
+        picked: 1,
+      })
+
+    })
+  </script>
+  <script>
+    export default {
+      data: () => ({
+        picked: 1,
+      })
+    }
+  </script>
+</body>
+
+</html>

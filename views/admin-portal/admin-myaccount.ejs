@@ -10,6 +10,11 @@
   <button>Submit</button> <br>
 </form>
 
+<br>
+<% if (message) { %>
+  <%= message %>
+  <% } %>
+  
 <form action="/changepassword" method="POST">
   <input type="password" name="currentpassword" placeholder="Current Password">
   <input type="password" name="newpassword" placeholder="New Password">

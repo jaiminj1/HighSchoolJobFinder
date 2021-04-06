@@ -38,6 +38,12 @@
 
 <hr>
 
+<br>
+
+<% if (message) { %>
+    <%= message %>
+    <% } %>
+
 <!-- post might need to be changed -->
 <form action="/changepassword" method="POST">
     <input type="password" name="currentpassword" placeholder="Current Password">
