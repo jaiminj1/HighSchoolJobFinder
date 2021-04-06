@@ -9,7 +9,9 @@
 </div>
 
 <!-- this page has no proper post. refer to the post of changepassword. and change the form to support it -->
-
+<% if (message) { %>
+    <%= message %>
+    <% } %>
 <h1><%=name%></h1>
 
 <h2>School: <%=school%></h2>

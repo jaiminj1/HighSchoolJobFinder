@@ -4,6 +4,10 @@
   <a class="active" href="/admin-portal/admin-myaccount">My Account</a>
 </div>
 
+<% if (message) { %>
+  <%= message %>
+  <% } %>
+
 <form action="/admin-portal/admin-myaccount" method="POST">
   First Name: <input type="text" name="firstname" placeholder="First Name" value="<%= firstname %>"> <br>
   Last Name: <input type="text" name="firstname" placeholder="First Name" value="<%= lastname %>"> <br>

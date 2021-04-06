@@ -106,7 +106,7 @@ app.get("/portal", isLoggedIn, function (req, res) {
 
 //employer profile page
 app.get("/employer-portal/employer-profile", isLoggedIn, function (req, res) {
-    res.render("employer-portal/employer-profile", { error: false });
+    res.render("employer-portal/employer-profile", { error: false,  message: ""  });
 });
 
 //resources page
@@ -270,7 +270,7 @@ app.get("/student-portal/student-bookmarks", isLoggedIn, function (req, res) {
 
 //student profile page
 app.get("/student-portal/student-viewprofile", isLoggedIn, function (req, res) {
-    res.render("student-portal/student-viewprofile", { error: false, name: req.user.firstname, school: req.user.school });
+    res.render("student-portal/student-viewprofile", { error: false, name: req.user.firstname, school: req.user.school,  message: ""  });
 });
 
 var employerPosts;
@@ -701,7 +701,7 @@ app.get("/changepassword", isLoggedIn, function (req, res) {
     res.render("changepassword", { message: false });
 });
 
-app.post('/changepassword', function (req, res) {
+app.post('/changepassword', isLoggedIn, function (req, res) {
 
     if (req.body.newpassword != req.body.confirmpassword) {
         res.render("changepassword", { message: "Passwords don't match" });
@@ -724,13 +724,18 @@ app.post('/changepassword', function (req, res) {
                             res.render("changepassword", { message: 'Unknown error occurred' });
                         }
                     } else {
-                        res.render("changepassword", { message: 'Your password has been changed' });
+                        // res.render("changepassword", { message: 'Your password has been changed' });
+                        if (req.user.accountType == "employer") { res.render("employer-portal/employer-profile", { employerPosts, employer: employer, jobpost, error: false,message: 'Your password has been changed' }) }
+                        else if (req.user.accountType == "student") { res.render("student-portal/student-viewprofile", { error: false, name: req.user.firstname, school: req.user.school,message: 'Your password has been changed' }); }
+                        else { res.render("admin-portal/admin-myaccount", { error: false, firstname: req.user.firstname, lastname: req.user.lastname, message: 'Your password has been changed' }); }
                     }
                 })
             }
         }
     });
 });
+
+
 
 var userPosts;
 
@@ -1066,7 +1071,7 @@ app.get("/admin-portal/admin-jobedit", isLoggedIn, isAdmin, function (req, res) 
 
 //admin account settings page
 app.get("/admin-portal/admin-myaccount", isLoggedIn, isAdmin, function (req, res) {
-    res.render("admin-portal/admin-myaccount", { error: false, firstname: req.user.firstname, lastname: req.user.lastname });
+    res.render("admin-portal/admin-myaccount", { error: false, firstname: req.user.firstname, lastname: req.user.lastname,  message: ""  });
 });
 
 app.post("/admin-portal/admin-myaccount", isLoggedIn, isAdmin, function (req, res) {
