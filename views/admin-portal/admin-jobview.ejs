@@ -25,17 +25,18 @@
 
 <form action="/search" method="GET">
 
-  <select name="discipline" id="discipline" placeholder="">
-    <option value="technology">Technology</option>
-    <option value="retail">Retail</option>
+  <select name="discipline" id="discipline">
+    <option value="technology" <% if((discipline).includes("technology")){ %> selected <% } %>>Technology</option>
+    <option value="retail" <% if((discipline).includes("retail")){ %> selected <% } %>>Retail</option>
   </select>
 
-  <select name="type" id="type" placeholder="">
-    <option value="coop">Coop</option>
-    <option value="regular">Regular</option>
+  <select name="type" id="type">
+    <option value="coop" <% if((type).includes("coop")){ %> selected <% } %>>Coop</option>
+    <option value="regular" <% if((type).includes("regular")){ %> selected <% } %>>Regular</option>
   </select>
 
-  <input type="text" id="term" name="term">
+  <input type="text" id="term" name="term" value="<%=term%>">
+ 
   <button>Search</button>
 </form>
 
@@ -69,7 +70,9 @@
 
           <div>
             Brief Description: <%= p.briefDescription %>
-          </div>
+          </div> 
+          
+          
         </div>
         </form>
         <% x++ }) %>
@@ -94,7 +97,8 @@
 </script>
 
 <!-- <button onclick="search()">Search</button> -->
-
+<!-- <input type="hidden" id="deleteButton" name="deleteButton" value="deleteButton">
+    <button>Delete</button> -->
 <!-- <script>
       function search() {
         async (req, res) => {
