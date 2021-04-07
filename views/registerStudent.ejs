@@ -1,53 +1,115 @@
-<h1> Sign up </h1>
+<!doctype html>
+<html lang="en">
 
-<form action="/registerStudent" method="POST">
-    <input type="text" name="firstname" placeholder="firstname" required>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="null">
 
-    <input type="text" name="lastname" placeholder="lastname" required>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <input type="text" name="email" placeholder="email" required>
+    <link rel="stylesheet" href="style.css">
 
-    <select name="School" id="School">
-        <option value="Earl of March Secondary School">Earl of March Secondary School</option>
-    </select>
+    <link rel="stylesheet" href="signup.css">
 
-    Grade:
-    <select name="grade" id="grade">
-        <option value="9">9</option>
-        <option value="10">10</option>
-        <option value="11">11</option>
-        <option value="12">12</option>
-        <option value="13">13</option>
-    </select>
+    <link rel="stylesheet" href="signin.css">
 
-    <input type="password" name="password" placeholder="password" required>
+    <title>Student Sign Up - High School JobFinder</title>
+</head>
 
-    <input type="password" name="confirmPassword" placeholder="confirm password" required>
+<body>
 
-    <input type="number" name="year" placeholder="year" required>
+    <div class="signup-form">
+        <form action="/registerStudent" method="POST">
+            <h2>Sign Up</h2>
 
-    <select name="month" id="month">
-        <option value="1">January</option>
-        <option value="2">February</option>
-        <option value="3">March</option>
-        <option value="4">April</option>
-        <option value="5">May</option>
-        <option value="6">June</option>
-        <option value="7">July</option>
-        <option value="8">August</option>
-        <option value="9">September</option>
-        <option value="10">October</option>
-        <option value="11">November</option>
-        <option value="12">December</option>
-    </select>
+            <hr>
 
-    <input type="number" name="day" placeholder="day" required>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col"><input type="text" class="form-control" name="firstname" placeholder="First Name" required="required"></div>
+                    <div class="col"><input type="text" class="form-control" name="lastname" placeholder="Last Name" required="required"></div>
+                </div>        	
+            </div>
 
-    <% if (error) { %>
-        <%= error %>
-        <% } %>
+            <div class="form-group">
+                <input type="email" class="form-control" name="email" placeholder="Email" required="required">
+            </div>
 
-    <button>Create Account</button>
-</form>
+            <select class="form-control mb-3" name="School" id="School">
+                <option value="Earl of March Secondary School">Earl of March Secondary School</option>
+            </select>
 
-<li><a href="/login">Login</a></li>
+            <select class="form-control mb-3" name="grade" id="grade">
+                <option value="" selected disabled>Grade</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+            </select>
+
+            <div class="form-group">
+                <input type="password" class="form-control" name="password" placeholder="Password" required="required">
+            </div>
+
+            <div class="form-group">
+                <input type="password" class="form-control" name="confirmPassword" placeholder="Confirm Password" required="required">
+            </div>   
+
+            <div class="form-group">
+                <div class="row">
+                    <div class="col"><input type="number" class="form-control" name="year" placeholder="Year" required></div>
+
+                    <div class="col"><select name="month" class="form-control" id="month" placeholder="Year">
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select></div>
+
+                <div class="col"><input type="number" class="form-control" name="day" placeholder="Day" required></div>
+
+                </div>        	
+            </div>
+
+            <% if (error) { %>
+                <%= error %>
+                    <% } %>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-lg">Create Account</button>
+            </div>
+        </form>
+
+        <a href="/login" class="d-flex justify-content-center text-primary">Already have an account?</a>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+
+</html>

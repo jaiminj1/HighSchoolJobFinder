@@ -1,31 +1,104 @@
-<h1> Sign up </h1>
+<!doctype html>
+<html lang="en">
 
-<form action="/registerEmployer" method="POST">
-    <input type="text" name="companyName" placeholder="companyName" required>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <input type="text" name="email" placeholder="email" required>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <input type="password" name="password" placeholder="password" required>
+    <link rel="stylesheet" href="style.css">
 
-    <input type="password" name="confirmPassword" placeholder="confirm password" required>
-    
-    <input type="text" name="address" placeholder="Address" required>
-    
-    <input type="text" name="unit" placeholder="Unit" required> 
+    <link rel="stylesheet" href="signup.css">
 
-    <input type="text" name="city" placeholder="City" required>
+    <link rel="stylesheet" href="signin.css">
 
-    <input type="text" name="province" placeholder="Province" required>
 
-    <input type="text" name="country" placeholder="Country" required>
-    
-    <br> <input type="text" name="postalCode" placeholder="Postal Code" pattern="[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]" required> (Format: A0A 0A0)
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="null">
 
-    <% if (error) { %>
-        <%= error %>
-        <% } %>
+    <title>Admin Sign Up - High School JobFinder</title>
+</head>
 
-    <button>Create Account</button>
-</form>
+<body>
 
-<li><a href="/login">Login</a></li>
+    <div class="signup-form">
+        <form action="/registerEmployer" method="POST">
+            <h2>Sign Up</h2>
+
+            <hr>
+
+            <div class="form-group">
+                <input type="text" class="form-control" name="companyName" placeholder="Company Name" required>
+            </div>
+
+            <div class="form-group">
+                <input type="email" class="form-control" name="email" placeholder="Email Address" required>
+            </div>
+
+            <div class="form-group">
+                <input type="password" class="form-control" name="password" placeholder="Password" required>
+            </div>
+
+            <div class="form-group">
+                <input type="password" class="form-control" name="confirmPassword" placeholder="Confirm Password" required>
+            </div>
+
+            <div class="form-group">
+                <input type="text" class="form-control" name="address" placeholder="Address" required>
+            </div>
+
+            <div class="form-group">
+                <input type="text" class="form-control" name="unit" placeholder="Unit, floor, building etc." required>
+            </div>
+
+            <div class="form-group">
+                <input type="text" class="form-control"  name="city" placeholder="City" required>
+            </div>
+
+            <div class="form-group">
+                <input type="text" class="form-control" name="province" placeholder="Province" required>
+            </div>
+
+            <div class="form-group">
+                <input type="text" class="form-control" name="country" placeholder="Country" required>
+            </div>
+
+            <div class="form-group">
+                 <input type="text" class="form-control" name="postalCode" placeholder="Postal Code"
+                    pattern="[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]" required> (Format: A0A 0A0)
+            </div>
+
+            <% if (error) { %>
+                <%= error %>
+                    <% } %>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-lg">Create Account</button>
+                        </div>
+        </form>
+
+        <a href="/login" class="d-flex justify-content-center text-primary">Already have an account?</a>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+
+</html>

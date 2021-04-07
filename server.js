@@ -83,24 +83,24 @@ app.get("/", function (req, res) {
 //portal when logged in 
 app.get("/portal", isLoggedIn, function (req, res) {
 
-    if (req.user.isVerified === false) {
-        res.render("emailConfirmation", {
-            email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, accountType,
-            school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified
-        });
-    } else {
+    // if (req.user.isVerified === false) {
+    //     res.render("emailConfirmation", {
+    //         email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, accountType,
+    //         school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified
+    //     });
+    // } else {
 
-        if (req.user.accountType == "student") {
-            res.redirect("student-portal/student-findjobs");
-        }
-        else if (req.user.accountType == "employer") {
-            res.redirect("employer-portal/employer-editprofile");
-        }
-        else if (req.user.accountType == "admin") {
-            res.redirect("admin-portal/admin-userview");
-        }
-        //res.render("portal", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, school: req.user.School });
+    if (req.user.accountType == "student") {
+        res.redirect("student-portal/student-findjobs");
     }
+    else if (req.user.accountType == "employer") {
+        res.redirect("employer-portal/employer-editprofile");
+    }
+    else if (req.user.accountType == "admin") {
+        res.redirect("admin-portal/admin-userview");
+    }
+    //res.render("portal", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, school: req.user.School });
+    // }
 });
 
 //resources page
@@ -396,8 +396,6 @@ app.post("/registerAdmin", function (req, res) {
     var verificationCode = randomString(4)
 
     if (password != confirmPassword) {
-        console.log(password)
-        console.log(confirmPassword)
         return res.render("registerAdmin", { error: "passwords don't match" });
     }
 
@@ -408,11 +406,10 @@ app.post("/registerAdmin", function (req, res) {
                 return res.render("registerAdmin", { error: false });
             }
 
-            //res.render("emailConfirmation", { email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType, school: req.body.School, verificationCode});
             passport.authenticate("local")(
                 req, res, function () {
                     sendEmail(email, verificationCode)
-                    res.render("emailConfirmation", { email: email, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
+                    res.redirect("/emailConfirmation");
                 });
         });
 });
@@ -428,8 +425,6 @@ app.post("/registerStudent", function (req, res) {
     var verificationCode = randomString(4)
 
     if (password != confirmPassword) {
-        console.log(password)
-        console.log(confirmPassword)
         return res.render("registerStudent", { error: "Passwords don't match" });
     }
 
@@ -440,11 +435,10 @@ app.post("/registerStudent", function (req, res) {
                 return res.render("registerStudent", { error: false });
             }
 
-            //res.render("emailConfirmation", { email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType, school: req.body.School, verificationCode});
             passport.authenticate("local")(
                 req, res, function () {
                     sendEmail(email, verificationCode)
-                    res.render("emailConfirmation", { email: email, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
+                    res.redirect("/emailConfirmation");
                 });
         });
 });
@@ -463,8 +457,6 @@ app.post("/registerEmployer", function (req, res) {
     var postalCode = req.body.postalCode
 
     if (password != confirmPassword) {
-        console.log(password)
-        console.log(confirmPassword)
         return res.render("registerEmployer", { error: "passwords don't match" });
     }
 
@@ -475,11 +467,10 @@ app.post("/registerEmployer", function (req, res) {
                 return res.render("registerEmployer", { error: false });
             }
 
-            //res.render("emailConfirmation", { email: email, firstname: req.body.firstname, lastname: req.body.lastname, accountType, school: req.body.School, verificationCode});
             passport.authenticate("local")(
                 req, res, function () {
                     sendEmail(email, verificationCode)
-                    res.render("emailConfirmation", { email: email, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
+                    res.redirect("emailConfirmation");
                 });
         });
 });
@@ -494,15 +485,13 @@ function randomString(length) {
 }
 
 app.get("/emailConfirmation", function (req, res) {
-    res.render("emailConfirmation", { error: false });
+    res.render("emailConfirmation", { error: false, email: req.user.email, isVerified: req.user.isVerified });
 });
 
 app.post("/emailConfirmation", function (req, res) {
     userCode = req.body.code
 
     if (userCode != req.user.verificationCode) {
-        console.log(userCode)
-        console.log(req.user.verificationCode)
         return res.render("emailConfirmation", { error: "codes don't match" });
     } else {
         // Verify and save the user
@@ -551,7 +540,7 @@ app.get("/login", function (req, res) {
 
     if (req.isAuthenticated()) {
         if (req.user.isVerified = false) {
-            res.render("emailConfirmation", { email: email, firstname: req.user.firstname, lastname: req.user.lastname, accountType, school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified });
+            res.redirect("/emailConfirmation");
         } else {
             res.redirect("/portal");
         }
@@ -614,9 +603,35 @@ app.get("/logout", function (req, res) {
 });
 
 function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) return next();
-    res.redirect("/login");
+    if (req.isAuthenticated()) {
+
+        if (req.user.isVerified == false) {
+            res.redirect("/emailConfirmation")
+        } else if (req.user.isApproved == false) {
+            res.redirect("/userApproval")
+        } else {
+            return next();
+        }
+    } else {
+        res.redirect("/login");
+    }
 }
+
+app.get("/userApproval", function (req, res) {
+
+    if (req.isAuthenticated()) {
+        if (req.user.isVerified == false) {
+            res.redirect("/emailConfirmation")
+        } else if (req.user.isApproved == true) {
+            res.redirect("/portal")
+        } else {
+            res.render("userApproval")
+        }
+    } else {
+        res.redirect("/login");
+    }
+
+})
 
 function isEmployer(req, res, next) {
     if (req.user.accountType == "employer") { return next(); }
@@ -856,7 +871,7 @@ app.post("/deletePostAdmin", function (req, res) {
 
 app.get("/employer-portal/employer-editprofile", isLoggedIn, function (req, res) {
     message = req.session.message
-    res.render('employer-portal/employer-editprofile', { user: req.user, message: message});
+    res.render('employer-portal/employer-editprofile', { user: req.user, message: message });
 });
 
 app.post("/employer-portal/employer-editprofile", function (req, res) {

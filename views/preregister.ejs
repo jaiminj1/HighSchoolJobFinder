@@ -1,75 +1,90 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 
 <head>
-  <link href="https://unpkg.com/vuesax@4.0.1-alpha.16/dist/vuesax.min.css" rel="stylesheet">
-  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="style.css">
+
+    <link href="signin.css" rel="stylesheet">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="null">
+
+  <title>Select your account type - High School JobFinder</title>
 </head>
 
 <body>
-  <div id="app">
 
-    <vs-row justify="center">
-      <h1 style="font-size:300%"> Please choose your account type </h1>
-    </vs-row>
+  <div class="text-center">
 
-    <vs-row justify="center">
-      <h3> Your school's administrator will be required to approve your account </h3>
-    </vs-row>
+    <h1 class="h1 mb-3 font-weight-bold"> Please choose your account type </h1>
 
+    <h2 class="h3 mb-3 font-weight-normal"> Your school's administrator will be required to approve your account </h2>
+    
     <form action="/preregister" method="POST">
 
-      <!-- <input type="radio" id="student" name="accounttype" value="student">
-    <label for="student">Student</label><br>
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
 
-    <input type="radio" id="employer" name="accounttype" value="employer">
-    <label for="employer">Employer</label><br>
+        <label class="btn btn-secondary active btn-lg">
+          <input type="radio" name="accounttype" id="student" value="student" autocomplete="off"> Student
+        </label>
 
-    <input type="radio" id="admin" name="accounttype" value="admin">
-    <label for="admin">Admin</label> -->
+        <label class="btn btn-secondary btn-lg">
+          <input type="radio" name="accounttype" id="employer" value="employer" autocomplete="off"> Employer
+        </label>
 
-      <div class="center">
-        <vs-radio v-model="picked" val="student">
-          Option A
-        </vs-radio>
-        <vs-radio v-model="picked" val="employer">
-          Option B
-        </vs-radio>
-        <vs-radio v-model="picked" val="admin">
-          Option D
-        </vs-radio>
+        <label class="btn btn-secondary btn-lg">
+          <input type="radio" name="accounttype" id="admin" value="admin" autocomplete="off"> Admin
+        </label>
+
       </div>
 
-      <vs-row justify="center">
-        <button>Submit</button>
-    </vs-row>
+      <!-- <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="accounttype" id="student" value="student">
+        <label class="form-check-label" for="inlineRadio1">Student</label>
+      </div>
 
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="accounttype" id="employer" value="employer">
+        <label class="form-check-label" for="inlineRadio2">Employer</label>
+      </div>
+
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="accounttype" id="admin" value="admin">
+        <label class="form-check-label" for="inlineRadio2">Admin</label>
+      </div> -->
+
+      <br><br>
+    
+      <button class="btn btn-lg btn-dark" id="submit" type="submit">Submit</button>
     </form>
+    
+    <a class="btn btn-lg btn-link btn-block botButton" href="/login">Already have an account?</a>
+
   </div>
 
-
-
-  <li><a href="/login">Login</a></li>
-
-  <script src="https://unpkg.com/vue/dist/vue.js"></script>
-  <script src="https://unpkg.com/vuesax@4.0.1-alpha.16/dist/vuesax.min.js"></script>
-  <script>
-    new Vue({
-      el: '#app',
-
-      data: () => ({
-        picked: 1,
-      })
-
-    })
-  </script>
-  <script>
-    export default {
-      data: () => ({
-        picked: 1,
-      })
-    }
-  </script>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
 </body>
+
 
 </html>
