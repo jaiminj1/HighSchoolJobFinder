@@ -361,7 +361,7 @@ var accountType;
 app.post("/preregister", function (req, res) {
     accountType = req.body.accounttype
 
-    if (accountType == "student") {
+    if (accountType == "student" || (!accountType)) {
         res.redirect("/registerStudent")
     } else if (accountType == "employer") {
         res.redirect("/registerEmployer")
