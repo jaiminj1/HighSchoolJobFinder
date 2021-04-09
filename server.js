@@ -393,7 +393,7 @@ app.get("/registerAdmin", function (req, res) {
 // });
 
 app.post("/registerAdmin", function (req, res) {
-    accountType == "admin"
+    accountType = "admin"
     var email = req.body.email
     var password = req.body.password
     var confirmPassword = req.body.confirmPassword
@@ -419,7 +419,7 @@ app.post("/registerAdmin", function (req, res) {
 });
 
 app.post("/registerStudent", function (req, res) {
-    accountType == "student"
+    accountType = "student"
     var email = req.body.email
     var password = req.body.password
     var confirmPassword = req.body.confirmPassword
@@ -449,7 +449,7 @@ app.post("/registerStudent", function (req, res) {
 });
 
 app.post("/registerEmployer", function (req, res) {
-    accountType == "employer"
+    accountType = "employer"
     var email = req.body.email
     var password = req.body.password
     var confirmPassword = req.body.confirmPassword
