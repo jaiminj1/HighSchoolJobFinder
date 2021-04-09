@@ -1,78 +1,184 @@
-<div class="topnav">
-    <!-- <a href="/employer-portal/employer-profile">Dashboard</a> -->
-    <a href="/employer-portal/employer-jobview">My Jobs</a>
-    <a href="/employer-portal/employer-jobcreate">Create Jobs</a>
-    <a href="/employer-portal/employer-editprofile">Edit Profile</a>
-    <a href="/logout">Logout</a>
+<!doctype html>
+<html lang="en">
 
-</div>
-<h1> editpost </h1>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="null">
 
-<script>
-    var x=1
-    function appendRow()
-    {
-       var d = document.getElementById('div');
-       d.innerHTML += "<input type='text' name='question[]' id='question"+ x++ +"'><br >";
-    }
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    function appendRowPreset(p)
-    {
-       var d = document.getElementById('div');
-       d.innerHTML += "<input type='text' name='question[]' value='"+ p +"' id='question"+ x++ +"'><br >";
-    }
-    </script>
+    <link rel="stylesheet" href="../style.css">
 
-<form action="/employer-portal/employer-jobedit" method="POST">
+    <link rel="stylesheet" href="../signup.css">
 
-    <input type="hidden" id="postID" name="postID" value="<%= jobpost._id %>">
+    <link rel="stylesheet" href="../signin.css">
 
-    <input type="hidden" id="creator" name="creator" value="<%= jobpost.creator %>">
+    <title>Admin Sign Up - High School JobFinder</title>
 
-    <input type="text" name="jobTitle" value="<%= jobpost.jobTitle %>" required>
+    <style>
+        body {
+            padding-top: 550px;
+        }
+    </style>
+</head>
 
-    <input type="text" name="Location" value="<%= jobpost.location %>">
+<body>
 
-    <label for="discipline">Disciplines:</label>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="">High School JobFinder</a>
 
-    <select name="discipline" id="discipline" multiple>
-        <option value="technology" <% if((jobpost.discipline).includes("technology")){ %> selected <% } %>>Technology</option>
-        <option value="retail" <% if((jobpost.discipline).includes("retail")){ %> selected <% } %>>Retail</option>
-        <option value="exampleDiscipline3" <% if((jobpost.discipline).includes("exampleDiscipline3")){ %> selected <% } %>>Example Discipline 3</option>
-    </select>
+        <ul class="navbar-nav mr-auto ml-3" style="margin-bottom: auto;">
+            <a class="nav-item nav-link" href="/employer-portal/employer-jobview">My Jobs</a>
+            <a class="nav-item nav-link active" href="/employer-portal/employer-jobcreate">Create Jobs</a>
+            <a class="nav-item nav-link" href="/employer-portal/employer-editprofile">Edit Profile</a>
+        </ul>
 
-    <input type="radio" id="coop" name="type" value="coop" <% if(jobpost.type == "coop"){ %> checked="checked" <% } %> >
-    <label for="coop">Co-op</label><br>
+        <ul class="navbar-nav ml-auto mr-3">
+            <li class="nav-item dropdown">
 
-    <input type="radio" id="regular" name="type" value="regular" <% if(jobpost.type == "regular"){ %> checked="checked" <% } %> >
-    <label for="coop">Regular</label><br>
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Account
+                </a>
 
+                <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="nav-item nav-link" href="/employer-portal/employer-editprofile">Edit Account</a>
+                    <a class="nav-item nav-link" href="/logout">Logout</a>
+                </div>
 
-    <input type="text" name="briefDescription" value="<%= jobpost.briefDescription %>" required>
+            </li>
+        </ul>
+    </nav>
 
-    <input type="text" name="description" value="<%= jobpost.description %>" required>
+    <div class="container" style="width: 800px;">
+    <div class="signup-form" style="width: 800px;">
 
-    <input type="text" name="responsibilities" value="<%= jobpost.responsibilities %>" required>
+        <h2 class="text-dark"> Edit job post </h2>
 
-    <input type="text" name="skills" value="<%= jobpost.skills %>" required>
+        <form action="/employer-portal/employer-jobedit" method="POST">
 
-    <div id="div">
-        <button onclick="appendRow()" value="Add Question">Add Question</button> <br>
+            <input type="hidden" id="postID" name="postID" value="<%= jobpost._id %>">
+        
+            <input type="hidden" id="creator" name="creator" value="<%= jobpost.creator %>">
 
-        <% jobpost.questions.forEach(p=> { %>
-            <script>appendRowPreset("<%=p%>")</script>
-            <% }) %>
+            <div class="form-group">
+                <label for="jobTitle">Job Title</label>
+                <input type="text" class="form-control" id="jobTitle" name="jobTitle"
+                    placeholder="e.g Software Engineer" value="<%= jobpost.jobTitle %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" class="form-control" id="location" name="location"
+                    placeholder="e.g Ottawa, ON, Canada"  value="<%= jobpost.location %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="discipline">Disciplines:</label>
+                <select class="form-control" name="discipline" id="discipline" style="height:auto;" multiple>
+                    <option value="technology" <% if((jobpost.discipline).includes("technology")){ %> selected <% } %>>Technology</option>
+                    <option value="retail" <% if((jobpost.discipline).includes("retail")){ %> selected <% } %>>Retail</option>
+                    <option value="exampleDiscipline3" <% if((jobpost.discipline).includes("exampleDiscipline3")){ %> selected <% } %>>Example Discipline 3</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <input required type="radio" id="coop" name="type" value="coop" <% if(jobpost.type == "coop"){ %> checked="checked" <% } %> >
+                    <label for="coop">Co-op</label>
+                </div>
+
+                <div class="form-group ml-3">
+                    <input required type="radio" id="regular" name="type" value="regular" <% if(jobpost.type == "regular"){ %> checked="checked" <% } %> >
+                    <label for="regular">Regular</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="briefDescription">Brief Description</label>
+                <textarea type="text" name="briefDescription" rows="3" style="height:100%;" id="briefDescription" class="form-control md-textarea"><%= jobpost.briefDescription %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea type="text" name="description" rows="3" style="height:100%;" id="description" class="form-control md-textarea"><%= jobpost.description %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="responsibilities">Responsibilities</label>
+                <textarea type="text" name="responsibilities" rows="3" style="height:100%;" id="responsibilities" class="form-control md-textarea"><%= jobpost.responsibilities %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="skills">Skills</label>
+                <textarea type="text" name="skills" rows="3" style="height:100%;" id="skills" class="form-control md-textarea"><%= jobpost.skills %></textarea>
+            </div>
+
+            <br>
+
+            <div class="form-group">
+                <div id="div">
+                    <button class="form-control" onclick="appendRow()" value="Add Question">Add Question</button> <br>
+            
+                    <% jobpost.questions.forEach(p=> { %>
+                        <script>appendRowPreset("<%=p%>")</script>
+                        <% }) %>
+            
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-primary btn-lg">Submit</button>
+            </div>
+
+        </form>
 
     </div>
 
-    <button>Submit</button>
-</form>
+    <div class="signup-form2">
+        <form action="/employer-portal/employer-jobedit" method="POST">
+            <input type="hidden" id="postID" name="postID" value="<%= jobpost._id %>">
+            <input type="hidden" id="creator" name="creator" value="<%= jobpost.creator %>">
+            <input type="hidden" id="deleteButton" name="deleteButton" value="deleteButton">
+            <button class="btn btn-danger btn-lg mb-5">Delete Post</button>
+        </form>
+    </div>
+</div>
 
-<form action="/employer-portal/employer-jobedit" method="POST">
-    <input type="hidden" id="postID" name="postID" value="<%= jobpost._id %>">
-    <input type="hidden" id="creator" name="creator" value="<%= jobpost.creator %>">
-    <input type="hidden" id="deleteButton" name="deleteButton" value="deleteButton">
-    <button>Delete</button>
-</form>
+    <script>
+        var x=1
+        function appendRow()
+        {
+           var d = document.getElementById('div');
+           d.innerHTML += "<input type='text' name='question[]' id='question"+ x++ +"'><br >";
+        }
+    
+        function appendRowPreset(p)
+        {
+           var d = document.getElementById('div');
+           d.innerHTML += "<input type='text' name='question[]' value='"+ p +"' id='question"+ x++ +"'><br >";
+        }
+        </script>    
 
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+
+</html>
     

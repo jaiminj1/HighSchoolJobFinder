@@ -17,153 +17,297 @@
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <!-- <link rel="stylesheet" href="../style.css"> -->
+  <link rel="stylesheet" href="../findjobs.css">
+
+  <link rel="stylesheet" href="../style.css">
+
+  <link rel="stylesheet" href="../signup.css">
+
+<!-- 
+  <link rel="stylesheet" href="../signup.css">
+
+  <link rel="stylesheet" href="../signin.css"> -->
+
+</head>
+
+<body>
+
+  <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="">High School JobFinder</a>
     <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button> -->
     <!-- <div class="collapse navbar-collapse" id="navbarNavAltMarkup"> -->
-      <div class="navbar-nav">
-        <a class="nav-item nav-link active" href="#">Find Jobs <span class="sr-only">(current)</span></a>
-        <a class="nav-item nav-link" href="/student-portal/student-bookmarks">Bookmarks</a>
-        <a class="nav-item nav-link" href="/student-portal/student-myapplications">My Applications</a>
-        <a class="nav-item nav-link" href="/resources">Resources</a>
-        <a class="nav-item nav-link" href="/helpcenter">Help Center</a>
-        <a class="nav-item nav-link" href="/student-portal/student-viewprofile">Account</a>
-        <a class="nav-item nav-link" href="/logout">Logout</a>
+    <!-- <div class="navbar-nav"> -->
 
-      </div>
-    <!-- </div> -->
+    <ul class="navbar-nav mr-auto ml-3">
+      <a class="nav-item nav-link active" href="/student-portal/student-findjobs">Find Jobs</a>
+      <a class="nav-item nav-link" href="/student-portal/student-bookmarks">Bookmarks</a>
+      <a class="nav-item nav-link" href="/student-portal/student-myapplications">My Applications</a>
+      <a class="nav-item nav-link" href="/resources">Resources</a>
+      <a class="nav-item nav-link" href="/helpcenter">Help Center</a>
+    </ul>
+
+    <ul class="navbar-nav ml-auto mr-3">
+      <li class="nav-item dropdown">
+
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          Account
+        </a>
+
+        <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
+          <a class="nav-item nav-link" href="/student-portal/student-viewprofile">Edit Account</a>
+          <a class="nav-item nav-link" href="/logout">Logout</a>
+        </div>
+
+      </li>
+    </ul>
   </nav>
 
- 
-</head>
-
-<body>
 
   <script>
     // stringify the data passed from router to ejs (within the EJS template only)
-    var jobpost = <% - JSON.stringify(result) %>
+    var jobpost = <%- JSON.stringify(result) %>
   </script>
 
-<form class="form-inline" action="/search" method="GET">
-  <div class="form-group mx-sm-3 mb-2">
-    <!-- <label for="term" class="sr-only">Term</label> -->
-    <input type="text" class="form-control" id="term" name="term" value="<%=term%>" placeholder="Job Title">
-  </div>
-
-  <div class="form-row align-items-center">
-    <div class="col-auto my-1">
-      <!-- <label class="mr-sm-2" for="inlineFormCustomSelect">Preference</label> -->
-      <select class="custom-select mr-sm-2" name="discipline" id="discipline">
-        <option selected disabled>Discipline</option>
-        <option value="technology" <% if((discipline).includes("technology")){ %> selected <% } %>>Technology</option>
-          <option value="retail" <% if((discipline).includes("retail")){ %> selected <% } %>>Retail</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="form-row align-items-center">
-    <div class="col-auto my-1">
-      <!-- <label class="mr-sm-2" for="inlineFormCustomSelect">Preference</label> -->
-      <select class="custom-select mr-sm-2" name="type" id="type">
-        <option selected disabled>Type</option>
-        <option value="coop" <% if((type).includes("coop")){ %> selected <% } %>>Coop</option>
-          <option value="regular" <% if((type).includes("regular")){ %> selected <% } %>>Regular</option>
-      </select>
-    </div>
-  </div>
-
-  <button type="submit" class="btn btn-primary mb-2">Search</button>
-</form>
 
 
-
-
-  <!-- <div class="search-form">
-    <form action="/search" method="GET">
-      
-      <div class="form-group">
-        <input type="text" id="term" name="term" value="<%=term%>">
-      </div>
-      
-      <div class="form-group">
-        <select name="discipline" id="discipline">
-          <option value="technology" <% if((discipline).includes("technology")){ %> selected <% } %>>Technology</option>
-          <option value="retail" <% if((discipline).includes("retail")){ %> selected <% } %>>Retail</option>
-        </select>
+  <div class="container mt-5 justify-content-center align-items-center">
+    <form class="form-inline " action="/search" method="GET">
+      <div class="form-group col-auto my-1">
+        <!-- <label for="term" class="sr-only">Term</label> -->
+        <input type="text" class="form-control-lg" size="50" id="term" name="term" value="<%=term%>"
+          placeholder="Job Title">
       </div>
 
-      <div class="form-group">
-        <select name="type" id="type">
-          <option value="coop" <% if((type).includes("coop")){ %> selected <% } %>>Coop</option>
-          <option value="regular" <% if((type).includes("regular")){ %> selected <% } %>>Regular</option>
-        </select>
+      <div class="form-row align-items-center">
+        <div class="col-auto my-1">
+          <!-- <label class="mr-sm-2" for="inlineFormCustomSelect">Preference</label> -->
+          <select class=" mr-sm-2 form-control form-control-lg" name="discipline" id="discipline">
+            <option selected disabled>Discipline</option>
+            <option value="technology" <% if((discipline).includes("technology")){ %> selected <% } %>>Technology
+            </option>
+            <option value="retail" <% if((discipline).includes("retail")){ %> selected <% } %>>Retail</option>
+          </select>
+        </div>
       </div>
 
+      <div class="form-row align-items-center">
+        <div class="col-auto my-1">
+          <!-- <label class="mr-sm-2" for="inlineFormCustomSelect">Preference</label> -->
+          <select class=" mr-sm-2 form-control form-control-lg" name="type" id="type">
+            <option selected disabled>Type</option>
+            <option value="coop" <% if((type).includes("coop")){ %> selected <% } %>>Coop</option>
+            <option value="regular" <% if((type).includes("regular")){ %> selected <% } %>>Regular</option>
+          </select>
+        </div>
+      </div>
 
-      <button>Search</button>
-
+      <button type="submit" class="btn btn-primary btn-lg col-auto my-1">Search</button>
     </form>
-  </div> -->
+</div>
 
-  <div>
+
+<!-- <br>
+  <div class="container float float-left">
+    <% var x=0 %>
+      <% if (result) { %>
+        <% result.forEach(p=> { %>
+
+          <div class="row" style="width: 700px; height: 200px;"> -->
+            <!-- <div class="col-md-6"> -->
+              <!-- <div class="card flex-md-row mb-4 box-shadow h-md-250"> -->
+                <!-- <div class="card">
+                <div class="card-body d-flex flex-column align-items-start"> -->
+                  <!-- <div href="#" class="d-inline-block mb-2 text-primary"> <%= p.creatorName %></div> -->
+                  <!-- <a href="student-portal/student-employerprofile?employerID=<%= p.creatorID %>"><%= p.creatorName %></a> -->
+                  <!-- <div class="mb-1 text-muted"></div> -->
+                  <!-- <div> <%= p.jobTitle %></div>
+                  <div> <%= p.location %></div>
+                  <div> <%= p.type %></div> 
+                  <div> <%= p.companyName %></div> 
+                  <div>Brief Description: <%= p.briefDescription %></div>
+                  <button onclick="display(jobpost[<%=x%>])"> View </button>
+                </div>
+              </div> -->
+            <!-- </div> -->
+          <!-- </div>   
+  <% x++ }) %>
+            <% } %>
+  
+          </div> -->
+
+
+        <!-- <div class="container col-10">
+          <% var x=0 %>
+      <% if (result) { %>
+        <% result.forEach(p=> { %>
+          <div class="card" style="width: 35rem;">
+            <div class="card-body">
+              <h5 class="card-title"><a href="student-portal/student-employerprofile?employerID=<%= p.creatorID %>"><%= p.creatorName %></a></h5>
+              <h6 class="card-subtitle mb-2 text-muted"><div> <%= p.jobTitle %></div></h6>
+              <h6 class="card-subtitle mb-2 text-muted"><div> <%= p.location %></div></h6>
+              <p class="card-text"><div><%= p.briefDescription %></div></p>
+              <a class="card-link"><div> <%= p.type %></div></a>
+              <button onclick="display(jobpost[<%=x%>])"> View </button>            </div>
+          </div>
+          <% x++ }) %>
+            <% } %>
+        </div> -->
+
+
+
+
+        <!-- <div class="container align-self-center" style="margin:0%">
+          <div class="row">
+  
+              <div class="col-3" style="margin-right:auto">
+  
+              <div class="signup-form" style="width: 400px;">
+
+    
+                  <div>
+                    <% var x=0 %>
+                    <% if (result) { %>
+                      <% result.forEach(p=> { %>
+                          <br>
+                              <input type="hidden" id="postId" name="postId" value="<%= p._id %>">
+                              <button class="btn btn-primary btn-lg" onclick="display(jobpost[<%=x%>])">View</button>
+                              <div>
+                                  <div>
+                                      Title: <%= p.jobTitle %>
+                                  </div>
+  
+                                  <div>
+                                      Location: <%= p.location %>
+                                  </div>
+  
+                                  <div>
+                                      Type: <%= p.type %>
+                                  </div>
+  
+                                  <div>
+                                      Brief Description: <%= p.briefDescription %>
+                                  </div>
+                              </div>
+                          <% x++ }) %>
+                          <% } %>
+                                          </div>
+              </div>
+          </div> -->
+        
+  
+          <!-- <div class="container align-self-center" style="margin:0%">
+            <div class="row">
+    
+                <div class="col-3" style="margin-right:auto"> -->
+<div class="container" style="margin:0%">
+
+  <div class="row justify-content-md-center">
+
+    <div class="col mr-auto" style="width:600px;">
     <% var x=0 %>
       <% if (result) { %>
         <% result.forEach(p=> { %>
           <br>
-          <button onclick="display(jobpost[<%=x%>])"> View </button>
-          <div>
-
-            <div>
+          <div class="text-dark ml-3" style="width: 600px; background-color: white;">
+          
               <a href="student-portal/student-employerprofile?employerID=<%= p.creatorID %>">
                 <%= p.creatorName %>
               </a>
-            </div>
+            <br>
 
-            <div>
               Title: <%= p.jobTitle %>
-            </div>
 
-            <div>
-              location: <%= p.location %>
-            </div>
+            <br>
 
-            <div>
+              Location: <%= p.location %>
+            <br>
+
               Type: <%= p.type %>
-            </div>
 
-            <div>
+            <br>
+
               Company Name: <%= p.companyName %>
-            </div>
 
-            <div>
+            <br>
+
               Brief Description: <%= p.briefDescription %>
-            </div>
+
+            <br>
+            
+            <button class="btn btn-primary" onclick="display(jobpost[<%=x%>])"> View </button>
           </div>
-          </form>
+
           <% x++ }) %>
             <% } %>
+          </div>
+
+          <div class="col-5 mt-auto" style="margin-right:auto;">
+
+            
+              <div class="fullPost text-dark ml-auto" style="width: 600px; background-color: white;">
+
+            </div>
+
+</div>
+
   </div>
+
+</div>
+
+  
 
   <script>
       function display(jobpost) {
         console.log(jobpost)
-        $("div.fullPost").html("<br> Title:" + jobpost.jobTitle + "<br>" +
-          "Location:" + jobpost.location + "<br>" +
-          "Type:" + jobpost.type + "<br>" +
-          "Discipline:" + jobpost.discipline + "<br>" +
-          "briefDescription:" + jobpost.briefDescription + "<br>" +
-          "Description:" + jobpost.description + "<br>" +
-          "Responsibilities:" + jobpost.responsibilities + "<br>" +
-          "Skills:" + jobpost.skills + "<br>" +
-          "Posted on:" + jobpost.createdAt + "<br>" +
-          '<form action="/student-portal/student-applications" method="GET">' +
-          '<input type="hidden" id="postID" name="postID" value=' + jobpost._id + '>' +
-          '<button>Apply</button>'
-        )
+        $("div.fullPost").html
+
+          ("<br>" +
+          '<p class="font-weight-bold mb-0" style="display:inline"> Title: </p>' + jobpost.jobTitle + "<br>" +
+            '<p class="font-weight-bold mb-0" style="display:inline"> Location: </p>' + jobpost.location + "<br>" +
+            '<p class="font-weight-bold mb-0" style="display:inline"> Type: </p>' + jobpost.type + "<br>" +
+            '<p class="font-weight-bold mb-0" style="display:inline"> Discipline: </p>' + jobpost.discipline + "<br>" +
+            '<p class="font-weight-bold mb-0" style="display:inline"> Description: </p>' + jobpost.description + "<br>" +
+            '<p class="font-weight-bold mb-0" style="display:inline"> Responsibilities: </p>' + jobpost.responsibilities + "<br>" +
+            '<p class="font-weight-bold mb-0" style="display:inline"> Skills: </p>' + jobpost.skills + "<br>" +
+            '<p class="font-weight-bold mb-0" style="display:inline"> Posted On: </p>' + jobpost.createdAt + "<br>" +
+            '<form action="/student-portal/student-applications" method="GET">' +
+            '<input type="hidden" id="postID" name="postID" value=' + jobpost._id + '>' +
+            '<button class="btn btn-primary">Apply</button>')
+            
+//  <div class="col-md-6">
+//     <div class="card flex-md-row mb-4 box-shadow h-md-250">
+//       <div class="card-body d-flex flex-column align-items-start">
+//         <strong class="d-inline-block mb-2 text-success">Design</strong>
+//         <h3 class="mb-0">
+//           <a class="text-dark" href="#">Post title</a>
+//         </h3>
+//         <div class="mb-1 text-muted">Nov 11</div>
+//         <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
+//         <a href="#">Continue reading</a>
+//       </div>
+//     </div>
+//   </div> 
+
+        // (
+        //   "Location:" + jobpost.location + "<br>" +
+        //   "Type:" + jobpost.type + "<br>" +
+        //   "Discipline:" + jobpost.discipline + "<br>" +
+        //   "briefDescription:" + jobpost.briefDescription + "<br>" +
+        //   "Description:" + jobpost.description + "<br>" +
+        //   "Responsibilities:" + jobpost.responsibilities + "<br>" +
+        //   "Skills:" + jobpost.skills + "<br>" +
+        //   "Posted on:" + jobpost.createdAt + "<br>" +
+        //   '<form action="/student-portal/student-applications" method="GET">' +
+        //   '<input type="hidden" id="postID" name="postID" value=' + jobpost._id + '>' +
+        //   '<button>Apply</button>'
+        // )
       }
   </script>
+
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->

@@ -1,56 +1,156 @@
-<div class="topnav">
-    <!-- <a href="/employer-portal/employer-profile">Dashboard</a> -->
-    <a href="/employer-portal/employer-jobview">My Jobs</a>
-    <a class="active" href="/employer-portal/employer-jobcreate">Create Jobs</a>
-    <a href="/employer-portal/employer-editprofile">Edit Profile</a>
-    <a href="/logout">Logout</a>
+<!doctype html>
+<html lang="en">
 
-</div>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="null">
 
-<h1> createpost </h1>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-<form action="/employer-portal/employer-jobcreate" method="POST">
-    <input type="text" name="jobTitle" placeholder="Job Title" required>
+    <link rel="stylesheet" href="../style.css">
 
-    <input type="text" name="location" placeholder="e.g Ottawa, ON, Canada">
+    <link rel="stylesheet" href="../signup.css">
 
-    <label for="discipline">Disciplines:</label>
+    <link rel="stylesheet" href="../signin.css">
 
-    <select name="discipline" id="discipline" multiple>
-        <option value="technology">Technology</option>
-        <option value="retail">Retail</option>
-        <option value="exampleDiscipline3">Example Discipline 3</option>
-    </select>
+    <title>Admin Sign Up - High School JobFinder</title>
 
-    <input type="radio" id="coop" name="type" value="coop">
-    <label for="coop">Co-op</label><br>
+    <style>
+        body {
+            padding-top: 500px;
+        }
+    </style>
+</head>
 
-    <input type="radio" id="regular" name="type" value="regular">
-    <label for="coop">Regular</label><br>
+<body>
 
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="">High School JobFinder</a>
 
-    <input type="text" name="briefDescription" placeholder="Brief Job Description" required>
+        <ul class="navbar-nav mr-auto ml-3" style="margin-bottom: auto;">
+            <a class="nav-item nav-link" href="/employer-portal/employer-jobview">My Jobs</a>
+            <a class="nav-item nav-link active" href="/employer-portal/employer-jobcreate">Create Jobs</a>
+            <a class="nav-item nav-link" href="/employer-portal/employer-editprofile">Edit Profile</a>
+        </ul>
 
-    <input type="text" name="description" placeholder="Description" required>
+        <ul class="navbar-nav ml-auto mr-3">
+            <li class="nav-item dropdown">
 
-    <input type="text" name="responsibilities" placeholder="Responsibilities" required>
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Account
+                </a>
 
-    <input type="text" name="skills" placeholder="Skills" required>
+                <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="nav-item nav-link" href="/employer-portal/employer-editprofile">Edit Account</a>
+                    <a class="nav-item nav-link" href="/logout">Logout</a>
+                </div>
 
-<br>
+            </li>
+        </ul>
+    </nav>
 
-    <div id="div">
-        <button onclick="appendRow()" value="Add Question">Add Question</button> <br>
+    <div class="signup-form" style="width: 800px;">
+
+        <h2 class="text-dark"> Create job post </h2>
+
+        <form action="/employer-portal/employer-jobcreate" method="POST">
+
+            <div class="form-group">
+                <label for="jobTitle">Job Title</label>
+                <input type="text" class="form-control" id="jobTitle" name="jobTitle"
+                    placeholder="e.g Software Engineer" required>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" class="form-control" id="location" name="location"
+                    placeholder="e.g Ottawa, ON, Canada" required>
+            </div>
+
+            <div class="form-group">
+                <label for="discipline">Disciplines:</label>
+                <select class="form-control" name="discipline" id="discipline" style="height:auto;" multiple>
+                    <option value="technology">Technology</option>
+                    <option value="retail">Retail</option>
+                    <option value="exampleDiscipline3">Example Discipline 3</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="radio" id="coop" name="type" value="coop" required>
+                    <label for="coop">Co-op</label>
+                </div>
+
+                <div class="form-group ml-3">
+                    <input type="radio" id="regular" name="type" value="regular" required>
+                    <label for="regular">Regular</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="briefDescription">Brief Description</label>
+                <textarea type="text" name="briefDescription" rows="3" style="height:100%;" id="briefDescription" class="form-control md-textarea"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea type="text" name="description" rows="3" style="height:100%;" id="description" class="form-control md-textarea"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="responsibilities">Responsibilities</label>
+                <textarea type="text" name="responsibilities" rows="3" style="height:100%;" id="responsibilities" class="form-control md-textarea"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="skills">Skills</label>
+                <textarea type="text" name="skills" rows="3" style="height:100%;" id="skills" class="form-control md-textarea">
+                </textarea>
+            </div>
+
+            <br>
+
+            <div class="form-group">
+                <div id="div">
+                    <button class="form-control" onclick="appendRow()" value="Add Question">Add Question</button> <br>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-primary btn-lg">Submit</button>
+            </div>
+
+        </form>
     </div>
 
-    <button>Submit</button>
-</form>
+    <script>
+        var x = 1
+        function appendRow() {
+            var d = document.getElementById('div');
+            d.innerHTML += "<input class='form-control' type='text' placeholder='Question' name='question[]' id='question" + x++ + "'><br >";
+        }
+    </script>
 
-<script>
-var x=1
-function appendRow()
-{
-   var d = document.getElementById('div');
-   d.innerHTML += "<input type='text' name='question[]' id='question"+ x++ +"'><br >";
-}
-</script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+
+</html>

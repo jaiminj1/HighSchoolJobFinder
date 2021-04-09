@@ -1,69 +1,143 @@
-<div class="topnav">
-    <!-- <a href="/employer-portal/employer-profile">Dashboard</a> -->
-    <a class="active" href="/employer-portal/employer-jobview">My Jobs</a>
-    <a href="/employer-portal/employer-jobcreate">Create Jobs</a>
-    <a href="/employer-portal/employer-editprofile">Edit Profile</a>
-    <a href="/logout">Logout</a>
-    
-</div>
+<!doctype html>
+<html lang="en">
 
-<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="null">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="../style.css">
+
+    <link rel="stylesheet" href="../signup.css">
+
+    <!-- <link rel="stylesheet" href="../signin.css"> -->
+
+    <title>Admin Sign Up - High School JobFinder</title>
+
+    <style>
+        body {
+            margin-top: 50px;
+        }
+    </style>
+</head>
 
 <body>
-    Your posts
 
-    <div>
-        <% userPosts.forEach(p=> { %>
-            <br>
-                <form action="/employer-portal/employer-jobview" method="POST">
-                <input type="hidden" id="postId" name="postId" value="<%= p._id %>">
-                 <button>view</button> 
-            <div>
-                <div>
-                    Title: <%= p.jobTitle %>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="">High School JobFinder</a>
+
+        <ul class="navbar-nav mr-auto ml-3" style="margin-bottom: auto;">
+            <a class="nav-item nav-link active" href="/employer-portal/employer-jobview">My Jobs</a>
+            <a class="nav-item nav-link" href="/employer-portal/employer-jobcreate">Create Jobs</a>
+            <a class="nav-item nav-link" href="/employer-portal/employer-editprofile">Edit Profile</a>
+        </ul>
+
+        <ul class="navbar-nav ml-auto mr-3">
+            <li class="nav-item dropdown">
+
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Account
+                </a>
+
+                <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="nav-item nav-link" href="/employer-portal/employer-editprofile">Edit Account</a>
+                    <a class="nav-item nav-link" href="/logout">Logout</a>
                 </div>
 
-                <div>
-                    Location: <%= p.location %>
-                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="container align-self-center" style="margin:0%">
+        <div class="row">
+
+            <div class="col-3" style="margin-right:auto">
+
+            <div class="signup-form" style="width: 400px;">
+
+                <h2 class="text-dark"> My Job Posts </h2>
 
                 <div>
-                    Type: <%= p.type %>
-                </div>
+                    <% userPosts.forEach(p=> { %>
+                        <br>
+                        <form action="/employer-portal/employer-jobview" method="POST">
+                            <input type="hidden" id="postId" name="postId" value="<%= p._id %>">
+                            <button class="btn btn-primary btn-lg">View</button>
+                            <div>
+                                <div>
+                                    Title: <%= p.jobTitle %>
+                                </div>
 
-                <div>
-                    Brief Description: <%= p.briefDescription %>
+                                <div>
+                                    Location: <%= p.location %>
+                                </div>
+
+                                <div>
+                                    Type: <%= p.type %>
+                                </div>
+
+                                <div>
+                                    Brief Description: <%= p.briefDescription %>
+                                </div>
+                            </div>
+                        </form>
+                        <% }) %>
                 </div>
             </div>
-        </form>
-            <% }) %>
+        </div>
+
+
+
+        <div class="col-5 mr-auto">
+            <div id="fullPost">
+                <div class="signup-form" style="width: 800px;">
+                    <form action="/employer-portal/employer-jobedit" method="GET">
+
+                        <% if (jobpost) { %>
+                            This is the post jobpost selected <br>
+                                Title: <%= jobpost.jobTitle %> <br>
+                                Location: <%= jobpost.location %> <br>
+                                Type: <%= jobpost.type %> <br>
+                                Discipline: <%= jobpost.discipline %> <br>
+                                Brief Description: <%= jobpost.briefDescription %> <br>
+                                description: <%= jobpost.description %> <br>
+                                Responsibilities: <%= jobpost.responsibilities %> <br>
+                                Skills: <%= jobpost.skills %> <br>
+                                createdAt: <%= jobpost.createdAt %> <br>
+                                updatedAt: <%= jobpost.updatedAt %>
+
+                        <input type="hidden" id="postID" name="postID" value="<%= jobpost._id %>"> <br>
+                        <button class="btn btn-primary btn-lg">Edit</button>
+                    </form>
+
+                        <% } %>
+                </div>
+            </div>
+        </div>
+
+        </div>
+
     </div>
 
-</body>
-    
-<br>
-
-<div id="fullPost">
-<% if (jobpost) { %>
-This is the post jobpost selected <br>
-    Title: <%= jobpost.jobTitle %> <br>
-    Location: <%= jobpost.location %> <br>
-    Type: <%= jobpost.type %> <br>
-    Discipline: <%= jobpost.discipline %> <br>
-    Brief Description: <%= jobpost.briefDescription %> <br>
-    description: <%= jobpost.description %> <br>
-    Responsibilities: <%= jobpost.responsibilities %> <br>
-    Skills: <%= jobpost.skills %> <br>
-    createdAt: <%= jobpost.createdAt %> <br>
-    updatedAt: <%= jobpost.updatedAt %>
-
-    <form action="/employer-portal/employer-jobedit" method="GET">
-        <input type="hidden" id="postID" name="postID" value="<%= jobpost._id %>">
-         <button>Edit</button> 
-
-<% } %>
-</div>
-
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>

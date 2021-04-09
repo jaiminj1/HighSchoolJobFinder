@@ -157,6 +157,8 @@ app.get("/student-portal/student-myapplications", isLoggedIn, async function (re
 
     for (i = 0; i < req.user.previouslyApplied.length; i++) {
 
+        console.log("hello")
+
         await jobPost.findOne({ _id: req.user.previouslyApplied[i] }, (err, jobpost) => {
             // Check if error connecting
             if (err) {
@@ -171,6 +173,7 @@ app.get("/student-portal/student-myapplications", isLoggedIn, async function (re
         });
     }
     res.render("student-portal/student-myapplications", { previouslyApplied: previouslyAppliedObj })
+    console.log(previouslyAppliedObj);
 });
 
 //student application page
@@ -265,7 +268,7 @@ app.get("/student-portal/student-bookmarks", isLoggedIn, function (req, res) {
 //student profile page
 app.get("/student-portal/student-viewprofile", isLoggedIn, function (req, res) {
     message = req.session.message
-    res.render("student-portal/student-viewprofile", { error: false, name: req.user.firstname, school: req.user.school, message: message });
+    res.render("student-portal/student-viewprofile", { error: false, firstname: req.user.firstname, lastname: req.user.lastname, school: req.user.school, grade: req.user.grade, message: message });
 });
 
 var employerPosts;
@@ -390,6 +393,7 @@ app.get("/registerAdmin", function (req, res) {
 // });
 
 app.post("/registerAdmin", function (req, res) {
+    accountType == "admin"
     var email = req.body.email
     var password = req.body.password
     var confirmPassword = req.body.confirmPassword
@@ -415,6 +419,7 @@ app.post("/registerAdmin", function (req, res) {
 });
 
 app.post("/registerStudent", function (req, res) {
+    accountType == "student"
     var email = req.body.email
     var password = req.body.password
     var confirmPassword = req.body.confirmPassword
@@ -444,6 +449,7 @@ app.post("/registerStudent", function (req, res) {
 });
 
 app.post("/registerEmployer", function (req, res) {
+    accountType == "employer"
     var email = req.body.email
     var password = req.body.password
     var confirmPassword = req.body.confirmPassword
@@ -759,7 +765,9 @@ app.get("/employer-portal/employer-jobview", isLoggedIn, isEmployer, async funct
     res.render('employer-portal/employer-jobview', { currentUser: req.user.email, userPosts, jobpost: false });
 });
 
-app.post("/employer-portal/employer-jobview", function (req, res) {
+app.post("/employer-portal/employer-jobview", isLoggedIn, isEmployer, async function (req, res) {
+
+    userPosts = await jobPost.find({ creator: req.user.email })
 
     jobPost = require("./models/jobpost");
 
@@ -1179,4 +1187,7 @@ app.listen(port, async function () {
     console.log("Server Running");
 });
 
-//
+//The 404 Route (ALWAYS Keep this as the last route)
+app.get('*', function(req, res){
+    res.render("404page");
+  });

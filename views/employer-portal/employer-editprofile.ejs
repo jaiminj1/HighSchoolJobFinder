@@ -1,56 +1,207 @@
-<div class="topnav">
-    <!-- <a href="/employer-portal/employer-profile">Dashboard</a> -->
-    <a href="/employer-portal/employer-jobview">My Jobs</a>
-    <a href="/employer-portal/employer-jobcreate">Create Jobs</a>
-    <a class="active" href="/employer-portal/employer-editprofile">Edit Profile</a>
-    <a href="/logout">Logout</a>
-</div>
+<!doctype html>
+<html lang="en">
 
-<!-- this page has no proper post. refer to the post of changepassword. -->
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="null">
 
-<h2>Photo</h2>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-<form action="/employer-portal/employer-editprofile" method="POST">
-    Company Name: <input type="text" name="companyName" placeholder="Company Name" value="<%= user.companyName %>">
-    <hr>
+    <link rel="stylesheet" href="../style.css">
 
-    <h2>Location:</h2>
-    address: <input type="text" name="address" placeholder="Address" value="<%= user.address %>">
-    unit: <input type="text" name="unit" placeholder="Unit" value="<%= user.unit %>">
-    city: <input type="text" name="city" placeholder="City" value="<%= user.city %>">
-    province: <input type="text" name="province" placeholder="Province" value="<%= user.province %>">
-    Country: <input type="text" name="Country" placeholder="Country" value="<%= user.Country %>">
-    Postal Code: <input type="text" name="postalCode" placeholder="Postal Code" value="<%= user.postalCode %>">
-    <hr>
+    <link rel="stylesheet" href="../signup.css">
 
-    <h2>Company Website:</h2>
-    <input type="text" name="companyWebsite" placeholder="Company Website" value= "<%=user.companyWebsite %>" >
+    <link rel="stylesheet" href="../signin.css">
 
-    <hr>
+    <title>Admin Sign Up - High School JobFinder</title>
 
-    <h2>Company Description:</h2>
-    <input type="text" name="companyDescription" placeholder="Company Description" value= "<%=user.companyDescription %>" >
-    
-    <hr>
+    <style>
+        body {
+            padding-top: 150px;
+        }
+    </style>
+</head>
 
-    <button>Submit</button>
-</form>
+<body>
 
-<hr>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="">High School JobFinder</a>
 
-<br>
+        <ul class="navbar-nav mr-auto ml-3">
+            <a class="nav-item nav-link" href="/employer-portal/employer-jobview">My Jobs</a>
+            <a class="nav-item nav-link" href="/employer-portal/employer-jobcreate">Create Jobs</a>
+            <a class="nav-item nav-link active" href="/employer-portal/employer-editprofile">Edit Profile</a>
+        </ul>
 
-<% if (message) { %>
-    <%= message %>
-    <% } %>
+        <ul class="navbar-nav ml-auto mr-3">
+            <li class="nav-item dropdown">
 
-<!-- post might need to be changed -->
-<form action="/changepassword" method="POST">
-    <input type="password" name="currentpassword" placeholder="Current Password">
-    <input type="password" name="newpassword" placeholder="New Password">
-    <input type="password" name="confirmpassword" placeholder="Confirm Password">
-    <button>Submit</button>
-</form>
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Account
+                </a>
 
-<body>If any of your account information is incorrect, please contact XXXX.</body>
+                <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="nav-item nav-link active" href="/employer-portal/employer-editprofile">Edit Account</a>
+                    <a class="nav-item nav-link" href="/logout">Logout</a>
+                </div>
 
+            </li>
+        </ul>
+    </nav>
+
+
+    <div class="row">
+
+        <div class="col">
+            <div class="signup-form" style="width: 800px;">
+
+                <!-- this page has no proper post. refer to the post of changepassword. and change the form to support it -->
+
+                <form action="/employer-portal/employer-editprofile" method="POST">
+
+                    <h2>Company Name:</h2>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="companyName" placeholder="Company Name"
+                            value="<%= user.companyName %>">
+                    </div>
+
+                    <hr>
+
+                    <h2>Location:</h2>
+
+                    <div class="form-group row">
+                        <label for="address" class="col-sm-2 col-form-label">Address</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="address" id="address" placeholder="Address"
+                                value="<%= user.address %>">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="unit" class="col-sm-2 col-form-label">Unit</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="unit" id="unit" placeholder="Unit"
+                                value="<%= user.unit %>">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="city" class="col-sm-2 col-form-label">City</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="city" id="city" placeholder="City"
+                                value="<%= user.city %>">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="province" class="col-sm-2 col-form-label">Province</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="province" id="province" placeholder="Province"
+                                value="<%= user.province %>">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="Country" class="col-sm-2 col-form-label">Country</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="Country" id="Country" placeholder="Country"
+                                value="<%= user.Country %>">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="postalCode" class="col-sm-2 col-form-label">Postal Code</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="postalCode" id="postalCode"
+                                placeholder="Postal Code" value="<%= user.postalCode %>">
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <h2>Company Website:</h2>
+
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="companyWebsite" placeholder="Company Website"
+                            value="<%=user.companyWebsite %>">
+                    </div>
+
+                    <hr>
+
+                    <h2>Company Description:</h2>
+
+                    <div class="form-group">
+                        <textarea type="text" name="companyDescription" rows="3" style="height:100%;" class="form-control md-textarea" placeholder="Company Description" value="<%=user.companyDescription %>"></textarea>
+                    </div>
+
+                    <hr>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+        <!-- <h1 class="display-1 text-dark">full name</h1>
+
+<h2 class="font-weight-normal">School</h2>
+
+<h2 class="font-weight-normal">Grade: </h2> -->
+
+        <div class="col">
+            <div class="signup-form" style="width: 400px;">
+
+                <% if (message) { %>
+                    <%= message %>
+                        <% } %>
+
+                <form action="/changepassword" method="POST">
+
+                    <h2>Change Password</h2>
+
+                    <div class="form-group">
+                        <input type="password" class="form-control" name="currentpassword"
+                            placeholder="Current Password">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" class="form-control" name="newpassword" placeholder="New Password">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" class="form-control" name="confirmpassword"
+                            placeholder="Confirm Password">
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+
+</html>

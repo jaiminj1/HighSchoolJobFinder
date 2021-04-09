@@ -1,90 +1,166 @@
-<!DOCTYPE html>
-<html>
+
+<!doctype html>
+<html lang="en">
 
 <head>
-    <title>vv</title>
-    <script type="text/javascript" src="test.js"> </script>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="null">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="../style.css">
+
+    <link rel="stylesheet" href="../signup.css">
+
+    <!-- <link rel="stylesheet" href="../signin.css"> -->
+
+    <title>Admin Sign Up - High School JobFinder</title>
+
+    <style>
+        body {
+            margin-top: 50px;
+        }
+    </style>
 </head>
 
-<div class="topnav">
-    <a class="active" href="/student-portal/student-findjobs">Find Jobs</a>
-    <a href="/student-portal/student-bookmarks">Bookmarks</a>
-    <a href="/student-portal/student-applications">My Applications</a>
-    <a href="/resources">Resources</a>
-    <a href="/helpCenter">Help Center</a>
-    <a href="/student-portal/student-viewprofile">Account</a>
-    <a href="/logout">Logout</a>
-</div>
-
 <body>
-<h2>Photo</h2>
-<h2>Company Name: <%= employer.companyName %></h2>
-<h2>Company Website: <%=employer.companyWebsite %></h2>
-<h3>Address:</h3><h4><%= employer.address %>, <%= employer.unit %>, <br>
-    <%= employer.city %>, <%= employer.province %>, <%= employer.Country %>, <br>
-    <%= employer.postalCode %></h4> <br>
-Company Description: <%=employer.companyDescription %>
 
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="">High School JobFinder</a>
 
-    <div>
-        <% employerPosts.forEach(p=> { %>
-            <br>
-                <form action="/student-portal/student-employerprofile" method="GET">
-                <input type="hidden" id="postId" name="postId" value="<%= p._id %>">
-                <input type="hidden" id="employerID" name="employerID" value="<%= employer._id %>">
-                 <button>view</button> 
-            <div>
-                <div>
-                    Title: <%= p.jobTitle %>
-                </div>
-
-                <div>
-                    Type: <%= p.type %>
-                </div>
-
-                <div>
-                    Brief Description: <%= p.briefDescription %>
-                </div>
+        <ul class="navbar-nav mr-auto ml-3">
+          <a class="nav-item nav-link" href="/student-portal/student-findjobs">Find Jobs</a>
+          <a class="nav-item nav-link" href="/student-portal/student-bookmarks">Bookmarks</a>
+          <a class="nav-item nav-link" href="/student-portal/student-myapplications">My Applications</a>
+          <a class="nav-item nav-link" href="/resources">Resources</a>
+          <a class="nav-item nav-link" href="/helpcenter">Help Center</a>
+        </ul>
+    
+        <ul class="navbar-nav ml-auto mr-3">
+          <li class="nav-item dropdown">
+    
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              Account
+            </a>
+    
+            <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
+              <a class="nav-item nav-link" href="/student-portal/student-viewprofile">Edit Account</a>
+              <a class="nav-item nav-link" href="/logout">Logout</a>
             </div>
-        </form>
+    
+          </li>
+        </ul>
+      </nav>
 
-<input type="checkbox" onclick="bookmark(this, '<%= p._id %>' );">
 
-            <% }) %>
+<div class="pt-5 align-self-start">
+
+      <div class="d-flex justify-content-center text-dark">
+        <h2>Company Name: <%= employer.companyName %></h2>
     </div>
 
-</body>
-<br>
-<div id="fullPost">
-<% if (jobpost) { %>
-This is the post jobpost selected <br>
-    Title: <%= jobpost.jobTitle %> <br>
-    Location: <%= jobpost.location %> <br>
-    Type: <%= jobpost.type %> <br>
-    Discipline: <%= jobpost.discipline %> <br>
-    Brief Description: <%= jobpost.briefDescription %> <br>
-    description: <%= jobpost.description %> <br>
-    Responsibilities: <%= jobpost.responsibilities %> <br>
-    Skills: <%= jobpost.skills %> <br>
-    createdAt: <%= jobpost.createdAt %> <br>
+    <div class="d-flex justify-content-center text-dark">
+        <h2>Company Website: <%=employer.companyWebsite %></h2>
+    </div>
 
-    <form action="/student-portal/student-applications" method="GET">
-        <input type="hidden" id="postID" name="postID" value="<%= jobpost._id %>">
-         <button>Apply</button> 
+    <div class="d-flex justify-content-center text-dark">
+        <h2>Address:</h2><h2><%= employer.address %>, <%= employer.unit %>,
+            <%= employer.city %>, <%= employer.province %>, <%= employer.Country %>,
+            <%= employer.postalCode %></h2>
+    </div>
 
-<% } %>
+    <div class="d-flex justify-content-center text-dark">
+        Company Description: <%=employer.companyDescription %>
+    </div>
 </div>
 
+      
+
+    <div class="container align-self-center">
+
+        <div class="row">
+
+            <div class="col-3" style="margin-right:auto">
+
+            <div class="signup-form" style="width: 400px;">
+
+                <h2 class="text-dark"> Job Posts </h2>
+
+                <div>
+                    <% employerPosts.forEach(p=> { %>
+                        <br>
+                            <form action="/student-portal/student-employerprofile" method="GET">
+                            <input type="hidden" id="postId" name="postId" value="<%= p._id %>">
+                            <input type="hidden" id="employerID" name="employerID" value="<%= employer._id %>">
+                             <button class="btn btn-primary btn-lg">View</button> 
+                        <div>
+                            <div>
+                                Title: <%= p.jobTitle %>
+                            </div>
+            
+                            <div>
+                                Type: <%= p.type %>
+                            </div>
+            
+                            <div>
+                                Brief Description: <%= p.briefDescription %>
+                            </div>
+                        </div>
+                    </form>            
+                        <% }) %>
+                </div>
+            </div>
+        </div> 
+
+        <div class="col-5 mr-auto">
+            <div id="fullPost">
+                <div class="signup-form" style="width: 800px;">
+                    <form action="/student-portal/student-applications" method="GET">
+
+                        <% if (jobpost) { %>
+                            <strong>Selected Job</strong> <br>
+                                Title: <%= jobpost.jobTitle %> <br>
+                                Location: <%= jobpost.location %> <br>
+                                Type: <%= jobpost.type %> <br>
+                                Discipline: <%= jobpost.discipline %> <br>
+                                Brief Description: <%= jobpost.briefDescription %> <br>
+                                description: <%= jobpost.description %> <br>
+                                Responsibilities: <%= jobpost.responsibilities %> <br>
+                                Skills: <%= jobpost.skills %> <br>
+                                createdAt: <%= jobpost.createdAt %> <br>
+                            
+
+                         <input type="hidden" id="postID" name="postID" value="<%= jobpost._id %>">
+                        <button class="btn btn-primary btn-lg">Apply</button>
+                    </form>
+
+                        <% } %>
+                </div>
+            </div>
+        </div>
+
+        </div>
+
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
 </html>
-<!-- <h2>Photo: xxx</h2>
-<h2>Company: Company Name</h2>
-<h2>Location: Location</h2>
-<h2>Company Website: Website URL</h2>
-
-
-<h3>Company Description</h3>
-
-<body>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-    Proin lorem justo, euismod ac ultrices ut, vehicula ut dui. Vivamus leo nunc, lacinia iaculis efficitur a, dapibus non augue. 
-    Curabitur feugiat dui quis sollicitudin sagittis. Donec finibus nulla risus, at interdum. Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-    Proin lorem justo, euismod ac ultrices ut, vehicula ut dui. Vivamus leo nunc</body> -->

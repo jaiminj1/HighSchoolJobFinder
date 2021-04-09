@@ -2,96 +2,121 @@
 <html lang="en">
 
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="null">
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="null">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../style.css">
 
-    <link rel="stylesheet" href="signup.css">
+  <link rel="stylesheet" href="../signup.css">
 
-    <link rel="stylesheet" href="signin.css">
+  <link rel="stylesheet" href="../signin.css">
 
-    <title>Admin Sign Up - High School JobFinder</title>
+  <title>Admin Sign Up - High School JobFinder</title>
 </head>
 
 <body>
-        
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+  <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="">High School JobFinder</a>
     <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button> -->
     <!-- <div class="collapse navbar-collapse" id="navbarNavAltMarkup"> -->
-      <!-- <div class="navbar-nav"> -->
+    <!-- <div class="navbar-nav"> -->
 
-        <ul class="navbar-nav mr-auto">
-        <a class="nav-item nav-link" href="/student-portal/student-findjobs">Find Jobs</a>
-        <a class="nav-item nav-link" href="/student-portal/student-bookmarks">Bookmarks</a>
-        <a class="nav-item nav-link" href="/student-portal/student-myapplications">My Applications</a>
-        <a class="nav-item nav-link" href="/resources">Resources</a>
-        <a class="nav-item nav-link" href="/helpcenter">Help Center</a>
-      </ul>
+    <ul class="navbar-nav mr-auto ml-3">
+      <a class="nav-item nav-link" href="/student-portal/student-findjobs">Find Jobs</a>
+      <a class="nav-item nav-link" href="/student-portal/student-bookmarks">Bookmarks</a>
+      <a class="nav-item nav-link" href="/student-portal/student-myapplications">My Applications</a>
+      <a class="nav-item nav-link" href="/resources">Resources</a>
+      <a class="nav-item nav-link" href="/helpcenter">Help Center</a>
+    </ul>
 
-        <ul class="navbar-nav ml-auto">
-        <a class="nav-item nav-link" href="/student-portal/student-viewprofile">Account</a>
-        <a class="nav-item nav-link" href="/logout">Logout</a>
-      </ul>
+    <ul class="navbar-nav ml-auto mr-3">
+    <li class="nav-item dropdown">
 
-      <!-- </div> -->
+      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Account
+      </a>
+
+      <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdownMenuLink">
+      <a class="nav-item nav-link" href="/student-portal/student-viewprofile">Edit Account</a>
+      <a class="nav-item nav-link" href="/logout">Logout</a>
+    </div>
+
+    </li>
+    </ul>
+
+    <!-- </div> -->
     <!-- </div> -->
   </nav>
 
-  <form action="/student-portal/student-applications" method="POST" enctype="multipart/form-data">
+  <div class="row justify-content-center">
+    <div class="signup-form mr-5" style="width: 800px;">
+      <form action="/student-portal/student-applications" method="POST" enctype="multipart/form-data">
 
-    <input type="hidden" id="postID" name="postID" value="<%= jobpost._id %>">
-    
-  <% jobpost.questions.forEach(p=> { %>
-    <%=p%>
-    <input type="text" name="response[]">
-    <br>
-    <br>
-    <% }) %>
-  
-   Resume <input type="file" name="Resume"> <br>
-  
-   Cover Letter(optional) <input type="file" name="coverLetter"> <br>
-  
-    <button>Submit</button> 
-  </form>
-  
-   <div id="fullPost">
-    <% if (jobpost) { %>
-          Title: <%= jobpost.jobTitle %> <br>
-          Type: <%= jobpost.type %> <br>
-          Discipline: <%= jobpost.discipline %> <br>
-          Brief Description: <%= jobpost.briefDescription %> <br>
-          description: <%= jobpost.description %> <br>
-          Responsibilities: <%= jobpost.responsibilities %> <br>
-          Skills: <%= jobpost.skills %> <br>
-          createdAt: <%= jobpost.createdAt %> <br>
-      <% } %>
+        <input type="hidden" id="postID" name="postID" value="<%= jobpost._id %>">
+
+
+        <% jobpost.questions.forEach(p=> { %>
+          <%=p%>
+            <div class="form-group">
+              <textarea type="text" id="response[]" name="response[]" rows="6" style="height:100%;" class="form-control md-textarea"
+                                placeholder="Your message"></textarea>
+              <!-- <input type="text" class="form-control" name="response[]"> -->
+            </div>
+            <% }) %>
+
+
+              <div class="form-group">
+                Resume <input type="file" class="form-control" name="Resume" required>
+              </div>
+
+              <div class="form-group">
+                Cover Letter <input type="file" class="form-control" name="coverLetter" required>
+              </div>
+
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+              </div>
+
+      </form>
     </div>
 
+    <div class="signup-form ml-5 flex-fill" >
+      <div id="fullPost" class="text-dark">
+        <% if (jobpost) { %>
+        <p class="font-weight-bold mb-0" style="display:inline">Title:</p> <%= jobpost.jobTitle %> <br><br>
+        <p class="font-weight-bold mb-0" style="display:inline">Job Type:</p> <%= jobpost.type %> <br><br>
+        <p class="font-weight-bold mb-0" style="display:inline">Discipline:</p> <%= jobpost.discipline %> <br><br>
+        <p class="font-weight-bold mb-0">Description:</p> <%= jobpost.jobTitle %> <br><br>
+        <p class="font-weight-bold mb-0">Responsibilities:</p> <%= jobpost.description %> <br><br>
+        <p class="font-weight-bold mb-0">Skills:</p> <%= jobpost.skills %> <br><br>
+        <p class="font-weight-bold mb-0" style="display:inline">Post Creation Date:</p> <%= jobpost.createdAt %> <br><br>
+        <% } %>
+      </div>
+    </div>
+  </div>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
 </body>
 
 
