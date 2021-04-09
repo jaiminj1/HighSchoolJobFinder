@@ -678,8 +678,8 @@ async function sendEmail(email, code) {
         from: '"Testing Account" <no-reply@jobfinder.com>', // sender address
         to: email, // list of receivers
         subject: "Confirmation Code", // Subject line
-        text: "Your confirmation code is " + code, // plain text body
-        html: "<b>Your confirmation code is </b>" + code, // html body
+        text: "Your confirmation code for High School JobFinder is " + code, // plain text body
+        html: "<b>Your confirmation code for High School JobFinder is </b>" + code, // html body
     });
 
     console.log("Message sent: %s", info.messageId);
