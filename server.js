@@ -83,13 +83,6 @@ app.get("/", function (req, res) {
 //portal when logged in 
 app.get("/portal", isLoggedIn, function (req, res) {
 
-    // if (req.user.isVerified === false) {
-    //     res.render("emailConfirmation", {
-    //         email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, accountType,
-    //         school: req.user.School, verificationCode: req.user.verificationCode, isVerified: req.user.isVerified
-    //     });
-    // } else {
-
     if (req.user.accountType == "student") {
         res.redirect("student-portal/student-findjobs");
     }
@@ -99,8 +92,6 @@ app.get("/portal", isLoggedIn, function (req, res) {
     else if (req.user.accountType == "admin") {
         res.redirect("admin-portal/admin-userview");
     }
-    //res.render("portal", { email: req.user.email, firstname: req.user.firstname, lastname: req.user.lastname, school: req.user.School });
-    // }
 });
 
 //resources page
@@ -337,21 +328,6 @@ app.get("/admin-portal/admin-viewprofile", isLoggedIn, isAdmin, async function (
 
 });
 
-// app.post("/student-portal/student-employerprofile", isLoggedIn, isStudent, async function (req, res) {
-
-//     jobPost = require("./models/jobpost");
-
-//     jobPost.findOne({ _id: req.body.postId }, (err, jobpost) => {
-//         // Check if error connecting
-//         if (err) {
-//             res.json({ success: false, message: err }); // Return error
-//         } else {
-//             res.render('student-portal/student-employerprofile', { employerPosts, employer: req.body.employer, jobpost });
-//         }
-//     });
-
-// });
-
 
 //presignup page
 app.get("/preregister", function (req, res) {
@@ -509,13 +485,6 @@ app.post("/emailConfirmation", function (req, res) {
                 console.log("Updated Docs : ", docs);
             }
         });
-
-
-        // req.user.isVerified = true;
-        // User.save(function (err) {
-        //     // if (err) { return res.status(500).send({ msg: err.message }); }
-        //     // res.status(200).send("The account has been verified. Please log in.");
-        // });
     }
 
     res.redirect("/portal");
