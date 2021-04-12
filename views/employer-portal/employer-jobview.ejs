@@ -30,6 +30,7 @@
 
 <body>
 
+    <!-- navigation bar -->
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="">High School JobFinder</a>
 
@@ -65,6 +66,7 @@
 
                 <h2 class="text-dark"> My Job Posts </h2>
 
+                 <!-- displays the their job posts -->
                 <div>
                     <% userPosts.forEach(p=> { %>
                         <br>
@@ -99,6 +101,7 @@
         <div class="col-5 mr-auto">
             <div id="fullPost">
                 <div class="signup-form" style="width: 800px;">
+                    <!-- displays the full version of hte job post. clicking the edit button will take them to edit job post page -->
                     <form action="/employer-portal/employer-jobedit" method="GET">
 
                         <% if (jobpost) { %>

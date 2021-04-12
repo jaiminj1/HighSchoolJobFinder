@@ -6,6 +6,7 @@
     <script type="text/javascript" src="test.js"> </script>
 </head>
 
+<!-- navigation bar -->
 <div class="topnav">
     <a class="active" href="/student-portal/student-findjobs">Find Jobs</a>
     <a href="/student-portal/student-bookmarks">Bookmarks</a>
@@ -16,6 +17,7 @@
     <a href="/logout">Logout</a>
 </div>
 
+<!-- displays the employer's information-->
 <body>
 <h2>Photo</h2>
 <h2>Company Name: <%= employer.companyName %></h2>
@@ -25,7 +27,7 @@
     <%= employer.postalCode %></h4> <br>
 Company Description: <%=employer.companyDescription %>
 
-
+<!-- displays the preview of the employer's job posts -->
     <div>
         <% employerPosts.forEach(p=> { %>
             <br>
@@ -47,14 +49,13 @@ Company Description: <%=employer.companyDescription %>
                 </div>
             </div>
         </form>
-
-<input type="checkbox" onclick="bookmark(this, '<%= p._id %>' );">
-
             <% }) %>
     </div>
 
 </body>
 <br>
+
+<!-- displays the full version of hte selected job post-->
 <div id="fullPost">
 <% if (jobpost) { %>
 This is the post jobpost selected <br>

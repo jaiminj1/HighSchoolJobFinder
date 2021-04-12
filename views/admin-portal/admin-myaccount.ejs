@@ -1,9 +1,12 @@
+
+<!-- navigation bar -->
 <div class="topnav">
   <a href="/admin-portal/admin-userview">View Users</a>
   <a href="/admin-portal/admin-jobview">View Jobs</a>
   <a class="active" href="/admin-portal/admin-myaccount">My Account</a>
 </div>
 
+<!-- change name form -->
 <form action="/admin-portal/admin-myaccount" method="POST">
   First Name: <input type="text" name="firstname" placeholder="First Name" value="<%= firstname %>"> <br>
   Last Name: <input type="text" name="firstname" placeholder="First Name" value="<%= lastname %>"> <br>
@@ -11,10 +14,13 @@
 </form>
 
 <br>
+
+<!-- displays error message (if it exists) -->
 <% if (message) { %>
   <%= message %>
   <% } %>
-  
+
+<!-- change password form -->
 <form action="/changepassword" method="POST">
   <input type="password" name="currentpassword" placeholder="Current Password">
   <input type="password" name="newpassword" placeholder="New Password">

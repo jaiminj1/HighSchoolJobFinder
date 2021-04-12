@@ -41,11 +41,12 @@
             <div class="text-center">
                 <h1 class="text-dark">Verify your email address</h1>
 
-                <h4 class="text-dark">Please enter the 4 digit code we've sent to your email address</h4>
+                <h4 class="text-dark">Please enter the code we've sent to your email address</h4>
             </div>
         </div>
 
         <div class="row">
+            <!-- form where the user inputs the code they received -->     
             <form class="form-signin" action="/emailConfirmation" method="POST">
                 <input type="text" class="form-control mb-3 border border-secondary" name="code" id="code"
                     placeholder="Code">
@@ -56,6 +57,7 @@
             </form>
         </div>
 
+         <!-- resend email button -->       
         <div class="row justify-content-center">
             <form action="/resendEmail" method="POST">
                 <button class="btn btn-link">Resend Code</button>

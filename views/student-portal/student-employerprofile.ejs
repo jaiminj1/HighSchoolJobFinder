@@ -31,6 +31,7 @@
 
 <body>
 
+     <!-- navigation bar -->
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="">High School JobFinder</a>
 
@@ -60,6 +61,7 @@
       </nav>
 
 
+<!-- displays the employer's information to the student -->
 <div class="pt-5 align-self-start">
 
       <div class="d-flex justify-content-center text-dark">
@@ -82,7 +84,7 @@
 </div>
 
       
-
+<!-- displays the preview of the employer's job posts -->
     <div class="container align-self-center">
 
         <div class="row">
@@ -122,6 +124,7 @@
         <div class="col-5 mr-auto">
             <div id="fullPost">
                 <div class="signup-form" style="width: 800px;">
+                    <!-- displays the full version of the employer's job posts with an apply button -->
                     <form action="/student-portal/student-applications" method="GET">
 
                         <% if (jobpost) { %>

@@ -30,6 +30,7 @@
 
 <body>
 
+    <!-- navigation bar -->
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="">High School JobFinder</a>
 
@@ -61,6 +62,7 @@
 
         <h2 class="text-dark"> Edit job post </h2>
 
+        <!-- form to edit their job post-->
         <form action="/employer-portal/employer-jobedit" method="POST">
 
             <input type="hidden" id="postID" name="postID" value="<%= jobpost._id %>">
@@ -124,8 +126,10 @@
 
             <div class="form-group">
                 <div id="div">
+                    <!-- creates new questions on button click -->
                     <button class="form-control" onclick="appendRow()" value="Add Question">Add Question</button> <br>
             
+                    <!-- displays all the previously written questions -->
                     <% jobpost.questions.forEach(p=> { %>
                         <script>appendRowPreset("<%=p%>")</script>
                         <% }) %>
@@ -153,12 +157,14 @@
 
     <script>
         var x=1
+        //function to add new questions
         function appendRow()
         {
            var d = document.getElementById('div');
            d.innerHTML += "<input type='text' name='question[]' id='question"+ x++ +"'><br >";
         }
     
+        //function to display the questions that were already written
         function appendRowPreset(p)
         {
            var d = document.getElementById('div');

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 
+<!-- navigation bar -->
 <div class="topnav">
   <a class="active" href="/admin-portal/admin-userview">View Users</a>
   <a href="/admin-portal/admin-jobview">View Jobs</a>
@@ -22,6 +23,7 @@
 
 <script>
 
+//sends form to verify the selected user
 function verifyUser(userID, number) {
     $.ajax({
       url: '/admin-portal/admin-userview',
@@ -37,6 +39,7 @@ function verifyUser(userID, number) {
 
   }
 
+  //displays the full version of the selected unapproved user 
     function display(user, number) {
 
       numberV = number
@@ -99,6 +102,7 @@ function verifyUser(userID, number) {
 Unapproved Users 
 <br>
 
+<!-- displays a preview of every unapproved users with a button to display the full version of the user (display function)-->
 <% if (unapprovedUsers != false) { %>
 <div>
   <% var x=0 %>
@@ -168,7 +172,7 @@ Unapproved Users
 <br>
 <br>
 
-
+<!-- this is where the full versio nof the user is placed when displayed-->
 <div class="fullUser" id="fullUser">
 
 </div>
@@ -180,6 +184,7 @@ Unapproved Users
   var usersSearched = <%- JSON.stringify(result) %>
 </script>
 
+<!-- user search form -->
 <form action="/searchUser" method="GET">
 
   <select name="userType" id="userType">
@@ -196,6 +201,7 @@ Unapproved Users
   <button>Search</button>
 </form>
 
+<!-- displays a preview of every searched user with a button to display the full version of the user (display2 function)-->
 <div>
   <% var x=0 %>
     <% if (result) { %>
@@ -234,13 +240,14 @@ Unapproved Users
 
 <script>
 
+//updates the information of the selected search user
 function updateUser(userID, number, radioButton, firstname, lastname) {
 
   if (firstname != 'null' && lastname!='null') {
     $.ajax({
       url: '/updateUser',
       type: 'PUT',
-      data: {userID: userID, accountStatus: document.querySelector('input[name = "accountStatus"]:checked').value, firstname: firstname, lastname: lastname},
+      data: {userID: userID, accountStatus: document.querySelector('input[name = "accountStatus"]:checked').value, firstname: firstname, lastname: lastname, isCoop: document.querySelector('input[name = "isCoop"]:checked').value},
       success: function (result) {
         return
       }
@@ -249,7 +256,7 @@ function updateUser(userID, number, radioButton, firstname, lastname) {
     $.ajax({
       url: '/updateUser',
       type: 'PUT',
-      data: {userID: userID, accountStatus: document.querySelector('input[name = "accountStatus"]:checked').value},
+      data: {userID: userID, accountStatus: document.querySelector('input[name = "accountStatus"]:checked').value}, isCoop: document.querySelector('input[name = "isCoop"]:checked').value,
       success: function (result) {
         return
       }
@@ -258,6 +265,7 @@ function updateUser(userID, number, radioButton, firstname, lastname) {
 
   }
 
+  //displays the full version of the selected searched user
     function display2(user, number) {
 numberV = number
 selectedID = user._id
@@ -303,6 +311,36 @@ if (user.accountType == "student") {
                    value: user.firstname
               });
 
+              var w = $('<input/>').attr({
+                   type: "radio",
+                   id: "yesCoop",
+                   name: "isCoop",
+                   value: "true",
+                   label: "Coop"
+              });
+              
+              var labelw = document.createElement('label');
+              labelw.setAttribute('for', w);
+              labelw.innerHTML = "Coop";
+
+              var x = $('<input/>').attr({
+                   type: "radio",
+                   id: "noCoop",
+                   name: "isCoop",
+                   value: "false",
+                   label: "Regular"
+              });
+
+              var labelx = document.createElement('label');
+              labelx.setAttribute('for', x);
+              labelx.innerHTML = "Regular";
+
+              var t = $('<input/>').attr({
+                   type: "text",
+                   id: "firstname",
+                   value: user.firstname
+              });
+
               var u = $('<input/>').attr({
                    type: "text",
                    id: "lastname",
@@ -316,10 +354,16 @@ if (user.accountType == "student") {
                    onclick: "updateUser(selectedID, numberV, 'value', document.getElementById('firstname').value, document.getElementById('lastname').value)"
               });
 
+      $("div.fullUserSecond").append(w); 
+      $("div.fullUserSecond").append(labelw); 
+      $("div.fullUserSecond").append(x); 
+      $("div.fullUserSecond").append(labelx); $("div.fullUserSecond").append("<br>")
+
       $("div.fullUserSecond").append(r); 
       $("div.fullUserSecond").append(labelR); 
       $("div.fullUserSecond").append(s); 
       $("div.fullUserSecond").append(labelS); $("div.fullUserSecond").append("<br>")
+
       $("div.fullUserSecond").append(t); 
       $("div.fullUserSecond").append(u); $("div.fullUserSecond").append("<br>")
       $("div.fullUserSecond").append(v);
@@ -380,6 +424,7 @@ if (user.accountType == "student") {
 
 </script>
 
+<!-- the full version of the selected searched user is displayed here -->
 <div class="fullUserSecond">
 
 </div>

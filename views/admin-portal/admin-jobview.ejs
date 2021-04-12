@@ -1,3 +1,4 @@
+<!-- navigation bar -->
 <div class="topnav">
     <a href="/admin-portal/admin-userview">View Users</a>
     <a class="active" href="/admin-portal/admin-jobview">View Jobs</a>
@@ -18,11 +19,14 @@
 </head>
 
 
+<body>
+
 <script>
   // stringify the data passed from router to ejs (within the EJS template only)
   var jobpost = <%- JSON.stringify(result) %>
 </script>
 
+<!-- job search bar -->
 <form action="/search" method="GET">
 
   <select name="discipline" id="discipline">
@@ -40,6 +44,7 @@
   <button>Search</button>
 </form>
 
+<!-- displays the preview version of the job posts that match the search -->
 <div>
   <% var x=0 %>
     <% if (result) { %>
@@ -79,6 +84,7 @@
           <% } %>
 </div>
 
+<!-- function sets up the HTML code for the full version of the selected job post and sends it to the div class="fullPost"-->
 <script>
     function display(jobpost) {
       $("div.fullPost").html("<br> Title:" + jobpost.jobTitle + "<br>" +
@@ -96,53 +102,9 @@
     }
 </script>
 
-<!-- <button onclick="search()">Search</button> -->
-<!-- <input type="hidden" id="deleteButton" name="deleteButton" value="deleteButton">
-    <button>Delete</button> -->
-<!-- <script>
-      function search() {
-        async (req, res) => {
-            let data = await fetch(`/search?term=${req.term}`)
-          }
-      }
-    </script> -->
-
-<!-- <script>
-      $(document).ready(function () {
-        $("#jobpost").autocomplete({
-          source: async function (req, res) {
-            let data = await fetch(`/search?term=${req.term}`)
-              .then(results => results.json())
-              .then(results => results.map(result => {
-                //    console.log(result);
-                return { label: result.jobTitle, value: result.jobTitle, id: result._id, job: result };
-              }));
-            res(data);
-          },
-          minLength: 2,
-          select: function (event, ui) {
-            console.log(ui.item);
-            $("div.fullPost").html("Title:" + ui.item.job.jobTitle + "<br>" +
-              "Type:" + ui.item.job.type + "<br>" +
-              "Discipline:" + ui.item.job.discipline + "<br>" +
-              "briefDescription:" + ui.item.job.briefDescription + "<br>" +
-              "Description:" + ui.item.job.description + "<br>" +
-              "Responsibilities:" + ui.item.job.responsibilities + "<br>" +
-              "Skills:" + ui.item.job.skills + "<br>" +
-              "Posted on:" + ui.item.job.createdAt + "<br>" +
-              '<form action="/student-portal/student-applications" method="GET">' +
-              '<input type="hidden" id="postID" name="postID" value=' + ui.item.job._id + '>' +
-              '<button>Apply</button>'
-            )
-          }
-        })
-      });
-     //  https://localhost:3000
-
-    </script> -->
-
 </body>
 
+<!-- used to display the full version of the selected job post -->
 <div class="fullPost">
 
 </div>

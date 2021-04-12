@@ -63,14 +63,6 @@ passport.use(new LocalStrategy({
 
 app.use(express.static(__dirname + "/public"));
 
-
-//app.use(fileUpload());
-
-// passport.use('employerLocal', new LocalStrategy({
-//     usernameField: 'email'
-// }, employerUser.authenticate()));
-
-
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
@@ -217,17 +209,17 @@ app.post("/student-portal/student-applications", isLoggedIn, upload.fields([{ na
 
 });
 
-
+//sends email to employers after a student applying
 async function applicationEmail(name, email, jobpost, response, resume, coverLetter) {
 
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 465,
-        secure: true, // true for 465, false for other ports
+        secure: true, 
         auth: {
-            user: process.env.EMAIL, // generated ethereal user
-            pass: process.env.PASSWORD, // generated ethereal password
+            user: process.env.EMAIL,
+            pass: process.env.PASSWORD, 
         },
     });
 
@@ -241,7 +233,7 @@ async function applicationEmail(name, email, jobpost, response, resume, coverLet
     let info = await transporter.sendMail({
         from: email, // sender address
         to: jobpost.creator, // list of receivers
-        cc: email,
+        cc: email, //email is also cced to the student
         subject: "Application from " + name + " for " + jobpost.jobTitle, // Subject line
         text: htmlText,
         html: htmlText,
@@ -257,13 +249,13 @@ app.get("/student-portal/student-bookmarks", isLoggedIn, function (req, res) {
 });
 
 //student profile page
-app.get("/student-portal/student-viewprofile", isLoggedIn, function (req, res) {
+app.get("/student-portal/student-viewprofile", isLoggedIn, isStudent, function (req, res) {
     message = req.session.message
     res.render("student-portal/student-viewprofile", { error: false, firstname: req.user.firstname, lastname: req.user.lastname, school: req.user.school, grade: req.user.grade, message: message });
 });
 
 var employerPosts;
-
+//displays an employer profile to students
 app.get("/student-portal/student-employerprofile", isLoggedIn, isStudent, async function (req, res) {
 
     jobPost = require("./models/jobpost");
@@ -296,6 +288,7 @@ app.get("/student-portal/student-employerprofile", isLoggedIn, isStudent, async 
 
 });
 
+//displays the employer's profile to admin
 app.get("/admin-portal/admin-viewprofile", isLoggedIn, isAdmin, async function (req, res) {
 
     jobPost = require("./models/jobpost");
@@ -350,24 +343,23 @@ app.post("/preregister", function (req, res) {
     //res.render("register", { error: false, accountType: req.body.accounttype});
 });
 
-
+//displays the student register page
 app.get("/registerStudent", function (req, res) {
     res.render("registerStudent", { error: false });
 });
 
+//displays the employer register page
 app.get("/registerEmployer", function (req, res) {
     res.render("registerEmployer", { error: false });
 });
 
+//displays the admin register page
 app.get("/registerAdmin", function (req, res) {
     res.render("registerAdmin", { error: false });
 });
 
-// //signup page
-// app.get("/register", function (req, res) {
-//     res.render("register", { error: false });
-// });
 
+//admin register function
 app.post("/registerAdmin", function (req, res) {
     accountType = "admin"
     var email = req.body.email
@@ -394,6 +386,7 @@ app.post("/registerAdmin", function (req, res) {
         });
 });
 
+//student register function
 app.post("/registerStudent", function (req, res) {
     accountType = "student"
     var email = req.body.email
@@ -424,19 +417,13 @@ app.post("/registerStudent", function (req, res) {
         });
 });
 
+//employer register function
 app.post("/registerEmployer", function (req, res) {
     accountType = "employer"
     var email = req.body.email
     var password = req.body.password
     var confirmPassword = req.body.confirmPassword
     var verificationCode = randomString(4)
-
-    var address = req.body.address
-    var unit = req.body.unit
-    var city = req.body.city
-    var province = req.body.province
-    var country = req.body.country
-    var postalCode = req.body.postalCode
 
     if (password != confirmPassword) {
         return res.render("registerEmployer", { error: "passwords don't match" });
@@ -457,6 +444,7 @@ app.post("/registerEmployer", function (req, res) {
         });
 });
 
+//generates random string
 function randomString(length) {
     var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     var string = '';
@@ -466,10 +454,12 @@ function randomString(length) {
     return string;
 }
 
+//display's email confirmation page
 app.get("/emailConfirmation", function (req, res) {
     res.render("emailConfirmation", { error: false, email: req.user.email, isVerified: req.user.isVerified });
 });
 
+//verify's user if code matches
 app.post("/emailConfirmation", function (req, res) {
     userCode = req.body.code
 
@@ -492,6 +482,7 @@ app.post("/emailConfirmation", function (req, res) {
     //res.render("register", { error: false, accountType: req.body.accounttype});
 });
 
+//resends the verification code with an new code
 app.post("/resendEmail", function (req, res) {
 
     var verificationCode = randomString(4)
@@ -539,8 +530,6 @@ app.get("/forgotpassword", function (req, res) {
 app.post("/forgotpassword", function (req, res) {
     resetCode = randomString(4)
 
-    //CHECK IF THE USER EXISTS FIRST
-    //CHECK IF THE USER EXISTS FIRST
     sendEmailReset(req.body.email, resetCode)
 
     User.updateOne({ email: req.body.email }, { resetCode: resetCode }, function (err, docs) {
@@ -577,6 +566,7 @@ app.get("/logout", function (req, res) {
     res.redirect("/");
 });
 
+//checks if the user is logged in, verified and approved
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
 
@@ -592,6 +582,7 @@ function isLoggedIn(req, res, next) {
     }
 }
 
+//page displayed while users are waiting for admin approval
 app.get("/userApproval", function (req, res) {
 
     if (req.isAuthenticated()) {
@@ -608,18 +599,21 @@ app.get("/userApproval", function (req, res) {
 
 })
 
+//checks if a user is an employer and redirects as necessary
 function isEmployer(req, res, next) {
     if (req.user.accountType == "employer") { return next(); }
     else if (req.user.accountType == "student") { res.redirect("/student-portal/student-findjobs"); }
     else { res.redirect("/admin-portal/admin-userview"); }
 }
 
+//checks if a user is an student and redirects as necessary
 function isStudent(req, res, next) {
     if (req.user.accountType == "student") { return next(); }
     else if (req.user.accountType == "employer") { res.redirect("/employer-portal/employer-editprofile"); }
     else { res.redirect("/admin-portal/admin-userview"); }
 }
 
+//checks if a user is an admin and redirects as necessary
 function isAdmin(req, res, next) {
     if (req.user.accountType == "admin") { return next(); }
     else if (req.user.accountType == "student") { res.redirect("/student-portal/student-findjobs"); }
@@ -682,10 +676,12 @@ async function sendEmailReset(email, code) {
 }
 //sendEmail().catch(console.error);
 
+//displays the change password page
 app.get("/changepassword", isLoggedIn, function (req, res) {
     res.render("changepassword", { message: false });
 });
 
+//changes the user's password
 app.post('/changepassword', function (req, res) {
 
     if (req.body.newpassword != req.body.confirmpassword) {
@@ -726,6 +722,7 @@ app.post('/changepassword', function (req, res) {
 
 var userPosts;
 
+//displays the employers own job posts
 app.get("/employer-portal/employer-jobview", isLoggedIn, isEmployer, async function (req, res) {
 
     jobPost = require("./models/jobpost");
@@ -734,6 +731,7 @@ app.get("/employer-portal/employer-jobview", isLoggedIn, isEmployer, async funct
     res.render('employer-portal/employer-jobview', { currentUser: req.user.email, userPosts, jobpost: false });
 });
 
+//displays a job post in more detail
 app.post("/employer-portal/employer-jobview", isLoggedIn, isEmployer, async function (req, res) {
 
     userPosts = await jobPost.find({ creator: req.user.email })
@@ -756,10 +754,12 @@ app.post("/employer-portal/employer-jobview", isLoggedIn, isEmployer, async func
 
 });
 
-app.get("/employer-portal/employer-jobcreate", isLoggedIn, function (req, res) {
+//displays the job create page
+app.get("/employer-portal/employer-jobcreate", isLoggedIn, isEmployer, function (req, res) {
     res.render('employer-portal/employer-jobcreate');
 });
 
+//creates job post
 app.post("/employer-portal/employer-jobcreate", function (req, res) {
     jobPost = require("./models/jobpost");
 
@@ -777,7 +777,8 @@ app.post("/employer-portal/employer-jobcreate", function (req, res) {
 
 });
 
-app.get("/employer-portal/employer-jobedit", isLoggedIn, function (req, res) {
+//displays the job post the employer is trying to edit in a form
+app.get("/employer-portal/employer-jobedit", isLoggedIn, isEmployer, function (req, res) {
 
     jobPost.findOne({ _id: req.query.postID }, (err, jobpost) => {
         // Check if error connecting
@@ -795,6 +796,7 @@ app.get("/employer-portal/employer-jobedit", isLoggedIn, function (req, res) {
 
 });
 
+//updates the job post the employer edited
 app.post("/employer-portal/employer-jobedit", function (req, res) {
 
     if (req.body.creator != req.user.email) {
@@ -832,6 +834,7 @@ app.post("/employer-portal/employer-jobedit", function (req, res) {
     }
 });
 
+//deletes the post the admin deleted
 app.post("/deletePostAdmin", function (req, res) {
 
     jobPost.deleteOne({ _id: req.body.postID }, function (err, docs) {
@@ -846,11 +849,14 @@ app.post("/deletePostAdmin", function (req, res) {
 
 });
 
+//displays the employer profile that can be edited
+//also includes the change password function
 app.get("/employer-portal/employer-editprofile", isLoggedIn, function (req, res) {
     message = req.session.message
     res.render('employer-portal/employer-editprofile', { user: req.user, message: message });
 });
 
+//updates the employer's profile
 app.post("/employer-portal/employer-editprofile", function (req, res) {
 
     User.updateOne({ _id: req.user._id }, {
@@ -899,10 +905,6 @@ function bookmark(action, postID) {
 
 }
 
-
-//ADMIN SECTION
-
-
 //admin user view page
 app.get("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res) {
 
@@ -918,7 +920,8 @@ app.get("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res)
 
 var userCollection;
 
-app.get("/searchUser", async (req, res) => {
+//search for users
+app.get("/searchUser", isLoggedIn, isAdmin, async (req, res) => {
     var term = req.query.term
     var userType = req.query.userType
 
@@ -1011,8 +1014,8 @@ app.put("/updateUser", isLoggedIn, isAdmin, function (req, res) {
         isEnabled = false;
     }
 
-    if (firstname || lastname) {
-        User.updateOne({ _id: req.body.userID }, { isEnabled: isEnabled, firstname: req.body.firstname, lastname: req.body.lastname }, function (err, docs) {
+    if (req.body.firstname || req.body.lastname) {
+        User.updateOne({ _id: req.body.userID }, { isEnabled: isEnabled, firstname: req.body.firstname, lastname: req.body.lastname, isCoop: req.body.isCoop }, function (err, docs) {
             if (err) {
                 console.log(err)
             }
@@ -1065,6 +1068,7 @@ app.get("/admin-portal/admin-myaccount", isLoggedIn, isAdmin, function (req, res
     res.render("admin-portal/admin-myaccount", { error: false, firstname: req.user.firstname, lastname: req.user.lastname, message: message });
 });
 
+//updates the admin's information
 app.post("/admin-portal/admin-myaccount", isLoggedIn, isAdmin, function (req, res) {
 
     User.updateOne({ _id: req.user._id }, { firstname: req.body.firstname, lastname: req.body.lastname }, function (err, docs) {
@@ -1086,11 +1090,12 @@ app.post("/admin-portal/admin-myaccount", isLoggedIn, isAdmin, function (req, re
 
 var jobpostCollection;
 
-app.get("/student-portal/student-findjobs", (req, res) => {
+//displays the job search page
+app.get("/student-portal/student-findjobs", isLoggedIn, isStudent, (req, res) => {
     res.render("student-portal/student-findjobs", { result: false, discipline: "", type: "", term: "" });
 })
 
-
+//search for jobs
 app.get("/search", isLoggedIn, async function (req, res) {
     var discipline = req.query.discipline
     var type = req.query.type
@@ -1141,6 +1146,7 @@ app.get("/search", isLoggedIn, async function (req, res) {
     }
 });
 
+//starts the server
 var port = process.env.PORT || 3000;
 app.listen(port, async function () {
 

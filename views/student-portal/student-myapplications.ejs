@@ -23,23 +23,14 @@
   <link rel="stylesheet" href="../style.css">
 
   <link rel="stylesheet" href="../signup.css">
-
-<!-- 
-  <link rel="stylesheet" href="../signup.css">
-
-  <link rel="stylesheet" href="../signin.css"> -->
-
+  
 </head>
 
 <body>
 
+  <!-- navigation bar -->
   <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="">High School JobFinder</a>
-    <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button> -->
-    <!-- <div class="collapse navbar-collapse" id="navbarNavAltMarkup"> -->
-    <!-- <div class="navbar-nav"> -->
 
     <ul class="navbar-nav mr-auto ml-3">
       <a class="nav-item nav-link active" href="/student-portal/student-findjobs">Find Jobs</a>
@@ -69,13 +60,14 @@
     <div class="container" style="margin:0%">
 
         <div class="row justify-content-md-center">
-      
+          
+        <!-- displays the jobs the student has previously applied for -->
           <div class="col mr-auto" style="width:600px;">
               <% previouslyApplied.forEach(p=> { %>
                 <br>
                 <div class="text-dark ml-3" style="width: 600px; background-color: white;">
                 
-                    <a href="student-portal/student-employerprofile?employerID=<%= p.creatorID %>">
+                    <a href="student-employerprofile?employerID=<%= p.creatorID %>">
                       <%= p.creatorName %>
                     </a>
                   <br>

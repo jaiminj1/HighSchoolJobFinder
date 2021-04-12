@@ -30,6 +30,7 @@
 
 <body>
 
+    <!-- navigation bar -->
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="">High School JobFinder</a>
 
@@ -62,8 +63,7 @@
         <div class="col">
             <div class="signup-form" style="width: 800px;">
 
-                <!-- this page has no proper post. refer to the post of changepassword. and change the form to support it -->
-
+                <!-- form to edit their profile -->
                 <form action="/employer-portal/employer-editprofile" method="POST">
 
                     <h2>Company Name:</h2>
@@ -150,11 +150,6 @@
                 </form>
             </div>
         </div>
-        <!-- <h1 class="display-1 text-dark">full name</h1>
-
-<h2 class="font-weight-normal">School</h2>
-
-<h2 class="font-weight-normal">Grade: </h2> -->
 
         <div class="col">
             <div class="signup-form" style="width: 400px;">
@@ -163,6 +158,7 @@
                     <%= message %>
                         <% } %>
 
+                <!-- form to edit their password -->
                 <form action="/changepassword" method="POST">
 
                     <h2>Change Password</h2>
