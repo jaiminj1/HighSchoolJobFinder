@@ -18,18 +18,13 @@ const nodemailer = require("nodemailer");
 const jobpost = require('./models/jobpost');
 
 const path = require('path');
-//const fileUpload = require('express-fileupload');
 const fs = require('fs');
-
-
-
-
-
-const { MongoClient } = require('mongodb');
-const client = new MongoClient(process.env.MONGO_CONNECT_KEY);
 
 var multer = require('multer')
 var upload = multer({ dest: 'uploads/' })
+
+const { MongoClient } = require('mongodb');
+const client = new MongoClient(process.env.MONGO_CONNECT_KEY);
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
@@ -109,7 +104,7 @@ app.post("/helpcenter", function (req, res) {
 
 async function contactUs(name, email, subject, message) {
 
-    // create reusable transporter object using the default SMTP transport
+    // create reusable transporter object using SMTP transport
     let transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 465,
@@ -990,8 +985,6 @@ app.get("/searchUser", isLoggedIn, isAdmin, async (req, res) => {
 //admin user view put function
 app.put("/admin-portal/admin-userview", isLoggedIn, isAdmin, function (req, res) {
 
-    console.log(req.body.userID)
-
     User.updateOne({ _id: req.body.userID }, { isApproved: true }, function (err, docs) {
         if (err) {
             console.log(err)
@@ -1146,6 +1139,12 @@ app.get("/search", isLoggedIn, async function (req, res) {
     }
 });
 
+
+//The 404 Route (ALWAYS Keep this as the last route)
+app.get('*', function(req, res){
+    res.render("404page");
+  });
+
 //starts the server
 var port = process.env.PORT || 3000;
 app.listen(port, async function () {
@@ -1161,8 +1160,3 @@ app.listen(port, async function () {
 
     console.log("Server Running");
 });
-
-//The 404 Route (ALWAYS Keep this as the last route)
-app.get('*', function(req, res){
-    res.render("404page");
-  });
