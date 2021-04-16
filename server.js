@@ -2,20 +2,18 @@ if (process.env.NODE_ENV != 'production') {
     require('dotenv').config()
 }
 
+//load javascript modules
 var express = require("express"),
     flash = require('express-flash'),
     mongoose = require("mongoose"),
     passport = require("passport"),
     bodyParser = require("body-parser"),
     LocalStrategy = require("passport-local"),
-    passportLocalMongoose =
-        require("passport-local-mongoose"),
+    passportLocalMongoose = require("passport-local-mongoose"),
     User = require("./models/user");
-jobPost = require("./models/jobpost");
+    jobPost = require("./models/jobpost");
 
-//const bcrypt = require('bcrypt')
 const nodemailer = require("nodemailer");
-const jobpost = require('./models/jobpost');
 
 const path = require('path');
 const fs = require('fs');
@@ -23,17 +21,19 @@ const fs = require('fs');
 var multer = require('multer')
 var upload = multer({ dest: 'uploads/' })
 
+//load MongoDB modules and set up connection
 const { MongoClient } = require('mongodb');
 const client = new MongoClient(process.env.MONGO_CONNECT_KEY);
 
+//Configure Mongoose
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
-
 // Connection URL
 mongoose.connect(process.env.MONGO_CONNECT_KEY,);
 
+//Create and configure express instance
 const app = express();
 app.set("view engine", "ejs");
 
@@ -211,10 +211,10 @@ async function applicationEmail(name, email, jobpost, response, resume, coverLet
     let transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 465,
-        secure: true, 
+        secure: true,
         auth: {
             user: process.env.EMAIL,
-            pass: process.env.PASSWORD, 
+            pass: process.env.PASSWORD,
         },
     });
 
@@ -1141,9 +1141,9 @@ app.get("/search", isLoggedIn, async function (req, res) {
 
 
 //The 404 Route (ALWAYS Keep this as the last route)
-app.get('*', function(req, res){
+app.get('*', function (req, res) {
     res.render("404page");
-  });
+});
 
 //starts the server
 var port = process.env.PORT || 3000;
