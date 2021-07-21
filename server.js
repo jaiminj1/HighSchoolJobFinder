@@ -1146,7 +1146,7 @@ app.get('*', function (req, res) {
 });
 
 //starts the server
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 8080;
 app.listen(port, async function () {
 
     try {
