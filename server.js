@@ -924,6 +924,7 @@ app.get("/searchUser", isLoggedIn, isAdmin, async (req, res) => {
         let result = await userCollection.aggregate([
             {
                 "$search": {
+                    "index": 'user',
                     "compound": {
                         "must": [
                             {
@@ -975,7 +976,6 @@ app.get("/searchUser", isLoggedIn, isAdmin, async (req, res) => {
                 res.render("admin-portal/admin-userview", { unapprovedUsers: unapprovedUsers, error: false, result: result, term: term, userType: userType });
             }
         });
-
     } catch (e) {
         console.error(e);
         res.status(500).send({ message: e.message });
@@ -1098,6 +1098,7 @@ app.get("/search", isLoggedIn, async function (req, res) {
         let result = await jobpostCollection.aggregate([
             {
                 "$search": {
+                    "index": 'jobTitle',
                     "compound": {
                         "must": [
 
