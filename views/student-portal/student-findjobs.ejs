@@ -63,13 +63,21 @@
     var jobpost = <%- JSON.stringify(result) %>
   </script>
 
-
+<style>
+  .content_center {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  width: 100%;
+  height: 100%;
+}
+</style>
 
   <div class="container mt-5 justify-content-center align-items-center">
 
     <!-- job search bar (with dropdowns) -->
     <form class="form-inline " action="/search" method="GET">
-      <div class="form-group col-auto my-1">
+      <div class="form-group col-auto my-1 ">
         <input type="text" class="form-control-lg" size="50" id="term" name="term" value="<%=term%>"
           placeholder="Job Title">
       </div>
@@ -77,7 +85,7 @@
       <div class="form-row align-items-center">
         <div class="col-auto my-1">
           <!-- <label class="mr-sm-2" for="inlineFormCustomSelect">Preference</label> -->
-          <select class=" mr-sm-2 form-control form-control-lg" name="discipline" id="discipline">
+          <select class="content_center mr-sm-2 form-control form-control-lg border border-dark" name="discipline" id="discipline">
             <option selected disabled>Discipline</option>
             <option value="technology" <% if((discipline).includes("technology")){ %> selected <% } %>>Technology
             </option>
@@ -89,7 +97,7 @@
       <div class="form-row align-items-center">
         <div class="col-auto my-1">
           <!-- <label class="mr-sm-2" for="inlineFormCustomSelect">Preference</label> -->
-          <select class=" mr-sm-2 form-control form-control-lg" name="type" id="type">
+          <select class="content_center mr-sm-2 form-control form-control-lg border border-dark" name="type" id="type">
             <option selected disabled>Type</option>
             <option value="coop" <% if((type).includes("coop")){ %> selected <% } %>>Coop</option>
             <option value="regular" <% if((type).includes("regular")){ %> selected <% } %>>Regular</option>

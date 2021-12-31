@@ -1136,7 +1136,15 @@ app.get("/search", isLoggedIn, async function (req, res) {
 
     } catch (e) {
         console.error(e);
-        res.status(500).send({ message: e.message });
+
+        if (req.user.accountType == "student") {
+            res.render("student-portal/student-findjobs", { result: false, term: "", type: "", discipline: "" })
+        }
+        else if (req.user.accountType == "admin") {
+            res.render("admin-portal/admin-jobview", { result: false, term: "", type: "", discipline: "" })
+        }
+        
+        //res.status(500).send({ message: e.message });
     }
 });
 

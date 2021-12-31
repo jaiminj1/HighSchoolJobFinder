@@ -62,23 +62,23 @@
 
 
 <!-- displays the employer's information to the student -->
-<div class="pt-5 align-self-start">
+<div class="pt-5 container align-self-start">
 
-      <div class="d-flex justify-content-center text-dark">
+      <div class="d-flex text-dark">
         <h2>Company Name: <%= employer.companyName %></h2>
     </div>
 
-    <div class="d-flex justify-content-center text-dark">
+    <div class="d-flex text-dark">
         <h2>Company Website: <%=employer.companyWebsite %></h2>
     </div>
 
-    <div class="d-flex justify-content-center text-dark">
-        <h2>Address:</h2><h2><%= employer.address %>, <%= employer.unit %>,
+    <div class="d-flex text-dark">
+        <h2>Address: <%= employer.address %>, <%= employer.unit %>,
             <%= employer.city %>, <%= employer.province %>, <%= employer.Country %>,
             <%= employer.postalCode %></h2>
     </div>
 
-    <div class="d-flex justify-content-center text-dark">
+    <div class="d-flex text-dark">
         Company Description: <%=employer.companyDescription %>
     </div>
 </div>
@@ -128,16 +128,16 @@
                     <form action="/student-portal/student-applications" method="GET">
 
                         <% if (jobpost) { %>
-                            <strong>Selected Job</strong> <br>
-                                Title: <%= jobpost.jobTitle %> <br>
-                                Location: <%= jobpost.location %> <br>
-                                Type: <%= jobpost.type %> <br>
-                                Discipline: <%= jobpost.discipline %> <br>
-                                Brief Description: <%= jobpost.briefDescription %> <br>
-                                description: <%= jobpost.description %> <br>
-                                Responsibilities: <%= jobpost.responsibilities %> <br>
-                                Skills: <%= jobpost.skills %> <br>
-                                createdAt: <%= jobpost.createdAt %> <br>
+                            <strong>Selected Job</strong> <br> <br>
+                            <strong>Title:</strong> <%= jobpost.jobTitle %> <br> <br>
+                            <strong>Location:</strong> <%= jobpost.location %> <br> <br>
+                            <strong>Type:</strong> <%= jobpost.type %> <br> <br> 
+                            <strong>Discipline:</strong> <%= jobpost.discipline %> <br> <br> 
+                            <strong>Brief Description:</strong> <%= jobpost.briefDescription %> <br> <br>
+                            <strong>Description:</strong> <%= jobpost.description %> <br> <br>
+                            <strong>Responsibilities:</strong> <%= jobpost.responsibilities %> <br> <br>
+                            <strong>Skills:</strong> <%= jobpost.skills %> <br> <br>
+                            <strong>Posted:</strong> <%= jobpost.createdAt %> <br>
                             
 
                          <input type="hidden" id="postID" name="postID" value="<%= jobpost._id %>">
