@@ -37,20 +37,29 @@
   </nav>
 
    <!-- lets the user know this page doesn't exist -->       
-  <div class="container">
-  <div class="row justify-content-center">
-    <h1 class="display-1 text-dark">404</h1>
-  </div>
 
-  <div class="row justify-content-center">
-    <h1 class="text-dark">Page not found</h1>
-  </div>
+<div class="container">
+  <div class="row ">
+    <div class="col my-auto">
+      <h1 class="display-1 text-dark">404</h1>
+      <h1 class="text-dark">Page not found</h1> <br>
+      <a class="btn btn-primary btn-lg" href="/" role="button">Return Home</a>
+    </div>
 
-  <div class="row justify-content-center">
-    <img src="/assets/undraw_not_found_60pq.svg" alt="HTML" width="500" height="500">
+    <div class="col">
+      
+      <script type="text/javascript">
+        var images = [];
+        images[0] = "<img src='/assets/undraw_not_found_60pq.svg' alt='HTML' width='500' height='500'>";
+        images[1] = "<img src='/assets/undraw_void_-3-ggu.svg' alt='HTML' width='500' height='500'>";
+        images[2] = "<img src='/assets/undraw_page_not_found_re_e9o6.svg' alt='HTML' width='500' height='500'>";
+        index = Math.floor(Math.random() * images.length);
+        document.write(images[index]);
+      </script>
+
+      <!-- <img src="/assets/undraw_not_found_60pq.svg" alt="HTML" width="500" height="500"> -->
+    </div>
   </div>
-  
-</div>
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
