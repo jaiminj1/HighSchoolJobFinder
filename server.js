@@ -92,40 +92,40 @@ app.get("/helpcenter", function (req, res) {
 });
 
 //help center page
-// app.post("/helpcenter", function (req, res) {
+app.post("/helpcenter", function (req, res) {
 
-//     if (req.body.name && req.body.email && req.body.subject && req.body.message) {
-//         contactUs(req.body.name, req.body.email, req.body.subject, req.body.message)
-//         res.render("helpcenter", { error: "Message sent" });
-//     } else {
-//         res.render("helpcenter", { error: "Ensure all fields are filled in" });
-//     }
-// });
+    if (req.body.name && req.body.email && req.body.subject && req.body.message) {
+        contactUs(req.body.name, req.body.email, req.body.subject, req.body.message)
+        res.render("helpcenter", { error: "Message sent" });
+    } else {
+        res.render("helpcenter", { error: "Ensure all fields are filled in" });
+    }
+});
 
-// async function contactUs(name, email, subject, message) {
+async function contactUs(name, email, subject, message) {
 
-//     // create reusable transporter object using SMTP transport
-//     let transporter = nodemailer.createTransport({
-//         host: "smtp.gmail.com",
-//         port: 465,
-//         secure: true, // true for 465, false for other ports
-//         auth: {
-//             user: process.env.EMAIL, // generated ethereal user
-//             pass: process.env.PASSWORD, // generated ethereal password
-//         },
-//     });
+    // create reusable transporter object using SMTP transport
+    let transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true, // true for 465, false for other ports
+        auth: {
+            user: process.env.EMAIL, // generated ethereal user
+            pass: process.env.PASSWORD, // generated ethereal password
+        },
+    });
 
-//     // send mail with defined transport object
-//     let info = await transporter.sendMail({
-//         from: email, // sender address
-//         to: process.env.EMAIL, // list of receivers
-//         subject: subject, // Subject line
-//         text: "Message from" + name + " (" + email + ") " + ": " + message, // plain text body
-//         html: "<b> Message from </b>" + name + " (" + email + ") " + ": <br>" + message, // html body
-//     });
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+        from: email, // sender address
+        to: process.env.EMAIL, // list of receivers
+        subject: subject, // Subject line
+        text: "Message from" + name + " (" + email + ") " + ": " + message, // plain text body
+        html: "<b> Message from </b>" + name + " (" + email + ") " + ": <br>" + message, // html body
+    });
 
-//     console.log("Message sent: %s", info.messageId);
-// }
+    console.log("Message sent: %s", info.messageId);
+}
 
 //student myapplications page
 app.get("/student-portal/student-myapplications", isLoggedIn, async function (req, res) {
