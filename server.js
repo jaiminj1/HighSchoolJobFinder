@@ -88,7 +88,7 @@ app.get("/resources", function (req, res) {
 
 //help center page
 app.get("/helpcenter", function (req, res) {
-    res.render("helpcenter", { error: false });
+    res.render("resources", { error: false });
 });
 
 //help center page
